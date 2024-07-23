@@ -19,6 +19,8 @@
       }
     ],
     "paths": {
+      "@/shadcn/*": ["./app/_components/shadcn/*"],
+      "@/_components/*": ["./app/_components/*"],
       "@/*": ["./*"]
     }
   },
