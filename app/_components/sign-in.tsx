@@ -1,57 +1,83 @@
-import Link from "next/link"
+"use client"
 
 import { Button } from "@/shadcn/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from "@/shadcn/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/shadcn/card"
 import { Input } from "@/shadcn/input"
 import { Label } from "@/shadcn/label"
+import { useState } from "react"
+import { cn } from "@/lib/utils"
+
+import { ToggleGroup, ToggleGroupItem } from "@/shadcn/toggle-group"
 
 export function SignInForm() {
+  const [name, setName] = useState("")
+  const [difficulty, setDifficulty] = useState("")
+  const [touched, setTouched] = useState(false)
+
+  const onSubmitHandler = () => {
+    if (!name || !difficulty) {
+      return
+    }
+    console.log({ name, difficulty })
+  }
+
+  const isInvalid = touched && name.trim() === ""
+
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription>
-          Enter your email below to login to your account
-        </CardDescription>
+        <CardTitle className="text-2xl">Sudoku</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Name</Label>
             <Input
               id="email"
-              type="email"
-              placeholder="m@example.com"
+              type="text"
               required
+              value={name}
+              className={cn(isInvalid && "border-red-500 focus:ring-red-500")}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={() => setTouched(true)}
             />
+            {isInvalid && (
+              <p className="text-red-500 text-sm">This field is required</p>
+            )}
           </div>
           <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              <Link href="#" className="ml-auto inline-block text-sm underline">
-                Forgot your password?
-              </Link>
-            </div>
-            <Input id="password" type="password" required />
+            <Label htmlFor="email">Difficulty</Label>
+            <ToggleGroup
+              type="single"
+              className="flex-col w-full items-start"
+              onValueChange={(type) => setDifficulty(type)}
+            >
+              <ToggleGroupItem
+                value="easy"
+                aria-label="Toggle bold"
+                className="w-full"
+              >
+                <div>Easy</div>
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="medium"
+                aria-label="Toggle italic"
+                className="w-full"
+              >
+                <div>Medium</div>
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="hard"
+                aria-label="Toggle underline"
+                className="w-full"
+              >
+                <div>Hard</div>
+              </ToggleGroupItem>
+            </ToggleGroup>
           </div>
-          <Button type="submit" className="w-full">
-            Login
+          <Button type="submit" className="w-full" onClick={onSubmitHandler}>
+            Start game
           </Button>
-          <Button variant="outline" className="w-full">
-            Login with Google
-          </Button>
-        </div>
-        <div className="mt-4 text-center text-sm">
-          Don&apos;t have an account?{" "}
-          <Link href="#" className="underline">
-            Sign up
-          </Link>
         </div>
       </CardContent>
     </Card>
