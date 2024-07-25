@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shadcn/card"
 import { Input } from "@/shadcn/input"
 import { Label } from "@/shadcn/label"
 import { useState } from "react"
-import { cn } from "@/lib/utils"
+import { cn, randomId } from "@/lib/utils"
+import { useRouter } from "next/navigation"
 
 import { ToggleGroup, ToggleGroupItem } from "@/shadcn/toggle-group"
 
@@ -13,12 +14,15 @@ export function SignInForm() {
   const [name, setName] = useState("")
   const [difficulty, setDifficulty] = useState("")
   const [touched, setTouched] = useState(false)
+  const router = useRouter()
 
   const onSubmitHandler = () => {
     if (!name || !difficulty) {
       return
     }
-    console.log({ name, difficulty })
+    const roomId = randomId(23)
+
+    router.push(`/room/${roomId}`)
   }
 
   const isInvalid = touched && name.trim() === ""
