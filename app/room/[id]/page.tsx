@@ -4,7 +4,6 @@ export default async function Room({
 }: {
   params: { id: string }
 }) {
-  console.log(params)
   return (
     <LiveblocksRoom roomId={params.id}>
       <div>hello</div>

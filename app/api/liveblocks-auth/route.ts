@@ -1,16 +1,13 @@
-import { Liveblocks } from "@liveblocks/node"
 import { randomId } from "@/lib/utils"
-
-const liveblocks = new Liveblocks({
-  secret: process.env.LIVEBLOCKS_SECRET_KEY as string
-})
+import { liveblocks } from "@/liveblocks.server.config"
 
 export async function POST(request: Request) {
   const { room } = await request.json()
 
   // generate random user
   const user = {
-    id: randomId(30),
+    //id: randomId(30),
+    id: "1",
     info: {
       name: "Guest",
       avatar: `https://api.dicebear.com/9.x/thumbs/svg?seed=${randomId(4)}`

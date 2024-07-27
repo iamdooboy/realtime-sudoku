@@ -16,13 +16,36 @@ export function SignInForm() {
   const [touched, setTouched] = useState(false)
   const router = useRouter()
 
-  const onSubmitHandler = () => {
+  const onSubmitHandler = async () => {
     if (!name || !difficulty) {
       return
     }
-    const roomId = randomId(23)
+    const id = randomId(23)
+    try {
+      //create room
+      const room = await fetch("/api/rooms/", {
+        method: "POST",
+        body: JSON.stringify({
+          id
+        })
+      })
 
-    router.push(`/room/${roomId}`)
+      const { roomId } = await room.json()
+
+      //initialize storage
+      const storage = await fetch("/api/storage/", {
+        method: "POST",
+        body: JSON.stringify({
+          id: roomId,
+          difficulty
+        })
+      })
+      if (storage.ok) {
+        router.push(`/room/${id}`)
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const isInvalid = touched && name.trim() === ""

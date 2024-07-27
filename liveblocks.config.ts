@@ -1,6 +1,21 @@
 // Define Liveblocks types for your application
+
+import { LiveList, LiveObject } from "@liveblocks/client"
+
 // https://liveblocks.io/docs/api-reference/liveblocks-react#Typing-your-data
 declare global {
+  type Notes = LiveList<number>
+
+  type Square = LiveObject<{
+    value: number
+    immutable: boolean
+    valid: boolean
+    key: number
+    notes: Notes
+  }>
+
+  type Sudoku = LiveList<Square>
+
   interface Liveblocks {
     // Each user's Presence, for useMyPresence, useOthers, etc.
     Presence: {
@@ -10,8 +25,12 @@ declare global {
 
     // The Storage tree for the room, for useMutation, useStorage, etc.
     Storage: {
-      // Example, a conflict-free list
-      // animals: LiveList<string>;
+      // startTime: number
+      // isPaused: boolean
+      // initialLoad: boolean
+      // isSolved: boolean
+      // mistakeCount: number
+      // sudoku: Sudoku
     }
 
     // Custom user info set when authenticating with a secret key
