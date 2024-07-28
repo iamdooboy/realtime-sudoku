@@ -5,34 +5,26 @@ export async function POST(req: Request) {
 
   if (!body) Response.error()
 
-  const { id } = JSON.parse(body)
+  const { id, difficulty } = JSON.parse(body)
   try {
-    const RoomData = await liveblocks.createRoom(id, {
+    //create room
+    const room = await liveblocks.createRoom(id, {
       defaultAccesses: ["room:write"]
     })
-    return Response.json({ roomId: RoomData.id })
+
+    const baseUrl = req.url.split("/").slice(0, 3).join("/")
+
+    //initialize storage
+    const storage = await fetch(`${baseUrl}/api/storage/`, {
+      method: "POST",
+      body: JSON.stringify({
+        id: room.id,
+        difficulty
+      })
+    })
+
+    return storage
   } catch (error) {
     return Response.error()
   }
-
-  // const response = await liveblocks
-  //   .createRoom(id, {
-  //     defaultAccesses: ["room:write"]
-  //   })
-  //   .then(
-  //     () => {
-  //       return NextResponse.json(
-  //         { message: "Room created successfully" },
-  //         { status: 200 }
-  //       )
-  //     },
-  //     (reject) => {
-  //       return NextResponse.json(
-  //         { message: "Failed to create room: " + reject.message },
-  //         { status: reject.status }
-  //       )
-  //     }
-  //   )
-
-  return Response.json({ message: "Hello, World!" })
 }

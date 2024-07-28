@@ -22,25 +22,16 @@ export function SignInForm() {
     }
     const id = randomId(23)
     try {
-      //create room
-      const room = await fetch("/api/rooms/", {
+      //create room abd initialize storage
+      const response = await fetch("/api/rooms/", {
         method: "POST",
         body: JSON.stringify({
-          id
-        })
-      })
-
-      const { roomId } = await room.json()
-
-      //initialize storage
-      const storage = await fetch("/api/storage/", {
-        method: "POST",
-        body: JSON.stringify({
-          id: roomId,
+          id,
           difficulty
         })
       })
-      if (storage.ok) {
+
+      if (response.ok) {
         router.push(`/room/${id}`)
       }
     } catch (error) {
