@@ -25,12 +25,14 @@ declare global {
 
     // The Storage tree for the room, for useMutation, useStorage, etc.
     Storage: {
-      // startTime: number
-      // isPaused: boolean
-      // initialLoad: boolean
-      // isSolved: boolean
-      // mistakeCount: number
-      // sudoku: Sudoku
+      plainLson: LiveObject<{
+        startTime: number
+        isPaused: boolean
+        initialLoad: boolean
+        isSolved: boolean
+        mistakeCount: number
+        sudoku: Sudoku
+      }>
     }
 
     // Custom user info set when authenticating with a secret key

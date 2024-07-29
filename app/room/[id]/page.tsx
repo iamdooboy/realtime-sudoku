@@ -1,4 +1,6 @@
 import { LiveblocksRoom } from "@/_components/liveblocks-room"
+import { Table } from "@/_components/sudoku/table"
+import { GameProvider } from "@/app/_context/game-context"
 export default async function Room({
   params
 }: {
@@ -6,7 +8,12 @@ export default async function Room({
 }) {
   return (
     <LiveblocksRoom roomId={params.id}>
-      <div>hello</div>
+      <GameProvider>
+        <div className="relative">
+          <Table />
+          <SidePanel />
+        </div>
+      </GameProvider>
     </LiveblocksRoom>
   )
 }
