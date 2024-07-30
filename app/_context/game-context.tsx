@@ -1,6 +1,15 @@
-import { createContext, useEffect, useState } from "react"
-import { useStorage, useUpdateMyPresence } from "@liveblocks/react/suspense"
+"use client"
+
+import { createContext, useState } from "react"
+import {
+  useStorage,
+  useUpdateMyPresence,
+  useMutation
+} from "@liveblocks/react/suspense"
 import { PropsWithChildren } from "react"
+import { LiveList } from "@liveblocks/client"
+import { DEFAULT_NOTES } from "@/utils/constants"
+import { table } from "console"
 
 type NoteContextProps = {
   notesMode: boolean
@@ -14,7 +23,18 @@ type TableCellProps = {
 
 type TableCellContextProps = {
   tableCell: TableCellProps
-  onClickTableCell: (value: number, index: number) => void
+  onClickTableCell: ({ value, index }: { value: number; index: number }) => void
+}
+
+type NumPadContextProps = {
+  //number: number | undefined
+  selectNum: ({ numPad, value, index }: SelectNumProps) => void
+}
+
+type SelectNumProps = {
+  numPad: number | undefined
+  value: number | undefined
+  index: number | undefined
 }
 
 export const NoteContext = createContext<NoteContextProps>({
@@ -29,6 +49,11 @@ export const TableCellContext = createContext<TableCellContextProps>({
   onClickTableCell: () => {}
 })
 
+export const NumPadContext = createContext<NumPadContextProps>({
+  //number: undefined,
+  selectNum: () => {}
+})
+
 export const GameProvider = ({ children }: PropsWithChildren) => {
   const updateMyPresence = useUpdateMyPresence()
 
@@ -38,17 +63,34 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     index: undefined
   })
 
-  const onClickTableCell = (value: number, index: number) => {
+  const onClickTableCell = ({
+    value,
+    index
+  }: { value: number; index: number }) => {
     updateMyPresence({ focusIndex: index })
     setTableCell({ value: value > 0 ? value : undefined, index })
   }
+
+  const selectNum = useMutation(
+    ({ storage }, { numPad, value, index }: SelectNumProps) => {
+      const lson = storage.get("plainLson")
+      const cell = lson.get("sudoku").get(index!)
+      const valid = cell?.get("key") === numPad
+      cell?.set("notes", new LiveList(DEFAULT_NOTES))
+      cell?.update({ value: numPad, valid })
+      //console.log({ numPad, value, index })
+    },
+    []
+  )
 
   const notesToggle = () => setNotesMode(!notesMode)
 
   return (
     <NoteContext.Provider value={{ notesMode, notesToggle }}>
       <TableCellContext.Provider value={{ tableCell, onClickTableCell }}>
-        {children}
+        <NumPadContext.Provider value={{ selectNum }}>
+          {children}
+        </NumPadContext.Provider>
       </TableCellContext.Provider>
     </NoteContext.Provider>
   )

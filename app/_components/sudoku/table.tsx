@@ -6,6 +6,9 @@ import { useGame } from "@/hooks/use-game"
 import { TableRow } from "./table-row"
 import { EmptyTableCell, PrefilledTableCell } from "./table-cell"
 export const Table = () => {
+  const {
+    tableCellContext: { onClickTableCell }
+  } = useGame()
 
   const sudoku = useStorage((root) => root.plainLson.sudoku)
 
@@ -40,7 +43,12 @@ export const Table = () => {
                     // cIndex={cIndex}
                     // value={value}
                     // selectedValue={selectedValue}
-                    // onClick={() => onClickSquare(null, value)}
+                    onClick={() =>
+                      onClickTableCell({
+                        value,
+                        index: indexOfArray
+                      })
+                    }
                     // highlight={highlight}
                   >
                     {value}
@@ -54,8 +62,14 @@ export const Table = () => {
                   cIndex={cIndex}
                   indexOfArray={indexOfArray}
                   value={value}
+                  onClick={() =>
+                    onClickTableCell({
+                      value,
+                      index: indexOfArray
+                    })
+                  }
                 >
-                  <div></div>
+                  <div>{value > 0 && value}</div>
                 </EmptyTableCell>
               )
             })}

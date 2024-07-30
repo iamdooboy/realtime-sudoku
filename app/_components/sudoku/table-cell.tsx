@@ -1,5 +1,6 @@
 import React from "react"
 import clsx from "clsx"
+import { useGame } from "@/hooks/use-game"
 
 interface PrefilledTableCellProps extends React.ComponentPropsWithoutRef<"td"> {
   index: number
@@ -19,12 +20,14 @@ export function PrefilledTableCell({
   // highlight,
   ...props
 }: PrefilledTableCellProps) {
+  const { tableCellContext } = useGame()
   return (
     <td
       className={clsx({
         "border-r-4": (index + 1) % 3 === 0 && cIndex !== 8,
         "w-16 h-16 text-center text-3xl border border-slate-200 dark:border-slate-700 dark:text-slate-100 cursor-default": true,
-        // "bg-gray-100 dark:bg-gray-800": highlight && value === selectedValue
+        "bg-gray-100 dark:bg-gray-800":
+          value === tableCellContext.tableCell.value
       })}
       {...props}
     >
@@ -38,9 +41,9 @@ interface EmptyTableCellProps extends React.ComponentPropsWithoutRef<"td"> {
   indexOfArray: number
   cIndex: number
   value: number
-//   selectedIndex: number
-//   selectedValue: number
-//   highlight: boolean
+  //   selectedIndex: number
+  //   selectedValue: number
+  //   highlight: boolean
 }
 
 export function EmptyTableCell({
@@ -53,14 +56,18 @@ export function EmptyTableCell({
   // selectedIndex,
   ...props
 }: EmptyTableCellProps) {
+  const { tableCellContext } = useGame()
+
+  console.log(tableCellContext.tableCell.value, value)
   return (
     <td
       key={indexOfArray}
       className={clsx({
         "relative p-0 w-16 h-16 text-center text-3xl cursor-pointer dark:hover:bg-slate-800 border border-slate-200 hover:bg-slate-100 dark:border-slate-700 aspect-square": true,
         "border-r-4": (indexOfArray + 1) % 3 === 0 && cIndex !== 8,
-        // "bg-slate-100 dark:bg-slate-800": selectedIndex === indexOfArray,
-        // "bg-gray-100 dark:bg-gray-800": highlight && value === selectedValue
+        //"bg-slate-100 dark:bg-slate-800": selectedIndex === indexOfArray
+        "bg-gray-100 dark:bg-gray-800":
+          value === tableCellContext.tableCell.value
       })}
       {...props}
     >
