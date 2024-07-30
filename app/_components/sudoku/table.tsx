@@ -4,7 +4,7 @@ import useCellProps from "@/hooks/use-cell-props"
 import { useGame } from "@/hooks/use-game"
 
 import { TableRow } from "./table-row"
-import { EmptyTableCell, PrefilledTableCell } from "./table-cell"
+import { EditableTableCell, PrefilledTableCell } from "./table-cell"
 export const Table = () => {
   const {
     tableCellContext: { onClickTableCell }
@@ -57,7 +57,7 @@ export const Table = () => {
               }
 
               return (
-                <EmptyTableCell
+                <EditableTableCell
                   key={indexOfArray}
                   cIndex={cIndex}
                   indexOfArray={indexOfArray}
@@ -70,7 +70,7 @@ export const Table = () => {
                   }
                 >
                   <div>{value > 0 && value}</div>
-                </EmptyTableCell>
+                </EditableTableCell>
               )
             })}
           </TableRow>

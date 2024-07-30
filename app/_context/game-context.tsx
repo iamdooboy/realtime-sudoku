@@ -9,7 +9,6 @@ import {
 import { PropsWithChildren } from "react"
 import { LiveList } from "@liveblocks/client"
 import { DEFAULT_NOTES } from "@/utils/constants"
-import { table } from "console"
 
 type NoteContextProps = {
   notesMode: boolean

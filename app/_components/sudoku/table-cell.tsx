@@ -36,29 +36,30 @@ export function PrefilledTableCell({
   )
 }
 
-interface EmptyTableCellProps extends React.ComponentPropsWithoutRef<"td"> {
+interface EditableTableCellProps extends React.ComponentPropsWithoutRef<"td"> {
   children: React.ReactNode
   indexOfArray: number
   cIndex: number
   value: number
+  valid: boolean
   //   selectedIndex: number
   //   selectedValue: number
   //   highlight: boolean
 }
 
-export function EmptyTableCell({
+export function EditableTableCell({
   children,
   indexOfArray,
   cIndex,
   value,
+  valid,
   // selectedValue,
   // highlight,
   // selectedIndex,
   ...props
-}: EmptyTableCellProps) {
+}: EditableTableCellProps) {
   const { tableCellContext } = useGame()
 
-  console.log(tableCellContext.tableCell.value, value)
   return (
     <td
       key={indexOfArray}
@@ -67,7 +68,9 @@ export function EmptyTableCell({
         "border-r-4": (indexOfArray + 1) % 3 === 0 && cIndex !== 8,
         //"bg-slate-100 dark:bg-slate-800": selectedIndex === indexOfArray
         "bg-gray-100 dark:bg-gray-800":
-          value === tableCellContext.tableCell.value
+          value === tableCellContext.tableCell.value,
+        "text-blue-500 dark:text-blue-500": valid,
+        "text-red-500 dark:text-red-500": !valid
       })}
       {...props}
     >
@@ -76,20 +79,20 @@ export function EmptyTableCell({
   )
 }
 
-interface Validate {
-  valid: boolean
-  children: React.ReactNode
-}
+// interface Validate {
+//   valid: boolean
+//   children: React.ReactNode
+// }
 
-export function Validate({ valid, children }: Validate) {
-  return (
-    <div
-      className={clsx({
-        "text-blue-500 dark:text-blue-500": valid,
-        "text-red-500 dark:text-red-500": !valid
-      })}
-    >
-      {children}
-    </div>
-  )
-}
+// export function Validate({ valid, children }: Validate) {
+//   return (
+//     <div
+//       className={clsx({
+//         "text-blue-500 dark:text-blue-500": valid,
+//         "text-red-500 dark:text-red-500": !valid
+//       })}
+//     >
+//       {children}
+//     </div>
+//   )
+// }
