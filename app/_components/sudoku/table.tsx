@@ -5,6 +5,7 @@ import { useGame } from "@/hooks/use-game"
 
 import { TableRow } from "./table-row"
 import { EditableTableCell, PrefilledTableCell } from "./table-cell"
+import { Notes } from "./notes"
 export const Table = () => {
   const {
     tableCellContext: { onClickTableCell }
@@ -22,6 +23,8 @@ export const Table = () => {
             {NUMBER_OF_ROWS.map((col, cIndex) => {
               const indexOfArray = row * 9 + col
               const { value, immutable, valid, notes } = sudoku[indexOfArray]
+
+              const showNotes = notes.some((number: number) => number > 0)
 
               if (immutable) {
                 return (
@@ -62,6 +65,7 @@ export const Table = () => {
                   cIndex={cIndex}
                   indexOfArray={indexOfArray}
                   value={value}
+                  valid={valid}
                   onClick={() =>
                     onClickTableCell({
                       value,
@@ -69,7 +73,7 @@ export const Table = () => {
                     })
                   }
                 >
-                  <div>{value > 0 && value}</div>
+                  {showNotes ? <Notes notes={notes} /> : value > 0 && value}
                 </EditableTableCell>
               )
             })}

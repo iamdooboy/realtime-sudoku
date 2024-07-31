@@ -25,9 +25,8 @@ export function PrefilledTableCell({
     <td
       className={clsx({
         "border-r-4": (index + 1) % 3 === 0 && cIndex !== 8,
-        "w-16 h-16 text-center text-3xl border border-slate-200 dark:border-slate-700 dark:text-slate-100 cursor-default": true,
-        "bg-gray-100 dark:bg-gray-800":
-          value === tableCellContext.tableCell.value
+        "w-16 h-16 text-center text-3xl border cursor-default": true,
+        "bg-muted": value === tableCellContext.tableCell.value
       })}
       {...props}
     >
@@ -63,15 +62,17 @@ export function EditableTableCell({
   return (
     <td
       key={indexOfArray}
-      className={clsx({
-        "relative p-0 w-16 h-16 text-center text-3xl cursor-pointer dark:hover:bg-slate-800 border border-slate-200 hover:bg-slate-100 dark:border-slate-700 aspect-square": true,
-        "border-r-4": (indexOfArray + 1) % 3 === 0 && cIndex !== 8,
-        //"bg-slate-100 dark:bg-slate-800": selectedIndex === indexOfArray
-        "bg-gray-100 dark:bg-gray-800":
-          value === tableCellContext.tableCell.value,
-        "text-blue-500 dark:text-blue-500": valid,
-        "text-red-500 dark:text-red-500": !valid
-      })}
+      className={clsx(
+        "relative p-0 w-16 h-16 text-center text-3xl cursor-pointer border aspect-square",
+        {
+          "border-r-4": (indexOfArray + 1) % 3 === 0 && cIndex !== 8,
+          "bg-primary-foreground": tableCellContext.tableCell.index === indexOfArray,
+          "bg-muted":
+            value === tableCellContext.tableCell.value,
+          "text-blue-500 dark:text-blue-500": valid,
+          "text-red-500 dark:text-red-500": !valid
+        }
+      )}
       {...props}
     >
       {children}

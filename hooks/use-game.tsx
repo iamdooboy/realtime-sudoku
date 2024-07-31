@@ -1,10 +1,14 @@
-import { NoteContext, NumPadContext, TableCellContext } from "@/app/_context/game-context"
+import {
+  ToolbarContext,
+  NumPadContext,
+  TableCellContext
+} from "@/app/_context/game-context"
 import { useContext } from "react"
 
 export const useGame = () => {
   return {
-    noteContext: useContext(NoteContext),
+    toolbarContext: useContext(ToolbarContext),
     tableCellContext: useContext(TableCellContext),
-    NumPadContext: useContext(NumPadContext)
+    numpadContext: useContext(NumPadContext)
   }
 }
