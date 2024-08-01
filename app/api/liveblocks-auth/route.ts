@@ -2,7 +2,9 @@ import { randomId } from "@/lib/utils"
 import { liveblocks } from "@/liveblocks.server.config"
 
 export async function POST(request: Request) {
-  const { room } = await request.json()
+  const res = await request.json()
+
+  console.log(res)
 
   // generate random user
   const user = {
@@ -18,7 +20,7 @@ export async function POST(request: Request) {
 
   const session = liveblocks.prepareSession(user.id, { userInfo: user.info })
 
-  session.allow(room, session.FULL_ACCESS)
+  session.allow(res.room, session.FULL_ACCESS)
 
   // Authorize the user and return the result
   const { status, body } = await session.authorize()
