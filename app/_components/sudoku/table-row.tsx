@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { cn } from "@/lib/utils"
 
 export function TableRow({
   rIndex,
@@ -9,7 +9,7 @@ export function TableRow({
 }) {
   return (
     <tr
-      className={clsx({
+      className={cn({
         "border-slate-200 dark:border-slate-700 border-b-4":
           rIndex === 2 || rIndex === 5
       })}

@@ -1,6 +1,6 @@
 import { Button } from "@/shadcn/button"
 import { useGame } from "@/hooks/use-game"
-import { clsx } from "clsx"
+import { cn } from "@/lib/utils"
 
 interface Prop {
   index: number
@@ -51,7 +51,7 @@ export function NumberPad() {
             variant="secondary"
             key={numPad}
             onClick={() => onClickHandler({ notesMode, index, numPad })}
-            className={clsx("w-16 h-16 rounded ", {
+            className={cn("w-16 h-16 rounded ", {
               "grid grid-cols-3 grid-rows-3": notesMode
             })}
           >
@@ -61,7 +61,7 @@ export function NumberPad() {
               </p>
             ) : (
               <p
-                className={clsx(
+                className={cn(
                   "p-[2px] text-sm text-center transition-all duration-200 ease-in-out",
                   {
                     "col-start-1 row-start-1": numPad === 1,

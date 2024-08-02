@@ -9,9 +9,9 @@ import {
 import { Undo2, Redo2, Eraser, Edit3 } from "lucide-react"
 import { Button } from "@/shadcn/button"
 import { Toggle } from "./shadcn/toggle"
-import clsx from "clsx"
 import { useGame } from "@/hooks/use-game"
 import { TOOL_TYPES } from "@/utils/constants"
+import { cn } from '@/lib/utils'
 
 type ToolProps = {
   type: string
@@ -76,8 +76,8 @@ export const Toolbar = () => {
         <Tooltip>
           <TooltipTrigger asChild>
             <Toggle
-              className={clsx({
-                "ring-1 dark:ring-slate-400 ring-offset-1 dark:ring-offset-slate-400 ring-slate-700 ring-offset-slate-700 bg-slate-100 dark:bg-slate-800":
+              className={cn({
+                "ring-1 dark:ring-slate-400 ring-offset-1 dark:ring-offset-slate-400 ring-slate-700 ring-offset-slate-700":
                   notesMode
               })}
               onClick={() => toggleNotesMode()}

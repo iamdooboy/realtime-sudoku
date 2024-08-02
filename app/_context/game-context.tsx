@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useState } from "react"
+import { createContext, useEffect, useState } from "react"
 import {
   useStorage,
   useUpdateMyPresence,
@@ -36,7 +36,6 @@ type TableCellContextProps = {
 }
 
 type NumPadContextProps = {
-  //number: number | undefined
   selectNum: ({ numPad, index }: SelectNumProps) => void
 }
 
@@ -44,6 +43,20 @@ type SelectNumProps = {
   numPad: number | undefined
   index: number | undefined
 }
+
+type TimeContextProps = {
+  pauseTimer: (elapsedTime: number) => void
+  elapsedTime: number
+  initialLoad: boolean
+  isPaused: boolean
+}
+
+export const TimeContext = createContext<TimeContextProps>({
+  pauseTimer: () => {},
+  elapsedTime: 0,
+  initialLoad: true,
+  isPaused: false
+})
 
 export const ToolbarContext = createContext<ToolbarContextProps>({
   undo: () => {},
@@ -67,15 +80,34 @@ export const NumPadContext = createContext<NumPadContextProps>({
 })
 
 export const GameProvider = ({ children }: PropsWithChildren) => {
+  const {
+    plainLson: { startTime, isPaused, initialLoad }
+  } = useStorage((root) => root)
+
   const history = useHistory()
 
   const updateMyPresence = useUpdateMyPresence()
 
+  const [elapsedTime, setElapsedTime] = useState(0)
   const [notesMode, setNotesMode] = useState(false)
   const [tableCell, setTableCell] = useState<TableCellProps>({
     value: undefined,
     index: undefined
   })
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
+    if (startTime) {
+      interval = setInterval(() => {
+        setElapsedTime(Date.now() - new Date(startTime).getTime())
+      }, 1000)
+    }
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    }
+  }, [startTime])
 
   const onClickTableCell = ({
     value,
@@ -138,17 +170,40 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     []
   )
 
+  const pauseTimer = useMutation(({ storage }, elapsedTime: number) => {
+    const lson = storage.get("plainLson")
+    const isPaused = lson.get("isPaused")
+    if (isPaused) {
+      if (lson.get("isSolved")) return
+      lson.update({
+        startTime: Date.now() - elapsedTime,
+        isPaused: false,
+        initialLoad: false
+      })
+    } else {
+      lson.update({
+        startTime: 0,
+        isPaused: true,
+        initialLoad: false
+      })
+    }
+  }, [])
+
   const toggleNotesMode = () => setNotesMode(!notesMode)
 
   return (
-    <ToolbarContext.Provider
-      value={{ undo, redo, erase, notesMode, toggleNotesMode, addNotes }}
+    <TimeContext.Provider
+      value={{ pauseTimer, elapsedTime, initialLoad, isPaused }}
     >
-      <TableCellContext.Provider value={{ tableCell, onClickTableCell }}>
-        <NumPadContext.Provider value={{ selectNum }}>
-          {children}
-        </NumPadContext.Provider>
-      </TableCellContext.Provider>
-    </ToolbarContext.Provider>
+      <ToolbarContext.Provider
+        value={{ undo, redo, erase, notesMode, toggleNotesMode, addNotes }}
+      >
+        <TableCellContext.Provider value={{ tableCell, onClickTableCell }}>
+          <NumPadContext.Provider value={{ selectNum }}>
+            {children}
+          </NumPadContext.Provider>
+        </TableCellContext.Provider>
+      </ToolbarContext.Provider>
+    </TimeContext.Provider>
   )
 }

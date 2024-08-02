@@ -11,7 +11,7 @@ export const Table = () => {
     tableCellContext: { onClickTableCell }
   } = useGame()
 
-  const sudoku = useStorage((root) => root.plainLson.sudoku)
+  const { sudoku, isPaused } = useStorage((root) => root.plainLson)
 
   const NUMBER_OF_ROWS = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
@@ -22,6 +22,17 @@ export const Table = () => {
           <TableRow key={rIndex} rIndex={rIndex}>
             {NUMBER_OF_ROWS.map((col, cIndex) => {
               const indexOfArray = row * 9 + col
+
+              if (isPaused) {
+                return (
+                  <PrefilledTableCell
+                    key={indexOfArray}
+                    index={indexOfArray}
+                    cIndex={cIndex}
+                  />
+                )
+              }
+
               const { value, immutable, valid, notes } = sudoku[indexOfArray]
 
               const showNotes = notes.some((number: number) => number > 0)
