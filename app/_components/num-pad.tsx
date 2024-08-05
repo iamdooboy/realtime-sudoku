@@ -2,45 +2,28 @@ import { Button } from "@/shadcn/button"
 import { useGame } from "@/hooks/use-game"
 import { cn } from "@/lib/utils"
 
-interface Prop {
-  index: number
-  sudoku: readonly {
-    readonly value: number
-    readonly immutable: boolean
-    readonly valid: boolean
-    readonly key: number
-    readonly notes: readonly number[]
-  }[]
-  addNotes: boolean
-  selectNum: (
-    index: number,
-    num: number,
-    key: number,
-    addNotes: boolean
-  ) => void
-}
-
 type NumberPadProps = {
   notesMode: boolean
   numPad: number
-  index: number | undefined
+  index: number | null
+  value: number | null | readonly number[]
 }
 
 export function NumberPad() {
   const { numpadContext, tableCellContext, toolbarContext } = useGame()
 
-  const { index } = tableCellContext?.tableCell
+  const { index, value } = tableCellContext?.tableCell
   const { notesMode, addNotes } = toolbarContext
 
   const onClickHandler = (numPadProps: NumberPadProps) => {
     const { notesMode, numPad, index } = numPadProps
-    if (!index) return
+    if(index === null) return
     if (notesMode) {
       addNotes({ numPad, index })
       return
     }
 
-    numpadContext.selectNum({ numPad, index })
+    numpadContext.selectNum({ numPad, index, value, notesMode })
   }
 
   return (
@@ -50,7 +33,7 @@ export function NumberPad() {
           <Button
             variant="secondary"
             key={numPad}
-            onClick={() => onClickHandler({ notesMode, index, numPad })}
+            onClick={() => onClickHandler({ notesMode, index, numPad, value })}
             className={cn("w-16 h-16 rounded ", {
               "grid grid-cols-3 grid-rows-3": notesMode
             })}

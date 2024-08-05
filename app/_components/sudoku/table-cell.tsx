@@ -1,11 +1,12 @@
 import { useGame } from "@/hooks/use-game"
 import { cn } from "@/lib/utils"
+import clsx from "clsx"
 
 interface PrefilledTableCellProps extends React.ComponentPropsWithoutRef<"td"> {
   index: number
   cIndex: number
   children?: React.ReactNode
-  value?: number
+  value?: number | null | readonly number[]
 }
 
 export function PrefilledTableCell({
@@ -17,6 +18,7 @@ export function PrefilledTableCell({
   ...props
 }: PrefilledTableCellProps) {
   const { tableCellContext } = useGame()
+
   return (
     <td
       className={cn(
@@ -38,7 +40,7 @@ interface EditableTableCellProps extends React.ComponentPropsWithoutRef<"td"> {
   children: React.ReactNode
   indexOfArray: number
   cIndex: number
-  value: number
+  value: number | null | readonly number[]
   valid: boolean
 }
 
@@ -56,13 +58,15 @@ export function EditableTableCell({
   return (
     <td
       key={indexOfArray}
-      className={cn(
+      className={clsx(
         "relative p-0 w-16 h-16 text-center text-3xl cursor-pointer border",
         {
           "border-r-4": (indexOfArray + 1) % 3 === 0 && cIndex !== 8,
           "bg-primary-foreground":
             tableCellContext.tableCell.index === indexOfArray,
-          "bg-muted": value === tableCellContext.tableCell.value,
+          "bg-muted":
+            value === tableCellContext.tableCell.value &&
+            tableCellContext.tableCell.value !== 0,
           "text-blue-500 dark:text-blue-500": valid,
           "text-red-500 dark:text-red-500": !valid
         },

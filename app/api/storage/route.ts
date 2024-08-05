@@ -7,23 +7,15 @@ const generateSudoku = (difficulty: string) => {
   let str = sudokuGame.generate(difficulty)
   const solved: any = sudokuGame.solve(str)
 
-  const sudokuGrid = new LiveList<
-    LiveObject<{
-      value: number
-      immutable: boolean
-      valid: boolean
-      key: number
-      notes: LiveList<number>
-    }>
-  >([])
+  const sudokuGrid = new LiveList<Cell>([])
 
   str.split("").forEach((value: string, index: number) => {
     const square = new LiveObject({
       value: value === "." ? 0 : Number(value),
       immutable: value === "." ? false : true,
       valid: value === "." ? false : true,
-      key: value === "." ? Number(solved[index]) : Number(value),
-      notes: new LiveList([0, 0, 0, 0, 0, 0, 0, 0, 0])
+      key: value === "." ? Number(solved[index]) : Number(value)
+      //notes: new LiveList([0, 0, 0, 0, 0, 0, 0, 0, 0])
     })
     sudokuGrid.push(square)
   })
@@ -43,17 +35,17 @@ export async function POST(req: Request) {
     initialLoad: true,
     isSolved: false,
     sudoku: generateSudoku(difficulty),
-    mistakeCount: 0
+    mistakeCount: 0,
+    undoHistory: new LiveList<HistoryStack>([]),
+    redoHistory: new LiveList<HistoryStack>([])
   })
 
-  const plainLson = toPlainLson(game)
+  const root = toPlainLson(game)
 
   try {
-    const res = await liveblocks.initializeStorageDocument(id, {
+    await liveblocks.initializeStorageDocument(id, {
       liveblocksType: "LiveObject",
-      data: {
-        plainLson
-      }
+      data: { root }
     })
 
     return Response.json({ message: "Storage is initialized" })

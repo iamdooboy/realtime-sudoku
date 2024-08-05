@@ -6,12 +6,14 @@ import { useGame } from "@/hooks/use-game"
 import { TableRow } from "./table-row"
 import { EditableTableCell, PrefilledTableCell } from "./table-cell"
 import { Notes } from "./notes"
-export const Table = () => {
+import { memo } from 'react'
+
+export const Table = memo(() => {
   const {
     tableCellContext: { onClickTableCell }
   } = useGame()
 
-  const { sudoku, isPaused } = useStorage((root) => root.plainLson)
+  const { sudoku, isPaused } = useStorage((root) => root.root)
 
   const NUMBER_OF_ROWS = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
@@ -33,9 +35,9 @@ export const Table = () => {
                 )
               }
 
-              const { value, immutable, valid, notes } = sudoku[indexOfArray]
+              const { value, immutable, valid } = sudoku[indexOfArray]
 
-              const showNotes = notes.some((number: number) => number > 0)
+              const showNotes = typeof value === "object"
 
               if (immutable) {
                 return (
@@ -84,7 +86,7 @@ export const Table = () => {
                     })
                   }
                 >
-                  {showNotes ? <Notes notes={notes} /> : value > 0 && value}
+                  {showNotes ? <Notes notes={value} /> : value > 0 && value}
                 </EditableTableCell>
               )
             })}
@@ -93,4 +95,6 @@ export const Table = () => {
       </tbody>
     </table>
   )
-}
+})
+
+Table.displayName = "Table"

@@ -2,6 +2,8 @@
 
 import { useGame } from "@/hooks/use-game"
 import { PauseCircle, PlayCircle } from "lucide-react"
+import { useContext } from "react"
+import { TimeContext } from "../_context/time-context"
 
 interface Timer {
   initialLoad: boolean
@@ -10,9 +12,8 @@ interface Timer {
 }
 
 export function Timer() {
-  const { timeContext } = useGame()
-
-  const { elapsedTime, pauseTimer, initialLoad, isPaused } = timeContext
+  const { elapsedTime, pauseTimer, initialLoad, isPaused } =
+    useContext(TimeContext)
 
   const sec = Math.floor((elapsedTime / 1000) % 60)
   const min = Math.floor((elapsedTime / (1000 * 60)) % 60)
@@ -21,17 +22,12 @@ export function Timer() {
   const formatTime = (value: number) =>
     value.toString().padStart(2, "0").split("")
 
-  const hours = hr.toString().split('')
+  const hours = hr.toString().split("")
   const minutes = formatTime(min)
   const seconds = formatTime(sec)
 
   return (
     <div className="flex gap-2 justify-end">
-      <span className="text-muted-foreground font-mono inline-block">
-        {[...hours, ":", ...minutes, ":", ...seconds].map((char, index) => (
-          <span key={index}>{char}</span>
-        ))}
-      </span>
       <button onClick={() => pauseTimer(elapsedTime)}>
         {initialLoad && !isPaused && (
           <PauseCircle className="text-slate-500 hover:text-slate-600" />
@@ -43,6 +39,11 @@ export function Timer() {
           <PauseCircle className="text-slate-500 hover:text-slate-600" />
         )}
       </button>
+      <span className="text-muted-foreground font-mono inline-block">
+        {[...hours, ":", ...minutes, ":", ...seconds].map((char, index) => (
+          <span key={index}>{char}</span>
+        ))}
+      </span>
     </div>
   )
 }

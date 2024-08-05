@@ -1,11 +1,11 @@
 interface Props {
-  notes: readonly number[]
+  notes: readonly number[] | null
 }
 
 export function Notes({ notes }: Props) {
   return (
     <div className="grid grid-cols-3 grid-rows-3">
-      {notes.map((num, index) => (
+      {notes?.map((num, index) => (
         <p
           key={index}
           className="p-[2px] text-xs text-muted-foreground text-center"
