@@ -1,14 +1,9 @@
 "use client"
 
 import { createContext, useState } from "react"
-import {
-  useStorage,
-  useUpdateMyPresence,
-  useMutation,
-  useHistory
-} from "@liveblocks/react/suspense"
+import { useUpdateMyPresence, useMutation } from "@liveblocks/react/suspense"
 import { PropsWithChildren } from "react"
-import { LiveList } from "@liveblocks/client"
+import { LiveList, LiveObject } from "@liveblocks/client"
 
 type ToolbarContextProps = {
   undo: () => void
@@ -35,14 +30,13 @@ type TableCellContextProps = {
 }
 
 type NumPadContextProps = {
-  selectNum: ({ numPad, index, value, notesMode }: SelectNumProps) => void
+  selectNum: ({ numPad, index, value }: SelectNumProps) => void
 }
 
 type SelectNumProps = {
   numPad: number | null
   index: number | null
   value: number | null | readonly number[]
-  notesMode: boolean
 }
 
 type TimeContextProps = {
@@ -88,128 +82,277 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     index: null
   })
 
+  const addUndoHistory = () => {}
+
   const onClickTableCell = ({ value, index }: TableCellProps) => {
     updateMyPresence({ focusIndex: index })
     setTableCell({ value, index })
   }
 
   const selectNum = useMutation(
-    ({ storage }, { numPad, index, value, notesMode }: SelectNumProps) => {
+    ({ storage }, { numPad, index, value }: SelectNumProps) => {
       const root = storage.get("root")
-      const redoHistory = storage?.get("root")?.get("redoHistory")
-      if(redoHistory.length > 0) {
+      if (!root) return
+      const redoHistory = root.get("redoHistory")
+      const undoHistory = root.get("undoHistory")
+      if (redoHistory.length > 0) {
         redoHistory.clear()
       }
 
       const cell = root.get("sudoku").get(index!)
       const valid = cell?.get("key") === numPad
+
+      cell?.update({ value: numPad, valid })
+      setTableCell({ value: numPad, index })
+
       const mistakeCount = root.get("mistakeCount")
       // if (!valid) {
       //   root.set("mistakeCount", mistakeCount + 1)
       //   // return
       // }
 
-      root.get("undoHistory").push({
+      const history = new LiveObject<HistoryStack>({
         index,
-        value,
-        numPad,
-        mode: notesMode ? "notes" : "default"
+        valueBefore: value as number | null | Notes,
+        valueAfter: numPad,
+        mode: "default"
       })
-      //root.get('undoHistory').clear()
-      cell?.update({ value: numPad, valid })
-      setTableCell({ value: numPad, index })
+
+      undoHistory.push(history)
     },
     []
   )
 
   const redo = useMutation(({ storage }) => {
-    const redoHistory = storage?.get("root")?.get("redoHistory")
+    const root = storage.get("root")
+    if (!root) return
+
+    const undoHistory = root.get("undoHistory")
+    const redoHistory = root.get("redoHistory")
+    const sudoku = root.get("sudoku")
+
     if (redoHistory.length === 0) return
 
-    const last = redoHistory?.get(redoHistory.length - 1)
-    if (last === undefined) return
+    const lastMove = redoHistory?.get(redoHistory.length - 1)
+    if (!lastMove) return
 
-    const sudoku = storage?.get("root")?.get("sudoku")?.get(last.index)
-    sudoku?.set("value", last.numPad)
-    const undoHistory = storage.get("root").get("undoHistory")
+    const lastIndex = lastMove?.get("index")
 
-    undoHistory.push(last)
+    const undoItem = new LiveObject({
+      index: lastIndex,
+      valueBefore: lastMove?.get("valueAfter"),
+      valueAfter: lastMove?.get("valueBefore"),
+      mode: lastMove?.get("mode")
+    })
+
+    undoHistory.push(undoItem)
+
+    if (lastIndex === undefined || lastIndex === null) return
+
+    const sudokuItem = sudoku.get(lastIndex)
+
+    sudokuItem?.set("value", lastMove?.get("valueBefore"))
+
     redoHistory.delete(redoHistory.length - 1)
   }, [])
 
   const undo = useMutation(({ storage }) => {
-    const undoHistory = storage?.get("root")?.get("undoHistory")
-    if (undoHistory.length === 0) return
+    const root = storage.get("root")
+    if (!root) return
 
-    const last = undoHistory?.get(undoHistory.length - 1)
+    const undoHistory = root.get("undoHistory")
+    const redoHistory = root.get("redoHistory")
+    const sudoku = root.get("sudoku")
+
     // undoHistory.clear()
     // return
 
-    //const last = undoHistory?.get(undoHistory.length - 1)
-    if (last === undefined) return
+    if (undoHistory.length === 0) return
 
-    const sudoku = storage?.get("root")?.get("sudoku")?.get(last.index)
-    sudoku?.set("value", last.value)
-    const redoHistory = storage.get("root").get("redoHistory")
+    const lastMove = undoHistory.get(undoHistory.length - 1)
+    if (!lastMove) return
 
-    redoHistory.push(last)
+    const lastIndex = lastMove?.get("index")
+    const sudokuItem = sudoku.get(lastIndex!)
+    if (!sudokuItem) return
+
+    //BEFORE = NUMBER AND AFTER = OBJECT
+    if (typeof lastMove.get("valueAfter") === "object" && typeof lastMove.get("valueBefore") === "number") {
+      const arr = lastMove?.get("valueAfter") as Notes
+      const temp = arr.toImmutable()
+
+      sudokuItem?.set("value", lastMove?.get("valueBefore"))
+
+      const redoItem = new LiveObject({
+        index: lastIndex,
+        valueBefore: new LiveList([...temp]),
+        valueAfter: lastMove?.get("valueBefore"),
+        mode: lastMove?.get("mode")
+      })
+      redoHistory.push(redoItem)
+      undoHistory.delete(undoHistory.length - 1)
+      return
+    }
+
+    //BEFORE = OBJECT AND AFTER = NUMBER
+    if (typeof lastMove.get("valueBefore") === "object" && typeof lastMove.get("valueAfter") === "number") {
+      const arr = lastMove?.get("valueBefore") as Notes
+      const temp = arr.toImmutable()
+
+      sudokuItem?.set("value", new LiveList([...temp]))
+
+      const redoItem = new LiveObject({
+        index: lastIndex,
+        valueBefore: lastMove?.get("valueAfter"),
+        valueAfter: new LiveList([...temp]),
+        mode: lastMove?.get("mode")
+      })
+      redoHistory.push(redoItem)
+      undoHistory.delete(undoHistory.length - 1)
+      return
+    }
+
+    ///BEFORE = OBJECT AND AFTER = OBJECT
+    if (
+      typeof lastMove.get("valueBefore") === "object" &&
+      typeof lastMove.get("valueAfter") === "object"
+    ) {
+      console.log("before and after are objects")
+      const before = lastMove?.get("valueBefore") as Notes
+      const after = lastMove?.get("valueAfter") as Notes
+
+      const tempBefore = before.toImmutable()
+      const tempAfter = after.toImmutable()
+
+      sudokuItem.set("value", new LiveList([...tempBefore]))
+
+      const redoItem = new LiveObject({
+        index: lastIndex,
+        valueBefore: new LiveList([...tempAfter]),
+        valueAfter: new LiveList([...tempBefore]),
+        mode: lastMove?.get("mode")
+      })
+      redoHistory.push(redoItem)
+      undoHistory.delete(undoHistory.length - 1)
+      return
+    }
+
+    const redoItem = new LiveObject({
+      index: lastIndex,
+      valueBefore: lastMove?.get("valueAfter"),
+      valueAfter: lastMove?.get("valueBefore"),
+      mode: lastMove?.get("mode")
+    })
+    redoHistory.push(redoItem)
+
+    if (lastIndex === undefined || lastIndex === null) return
+
+    // Update sudoku
+    //const sudokuItem = sudoku.get(lastIndex)
+
+    sudokuItem?.set("value", lastMove?.get("valueBefore"))
+
+    // Remove from undo history
     undoHistory.delete(undoHistory.length - 1)
   }, [])
 
   const erase = useMutation(({ storage }, index: number) => {
     if (index === null) return
-    const sudoku = storage?.get("root")?.get("sudoku")
-    const undoHistory = storage?.get("root")?.get("undoHistory")
+    const root = storage.get("root")
+    if (!root) return
 
-    const prev = sudoku?.get(index)?.get("value")
-    undoHistory.push({ index, value: prev, numPad: 0, mode: "erase" })
+    const sudoku = root.get("sudoku")
+    const undoHistory = root.get("undoHistory")
+
+    const currentValue = sudoku?.get(index)?.get("value")
+
+    if (!currentValue) return
+
+    if (typeof currentValue === "object" && currentValue !== null) {
+      const immutable = currentValue.toImmutable()
+
+      const temp = [...immutable]
+
+      const history = new LiveObject<HistoryStack>({
+        index,
+        valueBefore: new LiveList(temp),
+        valueAfter: 0,
+        mode: "erase"
+      })
+      undoHistory.push(history)
+    } else {
+      const history = new LiveObject<HistoryStack>({
+        index,
+        valueBefore: currentValue,
+        valueAfter: 0,
+        mode: "erase"
+      })
+
+      undoHistory.push(history)
+    }
 
     sudoku.get(index)?.update({
       value: 0,
-      immutable: false,
       valid: false
     })
+
     setTableCell({
-      value: null,
+      value: 0,
       index
     })
   }, [])
 
   const addNotes = useMutation(
     ({ storage }, { index, numPad }: { index: number; numPad: number }) => {
-      const lson = storage.get("root")
-      const cell = lson.get("sudoku").get(index!)
+      const root = storage.get("root")
+      if (!root) return
+
+      const sudoku = root.get("sudoku")
+      const undoHistory = root.get("undoHistory")
+
+      const cell = sudoku.get(index)
+
+      if (cell?.get("valid") === true) {
+        cell.set("valid", false)
+      }
 
       let value = cell?.get("value")
 
-      if (
-        typeof cell?.get("value") === "number" ||
-        cell?.get("value") === null
-      ) {
-        value = new LiveList([0, 0, 0, 0, 0, 0, 0, 0, 0])
-      } else {
-        value = cell?.get("value")
+      if (typeof value === "number" || value === null) {
+        const arr = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        arr[numPad - 1] = numPad
+        cell?.set("value", new LiveList(arr))
+
+        const history = new LiveObject<HistoryStack>({
+          index,
+          valueBefore: value,
+          valueAfter: new LiveList(arr),
+          mode: "notes"
+        })
+
+        undoHistory.push(history)
       }
 
-      if (typeof value === "object" && value?.get(numPad - 1)! > 0) {
-        value?.set(numPad - 1, 0)
-        return
-      } else if (typeof value === "object" && value?.get(numPad - 1)! === 0) {
-        value?.set(numPad - 1, numPad)
-      } else {
-        cell?.update({ value: value, valid: false })
+      if (typeof value === "object" && value !== null) {
+        const currentValue = value?.get(numPad - 1)
+
+        if (currentValue !== undefined) {
+          const immutable = value?.toImmutable()
+          const before = [...immutable]
+          const temp = [...immutable]
+          temp[numPad - 1] = currentValue > 0 ? 0 : numPad
+
+          value.set(numPad - 1, currentValue > 0 ? 0 : numPad)
+          const history = new LiveObject<HistoryStack>({
+            index,
+            valueBefore: new LiveList(before),
+            valueAfter: new LiveList(temp),
+            mode: "notes"
+          })
+
+          undoHistory.push(history)
+        }
       }
-
-      // if (typeof cell?.get("value") === "number" || cell?.get("value") === null) {
-      //   value = new LiveList([0, 0, 0, 0, 0, 0, 0, 0, 0])
-      // }
-      // if (value?.get(numPad - 1)! > 0) {
-      //   value?.set(numPad - 1, 0)
-      //   return
-      // }
-      // value.set(numPad - 1, numPad)
-
-      // cell?.update({ value: value, valid: false })
     },
     []
   )

@@ -23,7 +23,7 @@ export function NumberPad() {
       return
     }
 
-    numpadContext.selectNum({ numPad, index, value, notesMode })
+    numpadContext.selectNum({ numPad, index, value })
   }
 
   return (

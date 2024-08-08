@@ -12,12 +12,12 @@ declare global {
 
   type Sudoku = LiveList<Cell>
 
-  type HistoryStack = LiveObject<{
+  type HistoryStack = {
     index: number | null
-    value: number | null | Notes
-    numPad: number | null
+    valueBefore: number | null | Notes
+    valueAfter: number | null | Notes
     mode: "default" | "notes" | "erase"
-  }>
+  }
 
   interface Liveblocks {
     // The Storage tree for the room, for useMutation, useStorage, etc.
@@ -29,8 +29,8 @@ declare global {
         isSolved: boolean
         mistakeCount: number
         sudoku: Sudoku
-        undoHistory: LiveList<HistoryStack>
-        redoHistory: LiveList<HistoryStack>
+        undoHistory: LiveList<LiveObject<HistoryStack>>
+        redoHistory: LiveList<LiveObject<HistoryStack>>
       }>
     }
 

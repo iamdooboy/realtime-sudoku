@@ -22,15 +22,6 @@ export const TimeProvider = ({ children }: PropsWithChildren) => {
 
   const [elapsedTime, setElapsedTime] = useState(0)
 
-  // useEffect(() => {
-  //   let interval = null
-  //   if (startTime)
-  //     interval = setInterval(() => {
-  //       setElapsedTime(Date.now() - new Date(startTime).getTime())
-  //     }, 1000)
-  //   return () => clearInterval(interval)
-  // }, [startTime])
-
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null
     if (startTime) {
