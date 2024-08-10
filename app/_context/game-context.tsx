@@ -4,6 +4,7 @@ import { createContext, useState } from "react"
 import { useUpdateMyPresence, useMutation } from "@liveblocks/react/suspense"
 import { PropsWithChildren } from "react"
 import { LiveList, LiveObject } from "@liveblocks/client"
+import { SunMedium } from "lucide-react"
 
 type ToolbarContextProps = {
   undo: () => void
@@ -91,10 +92,15 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   const selectNum = useMutation(
     ({ storage }, { numPad, index, value }: SelectNumProps) => {
+      if (index === null) return
       const root = storage.get("root")
       if (!root) return
+      const sudoku = root.get("sudoku")
+      const currentValue = sudoku?.get(index)?.get("value")
+
       const redoHistory = root.get("redoHistory")
       const undoHistory = root.get("undoHistory")
+
       if (redoHistory.length > 0) {
         redoHistory.clear()
       }
@@ -102,23 +108,42 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       const cell = root.get("sudoku").get(index!)
       const valid = cell?.get("key") === numPad
 
+      if (!valid) {
+        root.set("mistakeCount", root.get("mistakeCount") + 1)
+      }
+
       cell?.update({ value: numPad, valid })
       setTableCell({ value: numPad, index })
 
-      const mistakeCount = root.get("mistakeCount")
-      // if (!valid) {
-      //   root.set("mistakeCount", mistakeCount + 1)
-      //   // return
-      // }
+      if (currentValue === undefined || currentValue === null) return
+
+      if (typeof currentValue === "object") {
+        const temp = currentValue.toImmutable()
+        const history = new LiveObject<HistoryStack>({
+          index,
+          valueBefore: new LiveList([...temp]),
+          valueAfter: numPad,
+          mode: "default"
+        })
+
+        undoHistory.push(history)
+        return
+      }
 
       const history = new LiveObject<HistoryStack>({
         index,
-        valueBefore: value as number | null | Notes,
+        valueBefore: currentValue,
         valueAfter: numPad,
         mode: "default"
       })
 
       undoHistory.push(history)
+
+      //const mistakeCount = root.get("mistakeCount")
+      // if (!valid) {
+      //   root.set("mistakeCount", mistakeCount + 1)
+      //   // return
+      // }
     },
     []
   )
@@ -137,6 +162,92 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     if (!lastMove) return
 
     const lastIndex = lastMove?.get("index")
+    const sudokuItem = sudoku.get(lastIndex!)
+    if (!sudokuItem) return
+
+    const valid = sudokuItem?.get("key") === lastMove?.get("valueBefore")
+
+    //BEFORE = NUMBER AND AFTER = OBJECT
+    if (
+      typeof lastMove.get("valueAfter") === "object" &&
+      typeof lastMove.get("valueBefore") === "number"
+    ) {
+      const arr = lastMove?.get("valueAfter") as Notes
+      const temp = arr.toImmutable()
+
+      sudokuItem?.update({
+        value: lastMove?.get("valueBefore"),
+        valid
+      })
+
+      const undoItem = new LiveObject({
+        index: lastIndex,
+        valueBefore: new LiveList([...temp]),
+        valueAfter: lastMove?.get("valueBefore"),
+        mode: lastMove?.get("mode")
+      })
+      undoHistory.push(undoItem)
+      redoHistory.delete(redoHistory.length - 1)
+      return
+    }
+
+    //BEFORE = OBJECT AND AFTER = NUMBER
+    if (
+      typeof lastMove.get("valueBefore") === "object" &&
+      typeof lastMove.get("valueAfter") === "number"
+    ) {
+      const arr = lastMove?.get("valueBefore") as Notes
+      const temp = arr.toImmutable()
+
+      sudokuItem?.update({
+        value: new LiveList([...temp]),
+        valid
+      })
+
+      const undoItem = new LiveObject({
+        index: lastIndex,
+        valueBefore: lastMove?.get("valueAfter"),
+        valueAfter: new LiveList([...temp]),
+        mode: lastMove?.get("mode")
+      })
+      undoHistory.push(undoItem)
+      redoHistory.delete(redoHistory.length - 1)
+      return
+    }
+
+    ///BEFORE = OBJECT AND AFTER = OBJECT
+    if (
+      typeof lastMove.get("valueBefore") === "object" &&
+      typeof lastMove.get("valueAfter") === "object"
+    ) {
+      const before = lastMove?.get("valueBefore") as Notes
+      const after = lastMove?.get("valueAfter") as Notes
+
+      const tempBefore = before.toImmutable()
+      const tempAfter = after.toImmutable()
+
+      sudokuItem?.update({
+        value: new LiveList([...tempBefore]),
+        valid
+      })
+
+      const undoItem = new LiveObject({
+        index: lastIndex,
+        valueBefore: new LiveList([...tempAfter]),
+        valueAfter: new LiveList([...tempBefore]),
+        mode: lastMove?.get("mode")
+      })
+      undoHistory.push(undoItem)
+      redoHistory.delete(redoHistory.length - 1)
+      return
+    }
+
+    if (lastIndex === undefined || lastIndex === null) return
+
+    sudokuItem?.update({
+      value: lastMove?.get("valueBefore"),
+      valid
+    })
 
     const undoItem = new LiveObject({
       index: lastIndex,
@@ -144,14 +255,7 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       valueAfter: lastMove?.get("valueBefore"),
       mode: lastMove?.get("mode")
     })
-
     undoHistory.push(undoItem)
-
-    if (lastIndex === undefined || lastIndex === null) return
-
-    const sudokuItem = sudoku.get(lastIndex)
-
-    sudokuItem?.set("value", lastMove?.get("valueBefore"))
 
     redoHistory.delete(redoHistory.length - 1)
   }, [])
@@ -176,12 +280,20 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     const sudokuItem = sudoku.get(lastIndex!)
     if (!sudokuItem) return
 
+    const valid = sudokuItem.get("key") === lastMove?.get("valueBefore")
+
     //BEFORE = NUMBER AND AFTER = OBJECT
-    if (typeof lastMove.get("valueAfter") === "object" && typeof lastMove.get("valueBefore") === "number") {
+    if (
+      typeof lastMove.get("valueAfter") === "object" &&
+      typeof lastMove.get("valueBefore") === "number"
+    ) {
       const arr = lastMove?.get("valueAfter") as Notes
       const temp = arr.toImmutable()
 
-      sudokuItem?.set("value", lastMove?.get("valueBefore"))
+      sudokuItem?.update({
+        valid,
+        value: lastMove?.get("valueBefore")
+      })
 
       const redoItem = new LiveObject({
         index: lastIndex,
@@ -195,11 +307,17 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     }
 
     //BEFORE = OBJECT AND AFTER = NUMBER
-    if (typeof lastMove.get("valueBefore") === "object" && typeof lastMove.get("valueAfter") === "number") {
+    if (
+      typeof lastMove.get("valueBefore") === "object" &&
+      typeof lastMove.get("valueAfter") === "number"
+    ) {
       const arr = lastMove?.get("valueBefore") as Notes
       const temp = arr.toImmutable()
 
-      sudokuItem?.set("value", new LiveList([...temp]))
+      sudokuItem?.update({
+        valid,
+        value: new LiveList([...temp])
+      })
 
       const redoItem = new LiveObject({
         index: lastIndex,
@@ -217,14 +335,16 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       typeof lastMove.get("valueBefore") === "object" &&
       typeof lastMove.get("valueAfter") === "object"
     ) {
-      console.log("before and after are objects")
       const before = lastMove?.get("valueBefore") as Notes
       const after = lastMove?.get("valueAfter") as Notes
 
       const tempBefore = before.toImmutable()
       const tempAfter = after.toImmutable()
 
-      sudokuItem.set("value", new LiveList([...tempBefore]))
+      sudokuItem?.update({
+        valid,
+        value: new LiveList([...tempBefore])
+      })
 
       const redoItem = new LiveObject({
         index: lastIndex,
@@ -247,10 +367,10 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
     if (lastIndex === undefined || lastIndex === null) return
 
-    // Update sudoku
-    //const sudokuItem = sudoku.get(lastIndex)
-
-    sudokuItem?.set("value", lastMove?.get("valueBefore"))
+    sudokuItem?.update({
+      valid,
+      value: lastMove?.get("valueBefore")
+    })
 
     // Remove from undo history
     undoHistory.delete(undoHistory.length - 1)

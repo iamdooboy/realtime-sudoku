@@ -10,7 +10,7 @@ export function TableRow({
   return (
     <tr
       className={cn({
-        "border-slate-200 dark:border-slate-700 border-b-4":
+        "border border-b-4":
           rIndex === 2 || rIndex === 5
       })}
     >

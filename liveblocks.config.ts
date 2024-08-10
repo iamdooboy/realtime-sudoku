@@ -1,6 +1,10 @@
 import { LiveList, LiveObject } from "@liveblocks/client"
 
 declare global {
+  type Presence = {
+    focusIndex: number | null
+  }
+
   type Notes = LiveList<number>
 
   type Cell = LiveObject<{

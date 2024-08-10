@@ -11,7 +11,8 @@ import { Button } from "@/shadcn/button"
 import { Toggle } from "./shadcn/toggle"
 import { useGame } from "@/hooks/use-game"
 import { TOOL_TYPES } from "@/utils/constants"
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils"
+import { useMutation } from "@liveblocks/react"
 
 type ToolProps = {
   type: string
@@ -91,6 +92,7 @@ export const Toolbar = () => {
           <TooltipContent>Notes</TooltipContent>
         </Tooltip>
       </TooltipProvider>
+
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { useGame } from "@/hooks/use-game"
 import { cn } from "@/lib/utils"
+import { useOthersMapped } from "@liveblocks/react/suspense"
 import clsx from "clsx"
 
 interface PrefilledTableCellProps extends React.ComponentPropsWithoutRef<"td"> {
@@ -53,28 +54,43 @@ export function EditableTableCell({
   className,
   ...props
 }: EditableTableCellProps) {
+  const others = useOthersMapped((other) => ({
+    focusIndex: other.presence.focusIndex
+  }))
+
   const { tableCellContext } = useGame()
 
   return (
-    <td
-      key={indexOfArray}
-      className={clsx(
-        "relative p-0 w-16 h-16 text-center text-3xl cursor-pointer border",
-        {
-          "border-r-4": (indexOfArray + 1) % 3 === 0 && cIndex !== 8,
-          "bg-primary-foreground":
-            tableCellContext.tableCell.index === indexOfArray,
-          "bg-muted":
-            value === tableCellContext.tableCell.value &&
-            tableCellContext.tableCell.value !== 0,
-          "text-blue-500 dark:text-blue-500": valid,
-          "text-red-500 dark:text-red-500": !valid
-        },
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </td>
+    <>
+      <td
+        key={indexOfArray}
+        className={clsx(
+          "relative p-0 w-16 h-16 text-center text-3xl cursor-pointer border",
+          {
+            "border-r-4": (indexOfArray + 1) % 3 === 0 && cIndex !== 8,
+            "bg-blue-100": tableCellContext.tableCell.index === indexOfArray,
+            "bg-muted":
+              value === tableCellContext.tableCell.value &&
+              tableCellContext.tableCell.value !== 0,
+            "text-blue-500 dark:text-blue-500": valid,
+            "text-red-500 dark:text-red-500": !valid
+          },
+          className
+        )}
+        {...props}
+      >
+        {others.map(([connectionId, { focusIndex }]) => {
+          if (focusIndex === indexOfArray) {
+            return (
+              <div
+                key={connectionId}
+                className="absolute inset-0 bg-red-100"
+              />
+            )
+          }
+        })}
+        {children}
+      </td>
+    </>
   )
 }

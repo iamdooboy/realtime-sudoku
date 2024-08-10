@@ -23,8 +23,10 @@ export default async function Room({
                 <Timer />
                 <Mistakes />
               </div>
-              <Table />
-              <PlayButton />
+              <div className='relative'>
+                <Table />
+                <PlayButton />
+              </div>
             </div>
             <div className="flex flex-col gap-2">
               <SidePanel />

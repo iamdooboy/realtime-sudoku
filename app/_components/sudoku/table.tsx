@@ -18,7 +18,7 @@ export const Table = memo(() => {
   const NUMBER_OF_ROWS = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
   return (
-    <table className="border-collapse border-4 border-slate-200 dark:border-slate-700">
+    <table className="border-4">
       <tbody>
         {NUMBER_OF_ROWS.map((row, rIndex) => (
           <TableRow key={rIndex} rIndex={rIndex}>

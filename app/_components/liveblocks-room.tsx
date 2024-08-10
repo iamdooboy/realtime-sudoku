@@ -15,7 +15,7 @@ type RoomProps = {
 export function LiveblocksRoom({ children, roomId }: RoomProps) {
   return (
     <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
-      <RoomProvider id={roomId}>
+      <RoomProvider initialPresence={{ focusIndex: null }} id={roomId}>
         <ClientSideSuspense fallback={<div>Loading…</div>}>
           {children}
         </ClientSideSuspense>

@@ -1,11 +1,11 @@
 "use client"
 
-import { useGame } from "@/hooks/use-game"
 import { PlayCircle } from "lucide-react"
+import { useContext } from "react"
+import { TimeContext } from "../_context/time-context"
 
 export function PlayButton() {
-  const { timeContext } = useGame()
-  const { elapsedTime, pauseTimer, isPaused } = timeContext
+  const { elapsedTime, pauseTimer, isPaused } = useContext(TimeContext)
   return (
     <>
       {isPaused && (
