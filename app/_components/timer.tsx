@@ -1,6 +1,5 @@
 "use client"
 
-import { useGame } from "@/hooks/use-game"
 import { PauseCircle, PlayCircle } from "lucide-react"
 import { useContext } from "react"
 import { TimeContext } from "../_context/time-context"

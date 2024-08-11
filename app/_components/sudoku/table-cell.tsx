@@ -1,7 +1,6 @@
 import { useGame } from "@/hooks/use-game"
 import { cn } from "@/lib/utils"
 import { useOthersMapped } from "@liveblocks/react/suspense"
-import clsx from "clsx"
 
 interface PrefilledTableCellProps extends React.ComponentPropsWithoutRef<"td"> {
   index: number
@@ -60,37 +59,41 @@ export function EditableTableCell({
 
   const { tableCellContext } = useGame()
 
+  const sameValue = value === tableCellContext.tableCell.value
+  const notZero = tableCellContext.tableCell.value !== 0
+  const selectedCell = tableCellContext.tableCell.index === indexOfArray
+
+  const sameInstance = sameValue && notZero && !selectedCell
+
   return (
-    <>
-      <td
-        key={indexOfArray}
-        className={clsx(
-          "relative p-0 w-16 h-16 text-center text-3xl cursor-pointer border",
-          {
-            "border-r-4": (indexOfArray + 1) % 3 === 0 && cIndex !== 8,
-            "bg-blue-100": tableCellContext.tableCell.index === indexOfArray,
-            "bg-muted":
-              value === tableCellContext.tableCell.value &&
-              tableCellContext.tableCell.value !== 0,
-            "text-blue-500 dark:text-blue-500": valid,
-            "text-red-500 dark:text-red-500": !valid
-          },
-          className
-        )}
-        {...props}
-      >
-        {others.map(([connectionId, { focusIndex }]) => {
-          if (focusIndex === indexOfArray) {
-            return (
-              <div
-                key={connectionId}
-                className="absolute inset-0 bg-red-100"
-              />
-            )
-          }
-        })}
-        {children}
-      </td>
-    </>
+    <td
+      key={indexOfArray}
+      className={cn(
+        "relative p-0 w-16 h-16 text-center text-3xl cursor-pointer border",
+        {
+          "border-r-4": (indexOfArray + 1) % 3 === 0 && cIndex !== 8,
+          "bg-blue-100": selectedCell,
+          "bg-muted": sameInstance,
+          "text-blue-500 dark:text-blue-500": valid,
+          "text-red-500 dark:text-red-500": !valid
+        },
+        className
+      )}
+      {...props}
+    >
+      {others.map(([connectionId, { focusIndex }]) => {
+        if (focusIndex === indexOfArray) {
+          return (
+            <div
+              key={connectionId}
+              className="absolute inset-0 bg-red-100 text-center justify-center items-center flex"
+            >
+              {children}
+            </div>
+          )
+        }
+      })}
+      {children}
+    </td>
   )
 }

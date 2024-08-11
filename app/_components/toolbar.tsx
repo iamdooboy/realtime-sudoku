@@ -8,11 +8,10 @@ import {
 
 import { Undo2, Redo2, Eraser, Edit3 } from "lucide-react"
 import { Button } from "@/shadcn/button"
-import { Toggle } from "./shadcn/toggle"
 import { useGame } from "@/hooks/use-game"
 import { TOOL_TYPES } from "@/utils/constants"
 import { cn } from "@/lib/utils"
-import { useMutation } from "@liveblocks/react"
+import { Badge } from "./shadcn/badge"
 
 type ToolProps = {
   type: string
@@ -57,15 +56,15 @@ export const Toolbar = () => {
   }
 
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between gap-2">
       <TooltipProvider>
         {Tools.map((tool) => (
           <Tooltip key={tool.type}>
             <TooltipTrigger asChild>
               <Button
                 //disabled={isSolved}
-                size="sm"
-                variant="ghost"
+                className="w-14 h-14"
+                variant="outline"
                 onClick={() => handleClick(tool, tableCell.index!)}
               >
                 {tool.icon}
@@ -76,23 +75,26 @@ export const Toolbar = () => {
         ))}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Toggle
-              className={cn({
-                "ring-1 dark:ring-slate-400 ring-offset-1 dark:ring-offset-slate-400 ring-slate-700 ring-offset-slate-700":
-                  notesMode
-              })}
-              onClick={() => toggleNotesMode()}
-              size="sm"
-              aria-label="Toggle notes"
-              //disabled={isSolved}
-            >
-              <Edit3 />
-            </Toggle>
+            <div className="relative">
+              <Button
+                variant="outline"
+                className={cn("w-14 h-14", {
+                  "bg-accent": notesMode
+                })}
+                onClick={() => toggleNotesMode()}
+              >
+                <div className="absolute -top-3 -right-4">
+                  <Badge variant={notesMode ? "default" : "secondary"}>
+                    {notesMode ? "On" : "Off"}
+                  </Badge>
+                </div>
+                <Edit3 />
+              </Button>
+            </div>
           </TooltipTrigger>
           <TooltipContent>Notes</TooltipContent>
         </Tooltip>
       </TooltipProvider>
-
     </div>
   )
 }

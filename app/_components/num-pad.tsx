@@ -34,12 +34,12 @@ export function NumberPad() {
             variant="secondary"
             key={numPad}
             onClick={() => onClickHandler({ notesMode, index, numPad, value })}
-            className={cn("w-16 h-16 rounded ", {
+            className={cn("w-20 h-20 rounded", {
               "grid grid-cols-3 grid-rows-3": notesMode
             })}
           >
             {!notesMode ? (
-              <p className="text-2xl transition-all duration-200 ease-in-out">
+              <p className="text-3xl transition-all duration-200 ease-in-out">
                 {numPad}
               </p>
             ) : (
