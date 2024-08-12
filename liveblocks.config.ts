@@ -33,6 +33,7 @@ declare global {
         isSolved: boolean
         mistakeCount: number
         sudoku: Sudoku
+        validateMode: boolean
         undoHistory: LiveList<LiveObject<HistoryStack>>
         redoHistory: LiveList<LiveObject<HistoryStack>>
       }>

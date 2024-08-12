@@ -36,8 +36,9 @@ export async function POST(req: Request) {
     isSolved: false,
     sudoku: generateSudoku(difficulty),
     mistakeCount: 0,
-    undoHistory: new LiveList<HistoryStack>([]),
-    redoHistory: new LiveList<HistoryStack>([])
+    validateMode: false,
+    undoHistory: new LiveList<LiveObject<HistoryStack>>([]),
+    redoHistory: new LiveList<LiveObject<HistoryStack>>([])
   })
 
   const root = toPlainLson(game)

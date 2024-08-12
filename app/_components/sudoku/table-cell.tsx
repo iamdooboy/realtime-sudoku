@@ -1,6 +1,6 @@
 import { useGame } from "@/hooks/use-game"
 import { cn } from "@/lib/utils"
-import { useOthersMapped } from "@liveblocks/react/suspense"
+import { useOthersMapped, useStorage } from "@liveblocks/react/suspense"
 
 interface PrefilledTableCellProps extends React.ComponentPropsWithoutRef<"td"> {
   index: number
@@ -17,15 +17,21 @@ export function PrefilledTableCell({
   className,
   ...props
 }: PrefilledTableCellProps) {
+  const validateMode = useStorage((root) => root.root.validateMode)
+
   const { tableCellContext } = useGame()
 
   return (
     <td
       className={cn(
-        "w-16 h-16 text-center text-3xl border cursor-default",
+        "w-16 h-16 text-center text-3xl border",
         {
+          "bg-secondary": !validateMode,
           "border-r-4": (index + 1) % 3 === 0 && cIndex !== 8,
-          "bg-muted": value === tableCellContext.tableCell.value
+          "bg-tertiary":
+            value === tableCellContext.tableCell.value && !validateMode,
+          "bg-muted":
+            value === tableCellContext.tableCell.value && validateMode
         },
         className
       )}
@@ -57,6 +63,8 @@ export function EditableTableCell({
     focusIndex: other.presence.focusIndex
   }))
 
+  const validateMode = useStorage((root) => root.root.validateMode)
+
   const { tableCellContext } = useGame()
 
   const sameValue = value === tableCellContext.tableCell.value
@@ -74,8 +82,8 @@ export function EditableTableCell({
           "border-r-4": (indexOfArray + 1) % 3 === 0 && cIndex !== 8,
           "bg-blue-100": selectedCell,
           "bg-muted": sameInstance,
-          "text-blue-500 dark:text-blue-500": valid,
-          "text-red-500 dark:text-red-500": !valid
+          "text-blue-500 dark:text-blue-500": valid && validateMode,
+          "text-red-500 dark:text-red-500": !valid && validateMode
         },
         className
       )}

@@ -1,3 +1,4 @@
+import { GameSettings } from "@/_components/game-settings"
 import { ListUsers } from "@/_components/list-users"
 import { LiveblocksRoom } from "@/_components/liveblocks-room"
 import { Mistakes } from "@/_components/mistakes"
@@ -22,8 +23,9 @@ export default async function Room({
               <div className="flex justify-between">
                 <Timer />
                 <Mistakes />
+                <GameSettings />
               </div>
-              <div className='relative'>
+              <div className="relative">
                 <Table />
                 <PlayButton />
               </div>

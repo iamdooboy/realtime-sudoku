@@ -4,7 +4,6 @@ import { createContext, useState } from "react"
 import { useUpdateMyPresence, useMutation } from "@liveblocks/react/suspense"
 import { PropsWithChildren } from "react"
 import { LiveList, LiveObject } from "@liveblocks/client"
-import { SunMedium } from "lucide-react"
 
 type ToolbarContextProps = {
   undo: () => void
@@ -138,12 +137,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       })
 
       undoHistory.push(history)
-
-      //const mistakeCount = root.get("mistakeCount")
-      // if (!valid) {
-      //   root.set("mistakeCount", mistakeCount + 1)
-      //   // return
-      // }
     },
     []
   )
