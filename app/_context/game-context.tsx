@@ -1,11 +1,17 @@
 "use client"
 
 import { createContext, useState } from "react"
-import { useUpdateMyPresence, useMutation } from "@liveblocks/react/suspense"
+import {
+  useUpdateMyPresence,
+  useMutation,
+  useStorage
+} from "@liveblocks/react/suspense"
 import { PropsWithChildren } from "react"
 import { LiveList, LiveObject } from "@liveblocks/client"
 
 type ToolbarContextProps = {
+  canUndo: boolean
+  canRedo: boolean
   undo: () => void
   redo: () => void
   erase: (index: number) => void
@@ -20,7 +26,7 @@ type NotesProps = {
 }
 
 type TableCellProps = {
-  value: number | null | readonly number[]
+  value: number | null | readonly number[] | Notes
   index: number | null
 }
 
@@ -30,13 +36,12 @@ type TableCellContextProps = {
 }
 
 type NumPadContextProps = {
-  selectNum: ({ numPad, index, value }: SelectNumProps) => void
+  selectNum: ({ numPad, index }: SelectNumProps) => void
 }
 
 type SelectNumProps = {
   numPad: number | null
   index: number | null
-  value: number | null | readonly number[]
 }
 
 type TimeContextProps = {
@@ -54,6 +59,8 @@ export const TimeContext = createContext<TimeContextProps>({
 })
 
 export const ToolbarContext = createContext<ToolbarContextProps>({
+  canUndo: false,
+  canRedo: false,
   undo: () => {},
   redo: () => {},
   erase: () => {},
@@ -82,7 +89,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     index: null
   })
 
-  const addUndoHistory = () => {}
+  const canUndo = useStorage((root) => root.root.undoHistory.length > 0)
+  const canRedo = useStorage((root) => root.root.redoHistory.length > 0)
 
   const onClickTableCell = ({ value, index }: TableCellProps) => {
     updateMyPresence({ focusIndex: index })
@@ -90,12 +98,17 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
   }
 
   const selectNum = useMutation(
-    ({ storage }, { numPad, index, value }: SelectNumProps) => {
+    ({ storage }, { numPad, index }: SelectNumProps) => {
       if (index === null) return
       const root = storage.get("root")
       if (!root) return
       const sudoku = root.get("sudoku")
       const currentValue = sudoku?.get(index)?.get("value")
+
+      if (currentValue === numPad) {
+        sudoku.get(index)?.set("value", 0)
+        return
+      }
 
       const redoHistory = root.get("redoHistory")
       const undoHistory = root.get("undoHistory")
@@ -173,6 +186,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         valid
       })
 
+      setTableCell((prevCell) => ({
+        ...prevCell,
+        value: lastMove?.get("valueBefore")
+      }))
+
       const undoItem = new LiveObject({
         index: lastIndex,
         valueBefore: new LiveList([...temp]),
@@ -196,6 +214,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         value: new LiveList([...temp]),
         valid
       })
+
+      setTableCell((prevCell) => ({
+        ...prevCell,
+        value: new LiveList([...temp])
+      }))
 
       const undoItem = new LiveObject({
         index: lastIndex,
@@ -224,6 +247,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         valid
       })
 
+      setTableCell((prevCell) => ({
+        ...prevCell,
+        value: new LiveList([...tempBefore])
+      }))
+
       const undoItem = new LiveObject({
         index: lastIndex,
         valueBefore: new LiveList([...tempAfter]),
@@ -241,6 +269,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       value: lastMove?.get("valueBefore"),
       valid
     })
+
+    setTableCell((prevCell) => ({
+      ...prevCell,
+      value: lastMove?.get("valueBefore")
+    }))
 
     const undoItem = new LiveObject({
       index: lastIndex,
@@ -260,9 +293,6 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     const undoHistory = root.get("undoHistory")
     const redoHistory = root.get("redoHistory")
     const sudoku = root.get("sudoku")
-
-    // undoHistory.clear()
-    // return
 
     if (undoHistory.length === 0) return
 
@@ -288,6 +318,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         value: lastMove?.get("valueBefore")
       })
 
+      setTableCell((prevCell) => ({
+        ...prevCell,
+        value: lastMove?.get("valueBefore")
+      }))
+
       const redoItem = new LiveObject({
         index: lastIndex,
         valueBefore: new LiveList([...temp]),
@@ -312,12 +347,18 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         value: new LiveList([...temp])
       })
 
+      setTableCell((prevCell) => ({
+        ...prevCell,
+        value: new LiveList([...temp])
+      }))
+
       const redoItem = new LiveObject({
         index: lastIndex,
         valueBefore: lastMove?.get("valueAfter"),
         valueAfter: new LiveList([...temp]),
         mode: lastMove?.get("mode")
       })
+
       redoHistory.push(redoItem)
       undoHistory.delete(undoHistory.length - 1)
       return
@@ -338,6 +379,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
         valid,
         value: new LiveList([...tempBefore])
       })
+
+      setTableCell((prevCell) => ({
+        ...prevCell,
+        value: new LiveList([...tempBefore])
+      }))
 
       const redoItem = new LiveObject({
         index: lastIndex,
@@ -364,6 +410,11 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       valid,
       value: lastMove?.get("valueBefore")
     })
+
+    setTableCell((prevCell) => ({
+      ...prevCell,
+      value: lastMove?.get("valueBefore")
+    }))
 
     // Remove from undo history
     undoHistory.delete(undoHistory.length - 1)
@@ -409,10 +460,10 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
       valid: false
     })
 
-    setTableCell({
-      value: 0,
-      index
-    })
+    setTableCell((prevCell) => ({
+      ...prevCell,
+      value: 0
+    }))
   }, [])
 
   const addNotes = useMutation(
@@ -474,7 +525,16 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <ToolbarContext.Provider
-      value={{ undo, redo, erase, notesMode, toggleNotesMode, addNotes }}
+      value={{
+        canRedo,
+        canUndo,
+        undo,
+        redo,
+        erase,
+        notesMode,
+        toggleNotesMode,
+        addNotes
+      }}
     >
       <TableCellContext.Provider value={{ tableCell, onClickTableCell }}>
         <NumPadContext.Provider value={{ selectNum }}>

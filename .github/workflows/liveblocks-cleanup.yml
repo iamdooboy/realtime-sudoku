@@ -1,10 +1,11 @@
 name: Liveblocks Room Cleanup
 
-on: [push]
-
-  # schedule:
-  #   # Run every day at 1:00 UTC
-  #   - cron: '0 1 * * *'
+on:
+  push:
+    branches: [ main, next14 ]
+  schedule:
+    # Run every day at 1:00 UTC
+    - cron: '0 1 * * *'
 
 jobs:
   cleanup:

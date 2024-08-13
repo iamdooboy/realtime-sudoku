@@ -30,8 +30,7 @@ export function PrefilledTableCell({
           "border-r-4": (index + 1) % 3 === 0 && cIndex !== 8,
           "bg-tertiary":
             value === tableCellContext.tableCell.value && !validateMode,
-          "bg-muted":
-            value === tableCellContext.tableCell.value && validateMode
+          "bg-muted": value === tableCellContext.tableCell.value && validateMode
         },
         className
       )}
@@ -81,7 +80,7 @@ export function EditableTableCell({
         {
           "border-r-4": (indexOfArray + 1) % 3 === 0 && cIndex !== 8,
           "bg-blue-100": selectedCell,
-          "bg-muted": sameInstance,
+          "bg-tertiary": sameInstance,
           "text-blue-500 dark:text-blue-500": valid && validateMode,
           "text-red-500 dark:text-red-500": !valid && validateMode
         },

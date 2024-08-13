@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils"
 import { Badge } from "./shadcn/badge"
 
 type ToolProps = {
+  disabled: boolean
   type: string
   onClick: (index?: number) => void
   icon: React.ReactNode
@@ -23,23 +24,27 @@ type ToolProps = {
 export const Toolbar = () => {
   const { toolbarContext, tableCellContext } = useGame()
 
-  const { undo, redo, erase, notesMode, toggleNotesMode } = toolbarContext
+  const { canUndo, canRedo, undo, redo, erase, notesMode, toggleNotesMode } =
+    toolbarContext
   const { tableCell } = tableCellContext
 
   const Tools: ToolProps[] = [
     {
+      disabled: !canUndo,
       type: TOOL_TYPES.UNDO,
       onClick: undo,
       icon: <Undo2 />,
       requiresInput: false
     },
     {
+      disabled: !canRedo,
       type: TOOL_TYPES.REDO,
       onClick: redo,
       icon: <Redo2 />,
       requiresInput: false
     },
     {
+      disabled: false,
       type: TOOL_TYPES.ERASE,
       onClick: (index?: number) => erase(index!),
       icon: <Eraser />,
@@ -62,7 +67,7 @@ export const Toolbar = () => {
           <Tooltip key={tool.type}>
             <TooltipTrigger asChild>
               <Button
-                //disabled={isSolved}
+                disabled={tool.disabled}
                 className="w-14 h-14"
                 variant="outline"
                 onClick={() => handleClick(tool, tableCell.index!)}
