@@ -1,0 +1,27 @@
+name: Liveblocks Room Cleanup
+
+on: [push]
+
+  # schedule:
+  #   # Run every day at 1:00 UTC
+  #   - cron: '0 1 * * *'
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run cleanup script
+      run: node cleanup-rooms.js
+      env:
+        LIVEBLOCKS_SECRET_KEY: ${{ secrets.LIVEBLOCKS_SECRET_KEY }}
