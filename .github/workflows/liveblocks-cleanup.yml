@@ -11,18 +11,26 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [22.x]
     steps:
     - name: Check out repository code
       uses: actions/checkout@v4
 
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
 
     - name: Install dependencies
-      run: npm ci
+      run: pnpm install
 
     - name: Run cleanup script
-      run: node cleanup-rooms.js
+      run: node cleanup-rooms.ts
       env:
         LIVEBLOCKS_SECRET_KEY: ${{ secrets.LIVEBLOCKS_SECRET_KEY }}
