@@ -7,7 +7,7 @@ const liveblocks = new Liveblocks({
 async function cleanupRooms() {
   try {
     // Get all rooms
-    const rooms = await liveblocks.getRooms()
+    const { data: rooms } = await liveblocks.getRooms()
 
     for (const room of rooms) {
       // Get users in the room
