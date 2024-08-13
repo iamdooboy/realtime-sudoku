@@ -4,7 +4,8 @@ import { LiveList, LiveObject, toPlainLson } from "@liveblocks/client"
 
 const generateSudoku = (difficulty: string) => {
   let sudokuGame = getSudoku()
-  let str = sudokuGame.generate(difficulty)
+  //change later
+  let str = sudokuGame.generate(80)
   const solved: any = sudokuGame.solve(str)
 
   const sudokuGrid = new LiveList<Cell>([])
@@ -30,9 +31,8 @@ export async function POST(req: Request) {
   const { id, difficulty } = JSON.parse(body)
 
   const game = new LiveObject({
-    startTime: Date.now(),
-    isPaused: false,
-    initialLoad: true,
+    time: 0,
+    isRunning: false,
     isSolved: false,
     sudoku: generateSudoku(difficulty),
     mistakeCount: 0,

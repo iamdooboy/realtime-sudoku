@@ -11,37 +11,33 @@ interface Timer {
 }
 
 export function Timer() {
-  const { elapsedTime, pauseTimer, initialLoad, isPaused } =
-    useContext(TimeContext)
+  const { isRunning, start, pause, time } = useContext(TimeContext)
 
-  const sec = Math.floor((elapsedTime / 1000) % 60)
-  const min = Math.floor((elapsedTime / (1000 * 60)) % 60)
-  const hr = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24)
+  const formatTime = (time: number) => {
+    const hours = Math.floor(time / 3600)
+    const minutes = Math.floor((time % 3600) / 60)
+    const seconds = time % 60
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
+  }
 
-  const formatTime = (value: number) =>
-    value.toString().padStart(2, "0").split("")
-
-  const hours = hr.toString().split("")
-  const minutes = formatTime(min)
-  const seconds = formatTime(sec)
+  const buttonWrapper = (component: JSX.Element, func: () => void) => {
+    return (
+      <button
+        className="text-muted-foreground hover:text-muted-foreground/70"
+        onClick={func}
+      >
+        {component}
+      </button>
+    )
+  }
 
   return (
     <div className="flex gap-2 justify-end">
-      <button onClick={() => pauseTimer(elapsedTime)}>
-        {initialLoad && !isPaused && (
-          <PauseCircle className="text-slate-500 hover:text-slate-600" />
-        )}
-        {!initialLoad && isPaused && (
-          <PlayCircle className="text-slate-500 hover:text-slate-600" />
-        )}
-        {!initialLoad && !isPaused && (
-          <PauseCircle className="text-slate-500 hover:text-slate-600" />
-        )}
-      </button>
-      <span className="text-muted-foreground font-mono inline-block">
-        {[...hours, ":", ...minutes, ":", ...seconds].map((char, index) => (
-          <span key={index}>{char}</span>
-        ))}
+      {isRunning
+        ? buttonWrapper(<PauseCircle />, pause)
+        : buttonWrapper(<PlayCircle />, start)}
+      <span className="font-mono text-muted-foreground">
+        {formatTime(time)}
       </span>
     </div>
   )

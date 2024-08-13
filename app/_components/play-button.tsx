@@ -5,15 +5,15 @@ import { useContext } from "react"
 import { TimeContext } from "../_context/time-context"
 
 export function PlayButton() {
-  const { elapsedTime, pauseTimer, isPaused } = useContext(TimeContext)
+  const { start, isRunning } = useContext(TimeContext)
   return (
     <>
-      {isPaused && (
+      {!isRunning && (
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <PlayCircle
-            onClick={() => pauseTimer(elapsedTime)}
+            onClick={() => start()}
             size={100}
-            className="text-slate-500 hover:text-slate-600 cursor-pointer"
+            className="text-muted-foreground hover:text-muted-foreground/70 cursor-pointer"
           />
         </div>
       )}

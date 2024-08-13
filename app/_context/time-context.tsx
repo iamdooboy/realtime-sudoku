@@ -1,64 +1,43 @@
-'use client'
+"use client"
 
 import { createContext, PropsWithChildren, useEffect, useState } from "react"
 import { useMutation, useStorage } from "@liveblocks/react/suspense"
 
-type TimeContextProps = {
-  pauseTimer: (elapsedTime: number) => void
-  elapsedTime: number
-  initialLoad: boolean
-  isPaused: boolean
-}
-
-export const TimeContext = createContext<TimeContextProps>({
-  pauseTimer: () => {},
-  elapsedTime: 0,
-  initialLoad: true,
-  isPaused: false
+export const TimeContext = createContext({
+  pause: () => {},
+  start: () => {},
+  update: () => {},
+  time: 0,
+  isRunning: false
 })
 
 export const TimeProvider = ({ children }: PropsWithChildren) => {
-  const { startTime, isPaused, initialLoad } = useStorage((root) => root.root)
-
-  const [elapsedTime, setElapsedTime] = useState(0)
+  const { isRunning, time } = useStorage((root) => root.root)
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null
-    if (startTime) {
-      interval = setInterval(() => {
-        setElapsedTime(Date.now() - new Date(startTime).getTime())
-      }, 1000)
-    }
-    return () => {
-      if (interval) {
-        clearInterval(interval)
+    const interval = setInterval(() => {
+      if (isRunning) {
+        update()
       }
-    }
-  }, [startTime])
+    }, 1000)
 
-  const pauseTimer = useMutation(({ storage }, elapsedTime: number) => {
-    const root = storage.get("root")
-    const isPaused = root.get("isPaused")
-    if (isPaused) {
-      if (root.get("isSolved")) return
-      root.update({
-        startTime: Date.now() - elapsedTime,
-        isPaused: false,
-        initialLoad: false
-      })
-    } else {
-      root.update({
-        startTime: 0,
-        isPaused: true,
-        initialLoad: false
-      })
-    }
+    return () => clearInterval(interval)
+  }, [isRunning, time])
+
+  const start = useMutation(({ storage }) => {
+    storage.get("root").set("isRunning", true)
+  }, [])
+
+  const pause = useMutation(({ storage }) => {
+    storage.get("root").set("isRunning", false)
+  }, [])
+
+  const update = useMutation(({ storage }) => {
+    storage.get("root").set("time", (storage.get("root").get("time") || 0) + 1)
   }, [])
 
   return (
-    <TimeContext.Provider
-      value={{ elapsedTime, pauseTimer, initialLoad, isPaused }}
-    >
+    <TimeContext.Provider value={{ time, start, pause, update, isRunning }}>
       {children}
     </TimeContext.Provider>
   )

@@ -13,7 +13,7 @@ export const Table = memo(() => {
     tableCellContext: { onClickTableCell }
   } = useGame()
 
-  const { sudoku, isPaused } = useStorage((root) => root.root)
+  const { sudoku, isRunning, isSolved } = useStorage((root) => root.root)
 
   const NUMBER_OF_ROWS = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
@@ -25,7 +25,7 @@ export const Table = memo(() => {
             {NUMBER_OF_ROWS.map((col, cIndex) => {
               const indexOfArray = row * 9 + col
 
-              if (isPaused) {
+              if (!isRunning || isSolved) {
                 return (
                   <PrefilledTableCell
                     key={indexOfArray}

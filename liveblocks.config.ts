@@ -27,9 +27,8 @@ declare global {
     // The Storage tree for the room, for useMutation, useStorage, etc.
     Storage: {
       root: LiveObject<{
-        startTime: number
-        isPaused: boolean
-        initialLoad: boolean
+        time: number
+        isRunning: boolean
         isSolved: boolean
         mistakeCount: number
         sudoku: Sudoku

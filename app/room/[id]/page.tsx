@@ -1,3 +1,4 @@
+import { Complete } from '@/_components/complete'
 import { GameSettings } from "@/_components/game-settings"
 import { ListUsers } from "@/_components/list-users"
 import { LiveblocksRoom } from "@/_components/liveblocks-room"
@@ -28,6 +29,7 @@ export default async function Room({
               <div className="relative">
                 <Table />
                 <PlayButton />
+                <Complete />
               </div>
             </div>
             <div className="flex flex-col gap-2">

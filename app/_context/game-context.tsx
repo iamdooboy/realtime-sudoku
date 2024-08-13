@@ -97,6 +97,10 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     setTableCell({ value, index })
   }
 
+  const isGameSolved = (sudoku: Sudoku) => {
+    return sudoku.every((cell) => cell.get("valid") === true)
+  }
+
   const selectNum = useMutation(
     ({ storage }, { numPad, index }: SelectNumProps) => {
       if (index === null) return
@@ -126,6 +130,13 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
 
       cell?.update({ value: numPad, valid })
       setTableCell({ value: numPad, index })
+
+      if (isGameSolved(sudoku)) {
+        storage.get("root").update({
+          isSolved: true,
+          //isPaused: true
+        })
+      }
 
       if (currentValue === undefined || currentValue === null) return
 
