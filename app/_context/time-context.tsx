@@ -22,7 +22,7 @@ export const TimeProvider = ({ children }: PropsWithChildren) => {
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [isRunning, time])
+  }, [isRunning])
 
   const start = useMutation(({ storage }) => {
     storage.get("root").set("isRunning", true)

@@ -3,98 +3,38 @@ import { useStorage } from "@liveblocks/react/suspense"
 import useCellProps from "@/hooks/use-cell-props"
 import { useGame } from "@/hooks/use-game"
 
-import { TableRow } from "./table-row"
-import { EditableTableCell, PrefilledTableCell } from "./table-cell"
 import { Notes } from "./notes"
-import { memo } from 'react'
+import { memo, useCallback, useContext, useState } from "react"
+import clsx from "clsx"
+import { Td } from "./table-cell"
+import { GRID_SIZE } from "@/utils/constants"
+import { TableCellContext } from "@/app/_context/table-cell-context"
 
-export const Table = memo(() => {
-  const {
-    tableCellContext: { onClickTableCell }
-  } = useGame()
-
-  const { sudoku, isRunning, isSolved } = useStorage((root) => root.root)
-
-  const NUMBER_OF_ROWS = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+export const Table = () => {
+  const { tableCell, onClickTableCell } = useContext(TableCellContext)
 
   return (
-    <table className="border-4">
+    <table className="border-2 border-black w-full h-full ">
       <tbody>
-        {NUMBER_OF_ROWS.map((row, rIndex) => (
-          <TableRow key={rIndex} rIndex={rIndex}>
-            {NUMBER_OF_ROWS.map((col, cIndex) => {
-              const indexOfArray = row * 9 + col
-
-              if (!isRunning || isSolved) {
-                return (
-                  <PrefilledTableCell
-                    key={indexOfArray}
-                    index={indexOfArray}
-                    cIndex={cIndex}
-                  />
-                )
-              }
-
-              const { value, immutable, valid } = sudoku[indexOfArray]
-
-              const showNotes = typeof value === "object"
-
-              if (immutable) {
-                return (
-                  <PrefilledTableCell
-                    key={indexOfArray}
-                    index={indexOfArray}
-                    cIndex={cIndex}
-                    value={value}
-                    // {...useCellProps(
-                    //   indexOfArray,
-                    //   cIndex,
-                    //   value,
-                    //   // () => onClickSquare(null, value)
-                    //   // selectedValue,
-                    //   // highlight
-                    // )}
-                    // key={indexOfArray}
-                    // index={indexOfArray}
-                    // cIndex={cIndex}
-                    // value={value}
-                    // selectedValue={selectedValue}
-                    onClick={() =>
-                      onClickTableCell({
-                        value,
-                        index: indexOfArray
-                      })
-                    }
-                    // highlight={highlight}
-                  >
-                    {value}
-                  </PrefilledTableCell>
-                )
-              }
-
-              return (
-                <EditableTableCell
-                  key={indexOfArray}
-                  cIndex={cIndex}
-                  indexOfArray={indexOfArray}
-                  value={value}
-                  valid={valid}
-                  onClick={() =>
-                    onClickTableCell({
-                      value,
-                      index: indexOfArray
-                    })
-                  }
-                >
-                  {showNotes ? <Notes notes={value} /> : value > 0 && value}
-                </EditableTableCell>
-              )
+        {GRID_SIZE.map((row, rIndex) => (
+          <tr
+            key={row}
+            className={clsx({
+              "border-b-2 border-b-black": rIndex === 2 || rIndex === 5
             })}
-          </TableRow>
+          >
+            {GRID_SIZE.map((col, cIndex) => (
+              <Td
+                key={col}
+                cIndex={cIndex}
+                sudokuIndex={row * 9 + col}
+                tableCell={tableCell}
+                setTableCell={onClickTableCell}
+              />
+            ))}
+          </tr>
         ))}
       </tbody>
     </table>
   )
-})
-
-Table.displayName = "Table"
+}

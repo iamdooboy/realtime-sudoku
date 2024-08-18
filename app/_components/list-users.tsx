@@ -33,7 +33,7 @@ export function ListUsers() {
 
   const name = localStorage.getItem("name") || ""
   return (
-    <div className="space-y-4 bg-muted p-5 max-w-56 w-full">
+    <div className="space-y-4 bg-muted hidden sm:block">
       <Popover>
         <p className="text-muted-foreground">Currently online</p>
         <div className="flex gap-2 justify-start items-center">
@@ -41,7 +41,7 @@ export function ListUsers() {
             <AvatarImage src={currentUser?.info.avatar} />
             <AvatarFallback>{currentUser?.info.name}</AvatarFallback>
           </Avatar>
-          <div className="flex items-center justify-center text-lg ">
+          <div className="flex items-center justify-center text-[1.5vh]">
             {name ? name : currentUser?.info.name} (you)
           </div>
           <PopoverTrigger>

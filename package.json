@@ -11,13 +11,14 @@
     "biome": "pnpm biome format --write ./app"
   },
   "dependencies": {
-    "@liveblocks/client": "^2.4.0",
-    "@liveblocks/node": "^2.4.0",
-    "@liveblocks/react": "^2.4.0",
+    "@liveblocks/client": "^2.5.1",
+    "@liveblocks/node": "^2.5.1",
+    "@liveblocks/react": "^2.5.1",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-popover": "^1.1.1",
+    "@radix-ui/react-scroll-area": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.0",
     "@radix-ui/react-toggle": "^1.1.0",
@@ -34,17 +35,17 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sonner": "^1.5.0",
-    "tailwind-merge": "^2.5.0",
+    "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
-    "@types/node": "^20.14.15",
+    "@types/node": "^20.16.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.41",
-    "tailwindcss": "^3.4.9",
+    "tailwindcss": "^3.4.10",
     "typescript": "^5.5.4"
   }
 }

@@ -1,17 +1,33 @@
 "use client"
 
 import { PauseCircle, PlayCircle } from "lucide-react"
-import { useContext } from "react"
-import { TimeContext } from "../_context/time-context"
-
-interface Timer {
-  initialLoad: boolean
-  isPaused: boolean
-  pauseTimer: (elapsedTime: number) => void
-}
+import { useEffect } from "react"
+import { useMutation, useStorage } from "@liveblocks/react/suspense"
 
 export function Timer() {
-  const { isRunning, start, pause, time } = useContext(TimeContext)
+  const { isRunning, time } = useStorage((root) => root.root)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isRunning) {
+        update()
+      }
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [isRunning])
+
+  const start = useMutation(({ storage }) => {
+    storage.get("root").set("isRunning", true)
+  }, [])
+
+  const pause = useMutation(({ storage }) => {
+    storage.get("root").set("isRunning", false)
+  }, [])
+
+  const update = useMutation(({ storage }) => {
+    storage.get("root").set("time", (storage.get("root").get("time") || 0) + 1)
+  }, [])
 
   const formatTime = (time: number) => {
     const hours = Math.floor(time / 3600)

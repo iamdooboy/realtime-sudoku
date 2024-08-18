@@ -6,7 +6,6 @@ type NumberPadProps = {
   notesMode: boolean
   numPad: number
   index: number | null
-  value: number | null | readonly number[]
 }
 
 export function NumberPad() {
@@ -17,35 +16,35 @@ export function NumberPad() {
 
   const onClickHandler = (numPadProps: NumberPadProps) => {
     const { notesMode, numPad, index } = numPadProps
-    if(index === null) return
+    if (index === null) return
     if (notesMode) {
       addNotes({ numPad, index })
       return
     }
 
-    numpadContext.selectNum({ numPad, index, value })
+    numpadContext.selectNum({ numPad, index })
   }
 
   return (
-    <div className="grid grid-cols-3 grid-rows-3 gap-3">
+    <div className="sm:grid sm:grid-cols-3 sm:grid-rows-3 flex gap-2 justify-evenly h-full ">
       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((numPad) => {
         return (
           <Button
             variant="secondary"
             key={numPad}
-            onClick={() => onClickHandler({ notesMode, index, numPad, value })}
-            className={cn("w-20 h-20 rounded", {
+            onClick={() => onClickHandler({ notesMode, index, numPad })}
+            className={cn("sm:w-20 sm:h-20 w-2 h-w-2 rounded", {
               "grid grid-cols-3 grid-rows-3": notesMode
             })}
           >
             {!notesMode ? (
-              <p className="text-3xl transition-all duration-200 ease-in-out">
+              <p className="sm:text-3xl text-sm transition-all duration-200 ease-in-out">
                 {numPad}
               </p>
             ) : (
               <p
                 className={cn(
-                  "p-[2px] text-sm text-center transition-all duration-200 ease-in-out",
+                  "p-[2px] sm:text-sm text-center transition-all duration-200 ease-in-out hidden sm:block",
                   {
                     "col-start-1 row-start-1": numPad === 1,
                     "col-start-2 row-start-1": numPad === 2,
