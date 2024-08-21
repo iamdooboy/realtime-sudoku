@@ -17,7 +17,7 @@
 //   className,
 //   ...props
 // }: PrefilledTableCellProps) {
-//   const validateMode = useStorage((root) => root.root.validateMode)
+//   const validateMode = useStorage((root) => root.validateMode)
 
 //   const { tableCellContext } = useGame()
 
@@ -62,7 +62,7 @@
 //     focusIndex: other.presence.focusIndex
 //   }))
 
-//   const validateMode = useStorage((root) => root.root.validateMode)
+//   const validateMode = useStorage((root) => root.validateMode)
 
 //   const { tableCellContext } = useGame()
 
@@ -134,8 +134,8 @@ export const Td: React.FC<TdProps> = ({
   const others = useOthersMapped((other) => ({
     focusIndex: other.presence.focusIndex
   }))
-  const sudoku = useStorage((root) => root.root.sudoku)
-  const validateMode = useStorage((root) => root.root.validateMode)
+  const sudoku = useStorage((root) => root.sudoku)
+  const validateMode = useStorage((root) => root.validateMode)
   const { value, immutable, valid } = sudoku[sudokuIndex]
 
   const showNotes = typeof value === "object"
@@ -162,32 +162,6 @@ export const Td: React.FC<TdProps> = ({
     className
   )
   return (
-    // <td
-    //   className={cellClassName}
-    //   onClick={() =>
-    //     setTableCell({
-    //       value,
-    //       index: sudokuIndex
-    //     })
-    //   }
-    // >
-    //   <div className="w-full h-full flex items-center justify-center relative">
-    //     {showNotes ? (
-    //       <div className="grid grid-cols-3 grid-rows-3 w-full h-full">
-    //         {value?.map((num, index) => (
-    //           <div key={index} className="flex items-center justify-center">
-    //             <span className="text-[8px] sm:text-xs text-gray-400">
-    //               {num > 0 && num}
-    //             </span>
-    //           </div>
-    //         ))}
-    //       </div>
-    //     ) : (
-    //       <span className="text-2xl">{value !== 0 && value}</span>
-    //     )}
-    //   </div>
-    // </td>
-
     <td
       className={cellClassName}
       onClick={() =>
@@ -198,7 +172,7 @@ export const Td: React.FC<TdProps> = ({
       }
     >
       <div className="w-full h-full flex items-center justify-center relative">
-        {others.map(([connectionId, { focusIndex }]) => {
+        {/* {others.map(([connectionId, { focusIndex }]) => {
           if (focusIndex === sudokuIndex) {
             return (
               <div
@@ -213,7 +187,7 @@ export const Td: React.FC<TdProps> = ({
               </div>
             )
           }
-        })}
+        })} */}
         {showNotes ? (
           <Notes notes={value} />
         ) : (

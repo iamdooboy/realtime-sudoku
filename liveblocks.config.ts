@@ -3,6 +3,12 @@ import { LiveList, LiveObject } from "@liveblocks/client"
 declare global {
   type Presence = {
     focusIndex: number | null
+    isTyping: boolean
+  }
+
+  type Message = {
+    user: string
+    text: string
   }
 
   type Notes = LiveList<number>
@@ -26,16 +32,15 @@ declare global {
   interface Liveblocks {
     // The Storage tree for the room, for useMutation, useStorage, etc.
     Storage: {
-      root: LiveObject<{
-        time: number
-        isRunning: boolean
-        isSolved: boolean
-        mistakeCount: number
-        sudoku: Sudoku
-        validateMode: boolean
-        undoHistory: LiveList<LiveObject<HistoryStack>>
-        redoHistory: LiveList<LiveObject<HistoryStack>>
-      }>
+      time: number
+      isRunning: boolean
+      isSolved: boolean
+      mistakeCount: number
+      sudoku: Sudoku
+      validateMode: boolean
+      undoHistory: LiveList<LiveObject<HistoryStack>>
+      redoHistory: LiveList<LiveObject<HistoryStack>>
+      messages: LiveList<LiveObject<Message>>
     }
 
     // Custom user info set when authenticating with a secret key

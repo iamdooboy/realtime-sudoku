@@ -4,6 +4,10 @@ import { ScrollArea } from "./shadcn/scroll-area"
 import { Button } from "./shadcn/button"
 import { Input } from "./shadcn/input"
 import { cn } from "@/lib/utils"
+import { useMutation, useStorage } from "@liveblocks/react"
+import { LiveObject } from "@liveblocks/client"
+import { SendHorizonal } from "lucide-react"
+import { get } from "http"
 
 interface Message {
   user: string
@@ -13,32 +17,7 @@ interface Message {
 export const Chat = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
-  const data: Message[] = [
-    {
-      user: "User 1",
-      content:
-        "This is a message This is a message This is a message This is a message"
-    },
-    {
-      user: "User 1",
-      content:
-        "This is a message This is a message This is a message This is a message"
-    },
-    {
-      user: "User 1",
-      content:
-        "This is a message This is a message This is a message This is a message"
-    },
-    {
-      user: "User 1",
-      content:
-        "This is a message This is a message This is a message This is a message"
-    },
-    // ... more messages ...
-    { user: "User 1", content: "This is the newest message" }
-  ]
-
-  const [messages, setMessages] = useState<Message[]>(data)
+  const messages = useStorage((root) => root.messages)
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -51,34 +30,51 @@ export const Chat = () => {
     }
   }, [messages])
 
-  const addMessage = () => {
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        user: "User 1",
-        content: `New message ${prevMessages.length + 1}`
-      }
-    ])
+  const addMessage = useMutation(({ storage }) => {
+    const messages = storage?.get("messages")
+    const data = new LiveObject({
+      user: "User 1",
+      text: "This is a message"
+    })
+    messages?.push(data)
+  }, [])
+
+  const clear = useMutation(({ storage }) => {
+    storage?.get("messages").clear()
+  }, [])
+
+  if (!messages) {
+    console.log("no messages")
+    return (
+      <div className="h-full sm:h-3/4 flex flex-col rounded bg-muted">
+        <div className="w-full h-full">No messages</div>
+      </div>
+    )
   }
 
   return (
-    <div className="h-3/4 flex flex-col rounded bg-muted">
-      <ScrollArea ref={scrollAreaRef}>
+    <div className="h-full flex flex-col rounded border justify-between">
+      <ScrollArea ref={scrollAreaRef} className="flex-grow h-full sm:h-80 p-1">
         {messages.map((message, index) => (
-          <div
-            key={index}
-            className={cn("p-2 border-b", {
-              "border-b-0": index === messages.length - 1
-            })}
-          >
-            <span className="font-bold">{message.user}: </span>
-            {message.content}
+          <div key={index} className="p-2 font-mono">
+            <span className="text-sm">
+              {"<" + message.user + "> "}
+            </span>
+            {message.text}
           </div>
         ))}
       </ScrollArea>
-      <div className="flex w-full max-w-sm items-center space-x-2 p-1">
-        <Input className="border" type="email" placeholder="Message" />
-        <Button type="submit">Send</Button>
+      <div className="flex w-full items-center space-x-2 p-1">
+        <Input
+          className="border rounded-full shadow-sm"
+          placeholder="Message"
+        />
+        <Button variant="ghost" size="icon" onClick={addMessage}>
+          <SendHorizonal />
+        </Button>
+        <Button variant={"destructive"} onClick={clear}>
+          Clear
+        </Button>
       </div>
     </div>
   )

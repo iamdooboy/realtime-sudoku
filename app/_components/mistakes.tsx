@@ -4,7 +4,7 @@ import { useStorage } from "@liveblocks/react/suspense"
 
 export function Mistakes() {
 
-  const mistakeCount = useStorage((root) => root.root.mistakeCount)
+  const mistakeCount = useStorage((root) => root.mistakeCount)
   return (
     <span>
       <span className="mr-1 text-muted-foreground inline-block">Mistakes:</span>

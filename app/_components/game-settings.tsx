@@ -9,10 +9,10 @@ import { useStorage } from "@liveblocks/react/suspense"
 import { useMutation } from "@liveblocks/react/suspense"
 
 export function GameSettings() {
-  const validateMode = useStorage((root) => root.root.validateMode)
+  const validateMode = useStorage((root) => root.validateMode)
 
   const toggleValidateMode = useMutation(({ storage }, checked: boolean) => {
-    storage.get("root").set("validateMode", !checked)
+    storage.set("validateMode", !checked)
   }, [])
 
   return (

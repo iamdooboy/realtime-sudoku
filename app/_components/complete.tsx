@@ -4,7 +4,7 @@ import { useStorage } from "@liveblocks/react"
 import { Button } from "./shadcn/button"
 
 export function Complete() {
-  const isSolved = useStorage((root) => root.root.isSolved)
+  const isSolved = useStorage((root) => root.isSolved)
 
   return (
     <>

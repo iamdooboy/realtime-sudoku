@@ -6,7 +6,7 @@ import {
   TooltipTrigger
 } from "@/shadcn/tooltip"
 
-import { Undo2, Redo2, Edit3 } from "lucide-react"
+import { Undo2, Redo2, Edit3, Eraser } from "lucide-react"
 import { Button } from "@/shadcn/button"
 import { TOOL_TYPES } from "@/utils/constants"
 import { cn } from "@/lib/utils"
@@ -36,8 +36,8 @@ const NotesButton = ({ notesMode }: { notesMode: boolean }) => {
 }
 
 export const Toolbar = () => {
-  const canUndo = useStorage((root) => root.root.undoHistory.length > 0)
-  const canRedo = useStorage((root) => root.root.redoHistory.length > 0)
+  const canUndo = useStorage((root) => root.undoHistory.length > 0)
+  const canRedo = useStorage((root) => root.redoHistory.length > 0)
 
   const redo = useMutation(({ storage }) => {
     console.log("redo")
@@ -78,8 +78,8 @@ export const Toolbar = () => {
             <div className="relative">
               <Button
                 disabled={tool.disabled}
-                className={cn("w-14 h-14", {
-                  "bg-accent": notesMode
+                className={cn("w-14 h-14 rounded-full", {
+                  "bg-accent": notesMode  && tool.type === TOOL_TYPES.ERASE
                 })}
                 variant="outline"
                 onClick={() => tool.onClick()}
@@ -91,6 +91,14 @@ export const Toolbar = () => {
           <TooltipContent>{tool.type}</TooltipContent>
         </Tooltip>
       ))}
+      <Button
+        className={cn("w-14 h-14 rounded-full sm:hidden block", {
+          "bg-accent": notesMode
+        })}
+        variant="outline"
+      >
+        <Eraser />
+      </Button>
     </TooltipProvider>
   )
 }

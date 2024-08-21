@@ -1,9 +1,9 @@
-'use client'
+"use client"
 
 import { Delete } from "lucide-react"
 import React, { useContext } from "react"
 import { Button } from "./shadcn/button"
-import { TableCellContext } from '../_context/table-cell-context'
+import { TableCellContext } from "../_context/table-cell-context"
 import { useMutation } from "@liveblocks/react/suspense"
 import { LiveList, LiveObject } from "@liveblocks/client"
 
@@ -12,12 +12,11 @@ export const EraseButton = () => {
 
   const erase = useMutation(({ storage }, index: number) => {
     if (index === null) return
-    const root = storage?.get("root")
 
-    const sudoku = root.get("sudoku")
-    const undoHistory = root.get("undoHistory")
+    const sudoku = storage.get("sudoku")
+    const undoHistory = storage.get("undoHistory")
 
-    if(sudoku.get(index)?.get("immutable") === true) return
+    if (sudoku.get(index)?.get("immutable") === true) return
 
     let currentValue = sudoku?.get(index)?.get("value")
     if (currentValue === undefined) return
@@ -41,7 +40,7 @@ export const EraseButton = () => {
   }, [])
 
   return (
-    <Button className="w-full h-full rounded" variant="secondary">
+    <Button className="rounded p-2 text-center aspect-square w-full h-full">
       <Delete onClick={() => erase(tableCell.index!)} />
     </Button>
   )

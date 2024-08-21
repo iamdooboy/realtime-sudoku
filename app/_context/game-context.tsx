@@ -89,8 +89,8 @@ export const GameProvider = ({ children }: PropsWithChildren) => {
     index: null
   })
 
-  const canUndo = useStorage((root) => root.root.undoHistory.length > 0)
-  const canRedo = useStorage((root) => root.root.redoHistory.length > 0)
+  const canUndo = useStorage((root) => root.undoHistory.length > 0)
+  const canRedo = useStorage((root) => root.redoHistory.length > 0)
 
   const onClickTableCell = ({ value, index }: TableCellProps) => {
     updateMyPresence({ focusIndex: index })

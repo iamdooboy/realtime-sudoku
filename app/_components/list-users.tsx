@@ -1,7 +1,7 @@
 "use client"
 import { useRef, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/avatar"
-import { useOthersMapped, useSelf } from "@liveblocks/react"
+import { useOthersListener, useOthersMapped, useSelf } from "@liveblocks/react"
 import { toast } from "sonner"
 import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/popover"
 import {
@@ -18,20 +18,19 @@ import { Switch } from "./shadcn/switch"
 import { Settings } from "lucide-react"
 
 export function ListUsers() {
-  const isMounted = useRef(false)
   const others = useOthersMapped((other) => other.info)
   const currentUser = useSelf()
-  useEffect(() => {
-    if (isMounted.current) {
-      if (others.length > 0) {
-        toast(`${others[0][1].name} just joined the game`)
-      }
-    } else {
-      isMounted.current = true
+  useOthersListener(({ type, user }) => {
+    switch (type) {
+      case "enter":
+        toast(`${user.info.name} just joined the game`)
+        break
+      case "leave":
+        toast(`${user.info.name} just left the game`)
+        break
     }
-  }, [others])
+  })
 
-  const name = localStorage.getItem("name") || ""
   return (
     <div className="space-y-4 bg-muted hidden sm:block">
       <Popover>
@@ -42,7 +41,7 @@ export function ListUsers() {
             <AvatarFallback>{currentUser?.info.name}</AvatarFallback>
           </Avatar>
           <div className="flex items-center justify-center text-[1.5vh]">
-            {name ? name : currentUser?.info.name} (you)
+            {currentUser?.info.name + " (you)"}
           </div>
           <PopoverTrigger>
             <Settings className="w-5 h-5 hover:opacity-60" />

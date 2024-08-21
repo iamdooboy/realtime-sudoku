@@ -1,69 +1,176 @@
-import { Button } from "@/shadcn/button"
-import { useGame } from "@/hooks/use-game"
+"use client"
+import React, { useContext } from "react"
+import { Button } from "./shadcn/button"
+import { useMutation } from "@liveblocks/react/suspense"
+import { TableCellContext } from "../_context/table-cell-context"
+import { LiveList, LiveObject } from "@liveblocks/client"
+import { NotesContext } from "../_context/notes-context"
 import { cn } from "@/lib/utils"
 
-type NumberPadProps = {
-  notesMode: boolean
-  numPad: number
+type SelectNumProps = {
+  numPad: number | null
   index: number | null
 }
 
-export function NumberPad() {
-  const { numpadContext, tableCellContext, toolbarContext } = useGame()
+export const Numpad = () => {
+  const { tableCell } = useContext(TableCellContext)
+  const { notesMode } = useContext(NotesContext)
 
-  const { index, value } = tableCellContext?.tableCell
-  const { notesMode, addNotes } = toolbarContext
+  const selectNum = useMutation(
+    ({ storage }, { numPad, index }: SelectNumProps) => {
+      if (index === null || numPad === null) return
 
-  const onClickHandler = (numPadProps: NumberPadProps) => {
-    const { notesMode, numPad, index } = numPadProps
-    if (index === null) return
-    if (notesMode) {
-      addNotes({ numPad, index })
-      return
-    }
+      const sudoku = storage?.get("sudoku")
+      let currentValue = sudoku?.get(index)?.get("value")
 
-    numpadContext.selectNum({ numPad, index })
-  }
+      if (currentValue === undefined || currentValue === null) return
+
+      //Toggle number is already present
+      if (currentValue === numPad) {
+        sudoku.get(index)?.set("value", 0)
+        return
+      }
+
+      const redoHistory = storage.get("redoHistory")
+      const undoHistory = storage.get("undoHistory")
+
+      if (redoHistory.length > 0) {
+        redoHistory.clear()
+      }
+
+      const cell = sudoku.get(index!)
+      const valid = cell?.get("key") === numPad
+
+      if (!valid) {
+        storage.set("mistakeCount", storage.get("mistakeCount") + 1)
+      }
+
+      cell?.update({ value: numPad, valid })
+
+      // if (isGameSolved(sudoku)) {
+      //   storage.get("root").update({
+      //     isSolved: true
+      //     //isPaused: true
+      //   })
+      // }
+
+      if (typeof currentValue === "object") {
+        currentValue = new LiveList([...currentValue.toImmutable()])
+      }
+
+      const history = new LiveObject<HistoryStack>({
+        index,
+        valueBefore: currentValue,
+        valueAfter: numPad,
+        mode: "default"
+      })
+
+      undoHistory.push(history)
+    },
+    []
+  )
+
+  const addNotes = useMutation(
+    ({ storage }, { index, numPad }: { index: number; numPad: number }) => {
+      if (index === null) return
+
+      const sudoku = storage.get("sudoku")
+      const undoHistory = storage.get("undoHistory")
+
+      const cell = sudoku.get(index)
+
+      if (cell?.get("valid") === true) {
+        cell.set("valid", false)
+      }
+
+      const value = cell?.get("value")
+      if (value === undefined) return
+      let before, after
+
+      if (typeof value === "object" && value !== null) {
+        const currentValue = value?.get(numPad - 1)
+
+        if (currentValue === undefined) return
+
+        value.set(numPad - 1, currentValue > 0 ? 0 : numPad)
+
+        const immutable = value?.toImmutable()
+        before = [...immutable]
+        after = [...immutable]
+        after[numPad - 1] = currentValue > 0 ? 0 : numPad
+
+        const history = new LiveObject<HistoryStack>({
+          index,
+          valueBefore: new LiveList(before),
+          valueAfter: new LiveList(after),
+          mode: "notes"
+        })
+
+        undoHistory.push(history)
+        return
+      }
+
+      const arr = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      arr[numPad - 1] = numPad
+      cell?.set("value", new LiveList(arr))
+
+      const history = new LiveObject<HistoryStack>({
+        index,
+        valueBefore: value,
+        valueAfter: new LiveList(arr),
+        mode: "notes"
+      })
+
+      undoHistory.push(history)
+    },
+    []
+  )
 
   return (
-    <div className="sm:grid sm:grid-cols-3 sm:grid-rows-3 flex gap-2 justify-evenly h-full ">
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((numPad) => {
-        return (
-          <Button
-            variant="secondary"
-            key={numPad}
-            onClick={() => onClickHandler({ notesMode, index, numPad })}
-            className={cn("sm:w-20 sm:h-20 w-2 h-w-2 rounded", {
-              "grid grid-cols-3 grid-rows-3": notesMode
+    <>
+      {/* {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((numPad) => (
+        <Button
+          className="rounded aspect-square"
+          variant="secondary"
+          key={numPad}
+          onClick={() => {
+            if (notesMode) {
+              addNotes({ numPad, index: tableCell.index! })
+              return
+            }
+            selectNum({ numPad, index: tableCell.index })
+          }}
+        >
+          <p
+            className={cn("transition-all duration-200 ease-in-out", {
+              "text-sm": notesMode
             })}
           >
-            {!notesMode ? (
-              <p className="sm:text-3xl text-sm transition-all duration-200 ease-in-out">
-                {numPad}
-              </p>
-            ) : (
-              <p
-                className={cn(
-                  "p-[2px] sm:text-sm text-center transition-all duration-200 ease-in-out hidden sm:block",
-                  {
-                    "col-start-1 row-start-1": numPad === 1,
-                    "col-start-2 row-start-1": numPad === 2,
-                    "col-start-3 row-start-1": numPad === 3,
-                    "col-start-1 row-start-2": numPad === 4,
-                    "col-start-2 row-start-2": numPad === 5,
-                    "col-start-3 row-start-2": numPad === 6,
-                    "col-start-1 row-start-3": numPad === 7,
-                    "col-start-2 row-start-3": numPad === 8,
-                    "col-start-3 row-start-3": numPad === 9
-                  }
-                )}
-              >
-                {numPad}
-              </p>
-            )}
-          </Button>
-        )
-      })}
-    </div>
+            {numPad}
+          </p>
+        </Button>
+      ))} */}
+      {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((numPad, index) => (
+        <Button
+          key={index}
+          className="p-2 rounded text-center aspect-square w-full h-full"
+          onClick={() => {
+            if (notesMode) {
+              addNotes({ numPad, index: tableCell.index! })
+              return
+            }
+            selectNum({ numPad, index: tableCell.index })
+          }}
+        >
+          <p
+            className={cn("transition-all duration-200 ease-in-out", {
+              "text-red-700": notesMode
+            })}
+          >
+            {numPad}
+          </p>
+        </Button>
+      ))}
+    </>
   )
 }

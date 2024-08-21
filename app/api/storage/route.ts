@@ -1,6 +1,11 @@
 import { liveblocks } from "@/liveblocks.server.config"
 import { getSudoku } from "@/lib/sudoku"
-import { LiveList, LiveObject, toPlainLson } from "@liveblocks/client"
+import {
+  LiveList,
+  LiveObject,
+  PlainLsonObject,
+  toPlainLson
+} from "@liveblocks/client"
 
 const generateSudoku = (difficulty: string) => {
   let sudokuGame = getSudoku()
@@ -16,7 +21,6 @@ const generateSudoku = (difficulty: string) => {
       immutable: value === "." ? false : true,
       valid: value === "." ? false : true,
       key: value === "." ? Number(solved[index]) : Number(value)
-      //notes: new LiveList([0, 0, 0, 0, 0, 0, 0, 0, 0])
     })
     sudokuGrid.push(square)
   })
@@ -41,13 +45,10 @@ export async function POST(req: Request) {
     redoHistory: new LiveList<LiveObject<HistoryStack>>([])
   })
 
-  const root = toPlainLson(game)
+  const root = toPlainLson(game) as PlainLsonObject
 
   try {
-    await liveblocks.initializeStorageDocument(id, {
-      liveblocksType: "LiveObject",
-      data: { root }
-    })
+    await liveblocks.initializeStorageDocument(id, root)
 
     return Response.json({ message: "Storage is initialized" })
   } catch (error) {

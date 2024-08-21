@@ -12,7 +12,7 @@ export const TimeContext = createContext({
 })
 
 export const TimeProvider = ({ children }: PropsWithChildren) => {
-  const { isRunning, time } = useStorage((root) => root.root)
+  const { isRunning, time } = useStorage((root) => root)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,15 +25,15 @@ export const TimeProvider = ({ children }: PropsWithChildren) => {
   }, [isRunning])
 
   const start = useMutation(({ storage }) => {
-    storage.get("root").set("isRunning", true)
+    storage.set("isRunning", true)
   }, [])
 
   const pause = useMutation(({ storage }) => {
-    storage.get("root").set("isRunning", false)
+    storage.set("isRunning", false)
   }, [])
 
   const update = useMutation(({ storage }) => {
-    storage.get("root").set("time", (storage.get("root").get("time") || 0) + 1)
+    storage.set("time", (storage.get("time") || 0) + 1)
   }, [])
 
   return (

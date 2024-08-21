@@ -6,24 +6,22 @@ import { Input } from "@/shadcn/input"
 import { Label } from "@/shadcn/label"
 import { useState } from "react"
 import { cn, randomId } from "@/lib/utils"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 import { ToggleGroup, ToggleGroupItem } from "@/shadcn/toggle-group"
+import useLocalStorage from "@/hooks/use-local-storage"
 
 export function SignInForm() {
-  const [name, setName] = useState("")
   const [difficulty, setDifficulty] = useState("")
   const [touched, setTouched] = useState(false)
   const router = useRouter()
-  const searchParams = useSearchParams()
 
-  const room = searchParams.get("room")
+  const [name, setName] = useLocalStorage<string>("name", "")
 
   const onSubmitHandler = async () => {
     if (!name || !difficulty) {
       return
     }
-    localStorage.setItem("name", name)
     const id = randomId(23)
     try {
       //create room and initialize storage
@@ -43,48 +41,7 @@ export function SignInForm() {
     }
   }
 
-  const onJoinHandler = () => {
-    if (!name) {
-      return
-    }
-    localStorage.setItem("name", name)
-    router.push(`/room/${room}`)
-  }
-
   const isInvalid = touched && name.trim() === ""
-
-  if (room) {
-    return (
-      <Card className="mx-auto max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Sudoku</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Name</Label>
-              <Input
-                id="email"
-                type="text"
-                required
-                value={name}
-                className={cn(isInvalid && "border-red-500 focus:ring-red-500")}
-                onChange={(e) => setName(e.target.value)}
-                onBlur={() => setTouched(true)}
-              />
-              {isInvalid && (
-                <p className="text-red-500 text-sm">This field is required</p>
-              )}
-            </div>
-
-            <Button type="submit" className="w-full" onClick={onJoinHandler}>
-              Join game
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    )
-  }
 
   return (
     <Card className="mx-auto max-w-sm">

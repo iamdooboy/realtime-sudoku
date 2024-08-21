@@ -5,7 +5,8 @@ import { useEffect } from "react"
 import { useMutation, useStorage } from "@liveblocks/react/suspense"
 
 export function Timer() {
-  const { isRunning, time } = useStorage((root) => root.root)
+  const time = useStorage((root) => root.time)
+  const isRunning = useStorage((root) => root.isRunning)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -15,18 +16,18 @@ export function Timer() {
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [isRunning])
+  }, [time, isRunning])
 
   const start = useMutation(({ storage }) => {
-    storage.get("root").set("isRunning", true)
+    storage.set("isRunning", true)
   }, [])
 
   const pause = useMutation(({ storage }) => {
-    storage.get("root").set("isRunning", false)
+    storage.set("isRunning", false)
   }, [])
 
   const update = useMutation(({ storage }) => {
-    storage.get("root").set("time", (storage.get("root").get("time") || 0) + 1)
+    storage.set("time", (storage.get("time") || 0) + 1)
   }, [])
 
   const formatTime = (time: number) => {
