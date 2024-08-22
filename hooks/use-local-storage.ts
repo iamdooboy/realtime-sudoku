@@ -1,67 +1,61 @@
-import { useState, useEffect, useCallback } from "react"
+import { useEffect, useState, useRef } from "react"
 
-function useLocalStorage<T>(
-  key: string,
-  initialValue: T
-): [T, (value: T | ((val: T) => T)) => void] {
-  // Get from local storage then
-  // parse stored json or return initialValue
-  const readValue = useCallback((): T => {
-    // Prevent build error "window is undefined" but keep working
-    if (typeof window === "undefined") {
-      return initialValue
-    }
+function useLocal() {
+  const [loadingStates, setLoadingStates] = useState<Map<string, boolean>>(
+    new Map()
+  )
+  const loadingStatesRef = useRef(loadingStates)
+  loadingStatesRef.current = loadingStates
 
+  const setStorageValue = <T>(key: string, value: T) => {
     try {
-      const item = window.localStorage.getItem(key)
-      return item ? (JSON.parse(item) as T) : initialValue
+      window.localStorage.setItem(key, JSON.stringify(value))
+      window.dispatchEvent(new Event("storage"))
     } catch (error) {
-      console.warn(`Error reading localStorage key "${key}":`, error)
-      return initialValue
-    }
-  }, [initialValue, key])
-
-  // State to store our value
-  // Pass initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] = useState<T>(readValue)
-
-  // Return a wrapped version of useState's setter function that ...
-  // ... persists the new value to localStorage.
-  const setValue = (value: T | ((val: T) => T)) => {
-    try {
-      // Allow value to be a function so we have the same API as useState
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value
-      // Save state
-      setStoredValue(valueToStore)
-      // Save to local storage
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore))
-      }
-    } catch (error) {
-      console.warn(`Error setting localStorage key "${key}":`, error)
+      console.error(`Error setting localStorage key "${key}":`, error)
     }
   }
 
-  useEffect(() => {
-    setStoredValue(readValue())
-  }, [])
+  const getStorageValue = <T>(
+    key: string,
+    fallbackValue?: T
+  ): [T | undefined, boolean] => {
+    const [value, setValue] = useState<T | undefined>(fallbackValue)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
+    useEffect(() => {
+      setIsLoading(loadingStatesRef.current.get(key) ?? true)
+
+      try {
+        const item = window.localStorage.getItem(key)
+        setValue(item !== null ? JSON.parse(item) : fallbackValue)
+      } catch (error) {
+        console.error(error)
+        setValue(fallbackValue)
+      } finally {
+        setIsLoading(false)
+        setLoadingStates((prev) => new Map(prev).set(key, false))
+      }
+    }, [key, fallbackValue])
+
+    return [value, isLoading]
+  }
+
+  // Effect to update component when localStorage changes
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === key && event.newValue !== null) {
-        setStoredValue(JSON.parse(event.newValue))
+      if (event.key) {
+        setLoadingStates((prev) => new Map(prev).set(event.key as string, true))
       }
     }
 
     window.addEventListener("storage", handleStorageChange)
-
     return () => {
       window.removeEventListener("storage", handleStorageChange)
     }
-  }, [key])
+  }, [])
 
-  return [storedValue, setValue]
+  return { getStorageValue, setStorageValue }
 }
 
-export default useLocalStorage
+export default useLocal

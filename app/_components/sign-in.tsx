@@ -5,24 +5,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shadcn/card"
 import { Input } from "@/shadcn/input"
 import { Label } from "@/shadcn/label"
 import { useState } from "react"
-import { cn, randomId } from "@/lib/utils"
+import { randomId } from "@/lib/utils"
 import { useRouter } from "next/navigation"
-
 import { ToggleGroup, ToggleGroupItem } from "@/shadcn/toggle-group"
-import useLocalStorage from "@/hooks/use-local-storage"
 
 export function SignInForm() {
   const [difficulty, setDifficulty] = useState("")
-  const [touched, setTouched] = useState(false)
+  const [input, setInput] = useState("")
+
   const router = useRouter()
 
-  const [name, setName] = useLocalStorage<string>("name", "")
-
   const onSubmitHandler = async () => {
-    if (!name || !difficulty) {
+    if (!input || !difficulty) {
       return
     }
+
+    localStorage.setItem("name", input)
     const id = randomId(23)
+
     try {
       //create room and initialize storage
       const response = await fetch("/api/rooms/", {
@@ -41,29 +41,28 @@ export function SignInForm() {
     }
   }
 
-  const isInvalid = touched && name.trim() === ""
-
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Sudoku</CardTitle>
+        <CardTitle className="te-2xl">Sudoku</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Name</Label>
+            <Label htmlFor="name">Name</Label>
             <Input
-              id="email"
+              placeholder="Enter your name"
+              minLength={1}
+              id="name"
               type="text"
               required
-              value={name}
-              className={cn(isInvalid && "border-red-500 focus:ring-red-500")}
-              onChange={(e) => setName(e.target.value)}
-              onBlur={() => setTouched(true)}
+              value={input}
+              className="[&:user-invalid:not(:focus)]:border-red-500 peer"
+              onChange={(e) => setInput(e.target.value)}
             />
-            {isInvalid && (
-              <p className="text-red-500 text-sm">This field is required</p>
-            )}
+            <p className="text-red-500 hidden text-sm peer-[&:user-invalid:not(:focus)]:block">
+              This field is required
+            </p>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="email">Difficulty</Label>

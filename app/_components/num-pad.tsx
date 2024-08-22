@@ -128,28 +128,6 @@ export const Numpad = () => {
 
   return (
     <>
-      {/* {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((numPad) => (
-        <Button
-          className="rounded aspect-square"
-          variant="secondary"
-          key={numPad}
-          onClick={() => {
-            if (notesMode) {
-              addNotes({ numPad, index: tableCell.index! })
-              return
-            }
-            selectNum({ numPad, index: tableCell.index })
-          }}
-        >
-          <p
-            className={cn("transition-all duration-200 ease-in-out", {
-              "text-sm": notesMode
-            })}
-          >
-            {numPad}
-          </p>
-        </Button>
-      ))} */}
       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((numPad, index) => (
         <Button
           key={index}

@@ -1,37 +1,16 @@
-import { Complete } from "@/_components/complete"
 import { EraseButton } from "@/_components/erase-button"
 import { GameSettings } from "@/_components/game-settings"
 import { ListUsers } from "@/_components/list-users"
 import { LiveblocksRoom } from "@/_components/liveblocks-room"
 import { Mistakes } from "@/_components/mistakes"
 import { Numpad } from "@/_components/num-pad"
-import { PlayButton } from "@/_components/play-button"
-import { SidePanel } from "@/_components/side-panel"
 import { Table } from "@/_components/sudoku/table"
 import { Timer } from "@/_components/timer"
 import { Toolbar } from "@/_components/toolbar"
-import { GameProvider } from "@/app/_context/game-context"
 import { TableCellProvider } from "@/app/_context/table-cell-context"
-import { TimeProvider } from "@/app/_context/time-context"
 import { NotesProvider } from "@/app/_context/notes-context"
-import { Button } from "@/shadcn/button"
-import { ScrollArea } from "@/shadcn/scroll-area"
 import { Chat } from "@/_components/chat"
-import { GRID_SIZE } from "@/utils/constants"
-import clsx from "clsx"
-import { Clock, Pencil, RefreshCw, RotateCcw, Settings } from "lucide-react"
-import useLocalStorage from "@/hooks/use-local-storage"
-import { cn } from "@/lib/utils"
-import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/card"
-import { Input } from "@/shadcn/input"
-import { Label } from "@radix-ui/react-label"
-import { useEffect, useState } from "react"
-import {
-  useMutation,
-  useOthers,
-  useStorage,
-  useUpdateMyPresence
-} from "@liveblocks/react/suspense"
+import UserNameCheck from "@/_components/user-name-check"
 export default async function Room({
   params
 }: {
