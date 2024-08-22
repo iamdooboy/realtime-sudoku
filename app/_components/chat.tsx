@@ -1,23 +1,21 @@
 "use client"
+
 import React, { useEffect, useRef, useState } from "react"
 import { ScrollArea } from "./shadcn/scroll-area"
-import { Button } from "./shadcn/button"
 import { Input } from "./shadcn/input"
-import { cn } from "@/lib/utils"
 import { useMutation, useStorage } from "@liveblocks/react"
 import { LiveObject } from "@liveblocks/client"
-import { SendHorizonal } from "lucide-react"
-import { get } from "http"
-
-interface Message {
-  user: string
-  content: string
-}
+import { ArrowUpCircle } from "lucide-react"
+import { useSelf } from "@liveblocks/react/suspense"
 
 export const Chat = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const messages = useStorage((root) => root.messages)
+  const user = useSelf()
+
+  const [input, setInput] = useState("")
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -30,14 +28,25 @@ export const Chat = () => {
     }
   }, [messages])
 
-  const addMessage = useMutation(({ storage }) => {
-    const messages = storage?.get("messages")
-    const data = new LiveObject({
-      user: "User 1",
-      text: "This is a message"
-    })
-    messages?.push(data)
-  }, [])
+  const addMessage = useMutation(
+    (
+      { storage },
+      input: string,
+      e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
+      e.preventDefault()
+      if (!input) return
+      const data = new LiveObject({
+        user: user?.info.name,
+        text: input
+      })
+      storage?.get("messages")?.push(data)
+
+      inputRef.current?.focus()
+      setInput("")
+    },
+    []
+  )
 
   const clear = useMutation(({ storage }) => {
     storage?.get("messages").clear()
@@ -57,24 +66,28 @@ export const Chat = () => {
       <ScrollArea ref={scrollAreaRef} className="flex-grow h-full sm:h-80 p-1">
         {messages.map((message, index) => (
           <div key={index} className="p-2 font-mono">
-            <span className="text-sm">
-              {"<" + message.user + "> "}
-            </span>
+            <span className="text-sm">{"<" + message.user + "> "}</span>
             {message.text}
           </div>
         ))}
       </ScrollArea>
-      <div className="flex w-full items-center space-x-2 p-1">
+      <div className="relative w-full p-2 flex items-center justify-center">
         <Input
-          className="border rounded-full shadow-sm"
+          id="name"
+          type="text"
+          ref={inputRef}
+          className="peer border rounded-full shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-ring"
           placeholder="Message"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
         />
-        <Button variant="ghost" size="icon" onClick={addMessage}>
-          <SendHorizonal />
-        </Button>
-        <Button variant={"destructive"} onClick={clear}>
-          Clear
-        </Button>
+        <button
+          onMouseDown={(e) => addMessage(input, e)}
+          className="peer-placeholder-shown:opacity-0 transition-opacity duration-200 ease-in-out"
+        >
+          <ArrowUpCircle className="fill-blue-500 stroke-white absolute right-4 top-4 h-6 w-6" />
+        </button>
+        <button onClick={clear}>clear</button>
       </div>
     </div>
   )

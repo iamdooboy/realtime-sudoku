@@ -3,8 +3,6 @@ import { liveblocks } from "@/liveblocks.server.config"
 
 export async function POST(request: Request) {
   const res = await request.json()
-
-  console.log(res.name)
   // generate random user
   const user = {
     //id: randomId(30),

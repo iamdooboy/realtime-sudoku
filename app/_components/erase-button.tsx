@@ -40,7 +40,7 @@ export const EraseButton = () => {
   }, [])
 
   return (
-    <Button className="rounded p-2 text-center aspect-square w-full h-full">
+    <Button variant="secondary" className="rounded p-2 text-center aspect-square w-full h-full">
       <Delete onClick={() => erase(tableCell.index!)} />
     </Button>
   )

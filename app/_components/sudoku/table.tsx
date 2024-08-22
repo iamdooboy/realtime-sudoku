@@ -1,10 +1,6 @@
 "use client"
-import { useStorage } from "@liveblocks/react/suspense"
-import useCellProps from "@/hooks/use-cell-props"
-import { useGame } from "@/hooks/use-game"
 
-import { Notes } from "./notes"
-import { memo, useCallback, useContext, useState } from "react"
+import { useContext } from "react"
 import clsx from "clsx"
 import { Td } from "./table-cell"
 import { GRID_SIZE } from "@/utils/constants"

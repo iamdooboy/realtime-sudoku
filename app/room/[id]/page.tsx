@@ -10,7 +10,6 @@ import { Toolbar } from "@/_components/toolbar"
 import { TableCellProvider } from "@/app/_context/table-cell-context"
 import { NotesProvider } from "@/app/_context/notes-context"
 import { Chat } from "@/_components/chat"
-import UserNameCheck from "@/_components/user-name-check"
 export default async function Room({
   params
 }: {

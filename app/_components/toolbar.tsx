@@ -47,6 +47,8 @@ export const Toolbar = () => {
     console.log("undo")
   }, [])
 
+  const erase = useMutation(({ storage }, index: number) => {}, [])
+
   const { notesMode, toggleNotesMode } = useContext(NotesContext)
 
   const Tools: ToolProps[] = [
@@ -79,7 +81,7 @@ export const Toolbar = () => {
               <Button
                 disabled={tool.disabled}
                 className={cn("w-14 h-14 rounded-full", {
-                  "bg-accent": notesMode  && tool.type === TOOL_TYPES.ERASE
+                  "bg-accent": notesMode && tool.type === TOOL_TYPES.ERASE
                 })}
                 variant="outline"
                 onClick={() => tool.onClick()}
@@ -92,9 +94,7 @@ export const Toolbar = () => {
         </Tooltip>
       ))}
       <Button
-        className={cn("w-14 h-14 rounded-full sm:hidden block", {
-          "bg-accent": notesMode
-        })}
+        className="w-14 h-14 rounded-full sm:hidden block"
         variant="outline"
       >
         <Eraser />

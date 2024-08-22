@@ -130,9 +130,9 @@ export const Numpad = () => {
     <>
       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((numPad, index) => (
         <Button
-          variant="secondary"
           key={index}
-          className="p-2 rounded md:text-xl sm:font-bold text-center aspect-square w-full h-full"
+          variant="secondary"
+          className="p-2 rounded md:text-xl font-boldtext-center aspect-square w-full h-full"
           onClick={() => {
             if (notesMode) {
               addNotes({ numPad, index: tableCell.index! })
@@ -143,7 +143,7 @@ export const Numpad = () => {
         >
           <p
             className={cn("transition-all duration-200 ease-in-out", {
-              "md:text-xs ": notesMode
+              "md:text-xs sm:font-bold": notesMode
             })}
           >
             {numPad}
