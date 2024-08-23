@@ -1,5 +1,5 @@
 "use client"
-import React, { useContext } from "react"
+import { useContext } from "react"
 import { Button } from "./shadcn/button"
 import { useMutation } from "@liveblocks/react/suspense"
 import { TableCellContext } from "../_context/table-cell-context"
@@ -85,28 +85,22 @@ export const Numpad = () => {
 
       const value = cell?.get("value")
       if (value === undefined) return
-      let before, after
 
       if (typeof value === "object" && value !== null) {
-        const currentValue = value?.get(numPad - 1)
+        const after = [...value?.toImmutable()]
 
+        const currentValue = value?.get(numPad - 1)
         if (currentValue === undefined) return
 
-        value.set(numPad - 1, currentValue > 0 ? 0 : numPad)
-
-        const immutable = value?.toImmutable()
-        before = [...immutable]
-        after = [...immutable]
         after[numPad - 1] = currentValue > 0 ? 0 : numPad
-
         const history = new LiveObject<HistoryStack>({
           index,
-          valueBefore: new LiveList(before),
+          valueBefore: value?.clone(),
           valueAfter: new LiveList(after),
           mode: "notes"
         })
-
         undoHistory.push(history)
+        value.set(numPad - 1, currentValue > 0 ? 0 : numPad)
         return
       }
 

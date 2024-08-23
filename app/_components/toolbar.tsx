@@ -14,6 +14,7 @@ import { Badge } from "./shadcn/badge"
 import { useContext } from "react"
 import { NotesContext } from "../_context/notes-context"
 import { useMutation, useStorage } from "@liveblocks/react/suspense"
+import { LiveObject } from "@liveblocks/client"
 
 type ToolProps = {
   disabled: boolean
@@ -40,11 +41,77 @@ export const Toolbar = () => {
   const canRedo = useStorage((root) => root.redoHistory.length > 0)
 
   const redo = useMutation(({ storage }) => {
-    console.log("redo")
+    const undoHistory = storage?.get("undoHistory")
+    const redoHistory = storage?.get("redoHistory")
+    const sudoku = storage?.get("sudoku")
+
+    if (redoHistory.length === 0) return
+
+    const lastMove = redoHistory?.get(redoHistory.length - 1)
+    if (!lastMove) return
+
+    const lastIndex = lastMove?.get("index")
+    const sudokuItem = sudoku?.get(lastIndex!)
+
+    let valueAfter = lastMove?.get("valueAfter")
+    let valueBefore = lastMove?.get("valueBefore")
+
+    const valid = sudokuItem?.get("key") === lastMove?.get("valueBefore")
+
+    sudokuItem?.update({
+      valid,
+      value:
+        typeof valueBefore === "object" ? valueBefore?.clone() : valueBefore
+    })
+
+    const undoItem = new LiveObject({
+      index: lastIndex,
+      valueBefore:
+        typeof valueAfter === "object" ? valueAfter?.clone() : valueAfter,
+      valueAfter:
+        typeof valueBefore === "object" ? valueBefore?.clone() : valueBefore,
+      mode: lastMove?.get("mode")
+    })
+
+    undoHistory.push(undoItem)
+    redoHistory.delete(redoHistory.length - 1)
   }, [])
 
   const undo = useMutation(({ storage }) => {
-    console.log("undo")
+    const undoHistory = storage?.get("undoHistory")
+    const redoHistory = storage?.get("redoHistory")
+    const sudoku = storage?.get("sudoku")
+
+    if (undoHistory.length === 0) return
+
+    const lastMove = undoHistory?.get(undoHistory.length - 1)
+    if (!lastMove) return
+
+    const lastIndex = lastMove?.get("index")
+    const sudokuItem = sudoku?.get(lastIndex!)
+
+    let valueAfter = lastMove?.get("valueAfter")
+    let valueBefore = lastMove?.get("valueBefore")
+
+    const valid = sudokuItem?.get("key") === lastMove?.get("valueBefore")
+
+    sudokuItem?.update({
+      valid,
+      value:
+        typeof valueBefore === "object" ? valueBefore?.clone() : valueBefore
+    })
+
+    const redoItem = new LiveObject({
+      index: lastIndex,
+      valueBefore:
+        typeof valueAfter === "object" ? valueAfter?.clone() : valueAfter,
+      valueAfter:
+        typeof valueBefore === "object" ? valueBefore?.clone() : valueBefore,
+      mode: lastMove?.get("mode")
+    })
+
+    redoHistory.push(redoItem)
+    undoHistory.delete(undoHistory.length - 1)
   }, [])
 
   const erase = useMutation(({ storage }, index: number) => {}, [])

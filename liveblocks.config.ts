@@ -11,10 +11,8 @@ declare global {
     text: string
   }
 
-  type Notes = LiveList<number>
-
   type Cell = LiveObject<{
-    value: number | null | Notes
+    value: number | undefined | LiveList<number>
     immutable: boolean
     valid: boolean
     key: number
@@ -24,8 +22,8 @@ declare global {
 
   type HistoryStack = {
     index: number | null
-    valueBefore: number | null | Notes
-    valueAfter: number | null | Notes
+    valueBefore: number | undefined | LiveList<number>
+    valueAfter: number | undefined | LiveList<number>
     mode: "default" | "notes" | "erase"
   }
 
