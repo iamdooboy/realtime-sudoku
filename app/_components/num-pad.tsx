@@ -1,11 +1,14 @@
 "use client"
+
 import { useContext } from "react"
 import { Button } from "./shadcn/button"
-import { useMutation } from "@liveblocks/react/suspense"
+import { useMutation, useStorage } from "@liveblocks/react/suspense"
 import { TableCellContext } from "../_context/table-cell-context"
 import { LiveList, LiveObject } from "@liveblocks/client"
 import { NotesContext } from "../_context/notes-context"
 import { cn } from "@/lib/utils"
+import { Delete } from "lucide-react"
+import confetti from "canvas-confetti"
 
 type SelectNumProps = {
   numPad: number | null
@@ -15,6 +18,38 @@ type SelectNumProps = {
 export const Numpad = () => {
   const { tableCell } = useContext(TableCellContext)
   const { notesMode } = useContext(NotesContext)
+
+  const isRunning = useStorage((root) => root.isRunning)
+  const isSolved = useStorage((root) => root.isSolved)
+
+  const erase = useMutation(({ storage }, index: number) => {
+    if (index === null) return
+
+    const sudoku = storage.get("sudoku")
+    const undoHistory = storage.get("undoHistory")
+
+    if (sudoku.get(index)?.get("immutable") === true) return
+
+    let currentValue = sudoku?.get(index)?.get("value")
+    if (currentValue === undefined) return
+
+    if (typeof currentValue === "object" && currentValue !== null) {
+      currentValue = new LiveList([...currentValue.toImmutable()])
+    }
+
+    const history = new LiveObject<HistoryStack>({
+      index,
+      valueBefore: currentValue,
+      valueAfter: 0,
+      mode: "erase"
+    })
+    undoHistory.push(history)
+
+    sudoku.get(index)?.update({
+      value: 0,
+      valid: false
+    })
+  }, [])
 
   const selectNum = useMutation(
     ({ storage }, { numPad, index }: SelectNumProps) => {
@@ -47,12 +82,38 @@ export const Numpad = () => {
 
       cell?.update({ value: numPad, valid })
 
-      // if (isGameSolved(sudoku)) {
-      //   storage.get("root").update({
-      //     isSolved: true
-      //     //isPaused: true
-      //   })
-      // }
+      const isGameSolved = sudoku.every((cell) => cell.get("valid") === true)
+
+      if (isGameSolved) {
+        storage.set("isSolved", true)
+        const end = Date.now() + 3 * 1000 // 3 seconds
+        const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"]
+
+        const frame = () => {
+          if (Date.now() > end) return
+
+          confetti({
+            particleCount: 2,
+            angle: 60,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 0, y: 0.5 },
+            colors: colors
+          })
+          confetti({
+            particleCount: 2,
+            angle: 120,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 1, y: 0.5 },
+            colors: colors
+          })
+
+          requestAnimationFrame(frame)
+        }
+
+        frame()
+      }
 
       if (typeof currentValue === "object") {
         currentValue = new LiveList([...currentValue.toImmutable()])
@@ -124,9 +185,10 @@ export const Numpad = () => {
     <>
       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((numPad, index) => (
         <Button
+          disabled={!isRunning || isSolved}
           variant="secondary"
           key={index}
-          className="p-2 rounded md:text-xl sm:font-bold text-center aspect-square w-full h-full"
+          className="p-2 rounded md:text-lg  sm:font-medium text-center aspect-square size-full"
           onClick={() => {
             if (notesMode) {
               addNotes({ numPad, index: tableCell.index! })
@@ -144,6 +206,13 @@ export const Numpad = () => {
           </p>
         </Button>
       ))}
+      <Button
+        disabled={!isRunning || isSolved}
+        variant="secondary"
+        className="rounded p-2 text-center aspect-square size-full hidden sm:flex"
+      >
+        <Delete onClick={() => erase(tableCell.index!)} />
+      </Button>
     </>
   )
 }

@@ -32,7 +32,7 @@ export function ListUsers() {
   })
 
   return (
-    <div className="space-y-4 bg-muted hidden sm:block">
+    <div className="space-y-4 hidden sm:block">
       <Popover>
         <p className="text-muted-foreground">Currently online</p>
         <div className="flex gap-2 justify-start items-center">
@@ -43,9 +43,9 @@ export function ListUsers() {
           <div className="flex items-center justify-center text-[1.5vh]">
             {currentUser?.info.name + " (you)"}
           </div>
-          <PopoverTrigger>
+          {/* <PopoverTrigger>
             <Settings className="w-5 h-5 hover:opacity-60" />
-          </PopoverTrigger>
+          </PopoverTrigger> */}
           <PopoverContent align="end">
             <CardTitle className="text-lg">User preferences</CardTitle>
             <CardDescription>

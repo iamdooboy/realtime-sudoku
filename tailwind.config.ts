@@ -1,4 +1,4 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from "tailwindcss"
 
 const config: Config = {
   darkMode: ["class"],
@@ -32,7 +32,7 @@ const config: Config = {
           foreground: "hsl(var(--secondary-foreground))"
         },
         tertiary: {
-          DEFAULT: "hsl(var(--tertiary))",
+          DEFAULT: "hsl(var(--tertiary))"
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -76,11 +76,17 @@ const config: Config = {
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" }
+        },
+        "background-position-spin": {
+          "0%": { backgroundPosition: "top center" },
+          "100%": { backgroundPosition: "bottom center" }
         }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out"
+        "accordion-up": "accordion-up 0.2s ease-out",
+        backgroundPositionSpin:
+          "background-position-spin 3000ms infinite alternate"
       }
     }
   },

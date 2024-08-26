@@ -9,7 +9,6 @@ import {
 
 const generateSudoku = (difficulty: string) => {
   let sudokuGame = getSudoku()
-  //change later
   let str = sudokuGame.generate(80)
   const solved: any = sudokuGame.solve(str)
 
@@ -36,7 +35,7 @@ export async function POST(req: Request) {
 
   const game = new LiveObject({
     time: 0,
-    isRunning: false,
+    isRunning: true,
     isSolved: false,
     sudoku: generateSudoku(difficulty),
     mistakeCount: 0,

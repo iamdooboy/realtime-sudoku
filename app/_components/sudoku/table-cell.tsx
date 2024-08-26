@@ -106,7 +106,7 @@
 // }
 
 type TableCellProps = {
-  value: number | null | readonly number[] | Notes
+  value: number | null | readonly number[]
   index: number | null
 }
 
@@ -118,7 +118,6 @@ import { Notes } from "./notes"
 
 interface TdProps extends React.ComponentPropsWithoutRef<"td"> {
   sudokuIndex: number
-  cIndex: number
   tableCell: TableCellProps
   setTableCell: ({ value, index }: TableCellProps) => void
   className?: string
@@ -126,7 +125,6 @@ interface TdProps extends React.ComponentPropsWithoutRef<"td"> {
 
 export const Td: React.FC<TdProps> = ({
   sudokuIndex,
-  cIndex,
   tableCell,
   setTableCell,
   className
@@ -146,54 +144,81 @@ export const Td: React.FC<TdProps> = ({
 
   const sameInstance = sameValue && notZero && !selectedCell
 
+  if (immutable) {
+    return (
+      <div
+        onClick={() =>
+          setTableCell({
+            value: value ?? null,
+            index: sudokuIndex
+          })
+        }
+        className={cn(
+          "bg-secondary text-center aspect-square align-middle w-full h-full flex items-center justify-center relative",
+          {
+            "bg-tertiary": value === tableCell.value || sameInstance
+          }
+        )}
+      >
+        {value}
+      </div>
+    )
+  }
+
   const cellClassName = cn(
-    "text-center border aspect-square align-middle",
+    "text-center aspect-square align-middle w-full h-full flex items-center justify-center relative",
     {
-      "border-r-black border-r-2": (sudokuIndex + 1) % 3 === 0 && cIndex !== 8,
-      "bg-secondary": immutable && !validateMode,
-      "bg-blue-100": selectedCell && !immutable,
-      "text-blue-500 dark:text-blue-500": valid && validateMode,
-      "text-red-500 dark:text-red-500": !valid && validateMode,
+      "text-blue-500": valid && validateMode,
+      "text-red-500": !valid && validateMode,
       "bg-tertiary":
-        (value === tableCell.value && !validateMode && immutable) ||
+        (value === tableCell.value && typeof value === "number" && value > 0) ||
         sameInstance,
-      "bg-muted": value === tableCell.value && validateMode
+      "bg-muted":
+        value === tableCell.value &&
+        validateMode &&
+        typeof value === "number" &&
+        value > 0,
+      "bg-blue-100": selectedCell
     },
     className
   )
+
   return (
-    <td
+    <div
       className={cellClassName}
       onClick={() =>
         setTableCell({
-          value,
+          value: value ?? null,
           index: sudokuIndex
         })
       }
     >
-      <div className="w-full h-full flex items-center justify-center relative">
-        {/* {others.map(([connectionId, { focusIndex }]) => {
-          if (focusIndex === sudokuIndex) {
-            return (
-              <div
-                key={connectionId}
-                className="absolute inset-0 bg-red-100 text-center justify-center items-center flex"
-              >
-                {showNotes ? (
-                  <Notes notes={value} />
-                ) : (
-                  value !== 0 && <p className="text-[2vh]">{value}</p>
-                )}
-              </div>
-            )
-          }
-        })} */}
-        {showNotes ? (
-          <Notes notes={value} />
-        ) : (
-          value !== 0 && <p className="text-[2vh]">{value}</p>
-        )}
-      </div>
-    </td>
+      {others.map(([connectionId, { focusIndex }]) => {
+        if (focusIndex === sudokuIndex) {
+          return (
+            <div
+              key={connectionId}
+              className={cn(
+                "absolute inset-0 bg-red-100 text-center justify-center items-center flex z-0",
+                {
+                  "mix-blend-multiply": focusIndex === tableCell.index
+                }
+              )}
+            >
+              {showNotes ? (
+                <Notes notes={value} />
+              ) : (
+                value !== 0 && <p className="text-[2vh]">{value}</p>
+              )}
+            </div>
+          )
+        }
+      })}
+      {showNotes ? (
+        <Notes notes={value} />
+      ) : (
+        value !== 0 && <p className="text-[2vh]">{value}</p>
+      )}
+    </div>
   )
 }

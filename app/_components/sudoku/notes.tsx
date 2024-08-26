@@ -4,7 +4,7 @@ interface Props {
 
 export function Notes({ notes }: Props) {
   return (
-    <div className="grid grid-cols-3 grid-rows-3 w-full h-full absolute inset-0">
+    <div className="grid grid-cols-3 grid-rows-3 w-full h-full absolute inset-0 aspect-square">
       {notes?.map((num, index) => (
         <div key={index} className="flex items-center justify-center">
           <span className="text-[8px] sm:text-xs text-gray-400">

@@ -1,4 +1,3 @@
-import { EraseButton } from "@/_components/erase-button"
 import { GameSettings } from "@/_components/game-settings"
 import { ListUsers } from "@/_components/list-users"
 import { LiveblocksRoom } from "@/_components/liveblocks-room"
@@ -18,18 +17,18 @@ export default async function Room({
   return (
     <LiveblocksRoom roomId={params.id}>
       <div className="grid grid-cols-6 sm:gap-4">
-        <div className="px-2 rounded col-span-6 flex justify-between items-center h-8 order-1">
+        <div className="rounded col-span-6 flex justify-between items-center h-8 order-1 border-b-1">
           <Timer />
           <Mistakes />
           <GameSettings />
         </div>
-        <div className="bg-muted rounded p-2 space-y-3 sm:col-span-1 col-span-1 sm:order-2 order-4 hidden sm:grid">
+        <div className="rounded space-y-3 sm:col-span-1 col-span-1 sm:order-2 order-4 hidden sm:grid sm:max-h-[504px] h-full">
           <ListUsers />
         </div>
         <NotesProvider>
           <TableCellProvider>
-            <div className="sm:col-span-3 col-span-6 sm:order-3 order-2 w-full h-full flex items-center justify-center p-1 sm:p-0">
-              <div className="w-full h-full flex items-center justify-center aspect-square">
+            <div className="sm:col-span-3 col-span-6 sm:order-3 order-2 w-full h-full flex place-items-center p-1 sm:p-0">
+              <div className="w-full h-full flex place-items-center aspect-square">
                 <Table />
               </div>
             </div>
@@ -40,12 +39,11 @@ export default async function Room({
             </div>
             <div className="sm:col-span-2 col-span-5 flex-col gap-1 sm:max-h-[504px] sm:order-4 order-5 w-full h-full hidden sm:grid">
               <Chat />
-              <div className="sm:grid grid-cols-5 gap-2 max-h-max h-full hidden">
+              <div className="sm:grid grid-cols-5 gap-2 max-h-full h-full hidden">
                 <Numpad />
-                <EraseButton />
               </div>
             </div>
-            <div className="sm:col-span-3 sm:col-start-2 col-span-6 flex justify-around items-center sm:order-5 order-3">
+            <div className="sm:col-span-3 sm:col-start-2 col-span-6 flex justify-around items-center sm:order-5 order-3 mt-1">
               <Toolbar />
             </div>
           </TableCellProvider>

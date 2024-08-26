@@ -1,11 +1,11 @@
 "use client"
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
 } from "@/shadcn/tooltip"
-
 import { Undo2, Redo2, Edit3, Eraser } from "lucide-react"
 import { Button } from "@/shadcn/button"
 import { TOOL_TYPES } from "@/utils/constants"
@@ -15,6 +15,7 @@ import { useContext } from "react"
 import { NotesContext } from "../_context/notes-context"
 import { useMutation, useStorage } from "@liveblocks/react/suspense"
 import { LiveObject } from "@liveblocks/client"
+import { ConfettiButton } from "./confetti"
 
 type ToolProps = {
   disabled: boolean
@@ -26,7 +27,7 @@ type ToolProps = {
 const NotesButton = ({ notesMode }: { notesMode: boolean }) => {
   return (
     <div>
-      <div className="absolute -top-3 -right-4">
+      <div className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2">
         <Badge variant={notesMode ? "default" : "secondary"}>
           {notesMode ? "On" : "Off"}
         </Badge>
@@ -39,6 +40,36 @@ const NotesButton = ({ notesMode }: { notesMode: boolean }) => {
 export const Toolbar = () => {
   const canUndo = useStorage((root) => root.undoHistory.length > 0)
   const canRedo = useStorage((root) => root.redoHistory.length > 0)
+  const isRunning = useStorage((root) => root.isRunning)
+  const isSolved = useStorage((root) => root.isSolved)
+
+  if (isSolved) {
+    const degrees = [-90, -45, 0]
+    return (
+      <>
+        {degrees.map((degree) => (
+          <ConfettiButton
+            key={degree}
+            className="size-14"
+            variant="outline"
+            options={{
+              get angle() {
+                return degree * -1 + 45
+              }
+            }}
+          >
+            <span
+              style={{
+                transform: `rotate(${degree}deg)`
+              }}
+            >
+              🎉
+            </span>
+          </ConfettiButton>
+        ))}
+      </>
+    )
+  }
 
   const redo = useMutation(({ storage }) => {
     const undoHistory = storage?.get("undoHistory")
@@ -144,24 +175,23 @@ export const Toolbar = () => {
       {Tools.map((tool) => (
         <Tooltip key={tool.type}>
           <TooltipTrigger asChild>
-            <div className="relative">
-              <Button
-                disabled={tool.disabled}
-                className={cn("w-14 h-14 rounded-full", {
-                  "bg-accent": notesMode && tool.type === TOOL_TYPES.ERASE
-                })}
-                variant="outline"
-                onClick={() => tool.onClick()}
-              >
-                {tool.icon}
-              </Button>
-            </div>
+            <Button
+              disabled={tool.disabled || !isRunning}
+              className={cn("size-14 rounded-lg relative", {
+                "bg-accent": notesMode && tool.type === TOOL_TYPES.ERASE
+              })}
+              variant="outline"
+              onClick={() => tool.onClick()}
+            >
+              {tool.icon}
+            </Button>
           </TooltipTrigger>
           <TooltipContent>{tool.type}</TooltipContent>
         </Tooltip>
       ))}
       <Button
-        className="w-14 h-14 rounded-full sm:hidden block"
+        disabled={!isRunning}
+        className="size-14 rounded-full sm:hidden block"
         variant="outline"
       >
         <Eraser />

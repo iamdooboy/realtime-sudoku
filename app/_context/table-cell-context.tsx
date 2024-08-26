@@ -4,7 +4,7 @@ import { useUpdateMyPresence } from "@liveblocks/react/suspense"
 import { createContext, PropsWithChildren, useState } from "react"
 
 type TableCellProps = {
-  value: number | null | readonly number[] | Notes
+  value: number | null | readonly number[]
   index: number | null
 }
 
