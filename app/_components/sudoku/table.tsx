@@ -38,7 +38,6 @@
 "use client"
 
 import { useContext } from "react"
-import clsx from "clsx"
 import { Td } from "./table-cell"
 import { GRID_SIZE } from "@/utils/constants"
 import { TableCellContext } from "@/app/_context/table-cell-context"
@@ -53,7 +52,9 @@ export const Table = () => {
   const isSolved = useStorage((root) => root.isSolved)
 
   return (
-    <div className="grid grid-cols-9 w-full relative">
+    <div className={cn("grid grid-cols-9 w-full relative", {
+      "": isSolved
+    })}>
       {GRID_SIZE.map((row, rowIndex) =>
         GRID_SIZE.map((col, colIndex) => (
           <div

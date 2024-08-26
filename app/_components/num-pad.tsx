@@ -60,7 +60,7 @@ export const Numpad = () => {
 
       if (currentValue === undefined || currentValue === null) return
 
-      //Toggle number is already present
+      //Toggle number if already present
       if (currentValue === numPad) {
         sudoku.get(index)?.set("value", 0)
         return
@@ -85,7 +85,7 @@ export const Numpad = () => {
       const isGameSolved = sudoku.every((cell) => cell.get("valid") === true)
 
       if (isGameSolved) {
-        storage.set("isSolved", true)
+        storage.update({ isSolved: true, isRunning: false })
         const end = Date.now() + 3 * 1000 // 3 seconds
         const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"]
 

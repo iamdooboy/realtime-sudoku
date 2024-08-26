@@ -8,6 +8,7 @@ import { useState } from "react"
 import { randomId } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { ToggleGroup, ToggleGroupItem } from "@/shadcn/toggle-group"
+import { DIFFICULTIES } from "@/utils/constants"
 
 export function SignInForm() {
   const [difficulty, setDifficulty] = useState("")
@@ -42,7 +43,7 @@ export function SignInForm() {
   }
 
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card className="mx-auto w-80">
       <CardHeader>
         <CardTitle className="te-2xl">Sudoku</CardTitle>
       </CardHeader>
@@ -71,27 +72,15 @@ export function SignInForm() {
               className="flex-col w-full items-start"
               onValueChange={(type) => setDifficulty(type)}
             >
-              <ToggleGroupItem
-                value="easy"
-                aria-label="Toggle bold"
-                className="w-full"
-              >
-                <div>Easy</div>
-              </ToggleGroupItem>
-              <ToggleGroupItem
-                value="medium"
-                aria-label="Toggle italic"
-                className="w-full"
-              >
-                <div>Medium</div>
-              </ToggleGroupItem>
-              <ToggleGroupItem
-                value="hard"
-                aria-label="Toggle underline"
-                className="w-full"
-              >
-                <div>Hard</div>
-              </ToggleGroupItem>
+              {DIFFICULTIES.map((difficulty) => (
+                <ToggleGroupItem
+                  value={difficulty}
+                  aria-label={`Toggle ${difficulty}`}
+                  className="w-full"
+                >
+                  {difficulty}
+                </ToggleGroupItem>
+              ))}
             </ToggleGroup>
           </div>
           <Button type="submit" className="w-full" onClick={onSubmitHandler}>

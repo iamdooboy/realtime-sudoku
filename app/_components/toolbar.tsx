@@ -43,34 +43,6 @@ export const Toolbar = () => {
   const isRunning = useStorage((root) => root.isRunning)
   const isSolved = useStorage((root) => root.isSolved)
 
-  if (isSolved) {
-    const degrees = [-90, -45, 0]
-    return (
-      <>
-        {degrees.map((degree) => (
-          <ConfettiButton
-            key={degree}
-            className="size-14"
-            variant="outline"
-            options={{
-              get angle() {
-                return degree * -1 + 45
-              }
-            }}
-          >
-            <span
-              style={{
-                transform: `rotate(${degree}deg)`
-              }}
-            >
-              🎉
-            </span>
-          </ConfettiButton>
-        ))}
-      </>
-    )
-  }
-
   const redo = useMutation(({ storage }) => {
     const undoHistory = storage?.get("undoHistory")
     const redoHistory = storage?.get("redoHistory")
@@ -148,6 +120,34 @@ export const Toolbar = () => {
   const erase = useMutation(({ storage }, index: number) => {}, [])
 
   const { notesMode, toggleNotesMode } = useContext(NotesContext)
+
+  if (isSolved) {
+    const degrees = [-90, -45, 0]
+    return (
+      <>
+        {degrees.map((degree) => (
+          <ConfettiButton
+            key={degree}
+            className="size-14"
+            variant="outline"
+            options={{
+              get angle() {
+                return degree * -1 + 45
+              }
+            }}
+          >
+            <span
+              style={{
+                transform: `rotate(${degree}deg)`
+              }}
+            >
+              🎉
+            </span>
+          </ConfettiButton>
+        ))}
+      </>
+    )
+  }
 
   const Tools: ToolProps[] = [
     {

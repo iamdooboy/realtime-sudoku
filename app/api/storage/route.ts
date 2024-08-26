@@ -1,31 +1,12 @@
 import { liveblocks } from "@/liveblocks.server.config"
-import { getSudoku } from "@/lib/sudoku"
 import {
   LiveList,
   LiveObject,
   PlainLsonObject,
   toPlainLson
 } from "@liveblocks/client"
+import { generateSudoku } from "@/lib/utils"
 
-const generateSudoku = (difficulty: string) => {
-  let sudokuGame = getSudoku()
-  let str = sudokuGame.generate(80)
-  const solved: any = sudokuGame.solve(str)
-
-  const sudokuGrid = new LiveList<Cell>([])
-
-  str.split("").forEach((value: string, index: number) => {
-    const square = new LiveObject({
-      value: value === "." ? 0 : Number(value),
-      immutable: value === "." ? false : true,
-      valid: value === "." ? false : true,
-      key: value === "." ? Number(solved[index]) : Number(value)
-    })
-    sudokuGrid.push(square)
-  })
-
-  return sudokuGrid
-}
 export async function POST(req: Request) {
   const body = await req.text()
 
