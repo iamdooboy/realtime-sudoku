@@ -28,7 +28,7 @@ export default async function Room({
         <NotesProvider>
           <TableCellProvider>
             <div className="sm:col-span-3 col-span-6 sm:order-3 order-2 w-full h-full flex place-items-center p-1 sm:p-0">
-              <div className="w-full h-full flex place-items-center aspect-square">
+              <div className="w-full h-full flex place-items-center">
                 <Table />
               </div>
             </div>

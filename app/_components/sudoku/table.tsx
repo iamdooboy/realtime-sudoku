@@ -44,7 +44,7 @@ import { TableCellContext } from "@/app/_context/table-cell-context"
 import { cn } from "@/lib/utils"
 import { useStorage } from "@liveblocks/react"
 import { PlayButton } from "../play-button"
-import { Complete } from '../complete'
+import { Complete } from "../complete"
 
 export const Table = () => {
   const { tableCell, onClickTableCell } = useContext(TableCellContext)
@@ -52,9 +52,7 @@ export const Table = () => {
   const isSolved = useStorage((root) => root.isSolved)
 
   return (
-    <div className={cn("grid grid-cols-9 w-full relative", {
-      "": isSolved
-    })}>
+    <div className="grid grid-cols-9 w-full h-full relative">
       {GRID_SIZE.map((row, rowIndex) =>
         GRID_SIZE.map((col, colIndex) => (
           <div
@@ -69,7 +67,9 @@ export const Table = () => {
               }
             )}
           >
-            {!isRunning && !isSolved ? null : (
+            {!isRunning && !isSolved ? (
+              <div className="size-full aspect-square"></div>
+            ) : (
               <Td
                 sudokuIndex={row * 9 + col}
                 tableCell={tableCell}

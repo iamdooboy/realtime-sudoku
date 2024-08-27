@@ -208,7 +208,7 @@ export const Td: React.FC<TdProps> = ({
               {showNotes ? (
                 <Notes notes={value} />
               ) : (
-                value !== 0 && <p className="text-[2vh]">{value}</p>
+                value !== 0 && <p>{value}</p>
               )}
             </div>
           )
@@ -217,7 +217,7 @@ export const Td: React.FC<TdProps> = ({
       {showNotes ? (
         <Notes notes={value} />
       ) : (
-        value !== 0 && <p className="text-[2vh]">{value}</p>
+        value !== 0 && <p>{value}</p>
       )}
     </div>
   )

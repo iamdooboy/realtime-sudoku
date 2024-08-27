@@ -7,6 +7,7 @@ import { useMutation, useStorage } from "@liveblocks/react/suspense"
 export function Timer() {
   const time = useStorage((root) => root.time)
   const isRunning = useStorage((root) => root.isRunning)
+  const isSolved = useStorage((root) => root.isSolved)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -40,6 +41,7 @@ export function Timer() {
   const buttonWrapper = (component: JSX.Element, func: () => void) => {
     return (
       <button
+        disabled={isSolved}
         className="text-muted-foreground hover:text-muted-foreground/70"
         onClick={func}
       >
