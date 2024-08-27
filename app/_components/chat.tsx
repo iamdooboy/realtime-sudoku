@@ -89,7 +89,7 @@ export const Chat = () => {
   }, [])
 
   return (
-    <div className="h-full flex flex-col rounded border justify-between">
+    <div className="w-full h-full flex flex-col rounded border justify-between">
       <ScrollArea ref={scrollAreaRef} className="h-full sm:h-80 p-1">
         {messages?.map((message, index) => {
           const isConsecutive =
@@ -136,8 +136,8 @@ export const Chat = () => {
           onBlur={() => updateMyPresence({ isTyping: false })}
         />
         <button
-          onMouseDown={(e) => addMessage(input)}
-          className="peer-placeholder-shown:opacity-0 transition-opacity duration-200 ease-in-out"
+          onMouseDown={() => addMessage(input)}
+          className="peer-placeholder-shown:opacity-0 transition-opacity duration-200 ease-in-out z-20"
         >
           <ArrowUpCircle className="fill-blue-500 stroke-white absolute right-4 top-4 h-6 w-6" />
         </button>

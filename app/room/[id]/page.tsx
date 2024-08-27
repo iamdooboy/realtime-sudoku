@@ -1,5 +1,5 @@
 import { GameSettings } from "@/_components/game-settings"
-import { ListUsers } from "@/_components/list-users"
+import { SidePanel } from "@/_components/side-panel"
 import { LiveblocksRoom } from "@/_components/liveblocks-room"
 import { Mistakes } from "@/_components/mistakes"
 import { Numpad } from "@/_components/num-pad"
@@ -16,19 +16,19 @@ export default async function Room({
 }) {
   return (
     <LiveblocksRoom roomId={params.id}>
-      <div className="grid grid-cols-6 sm:gap-4">
-        <div className="rounded col-span-6 flex justify-between items-center h-8 order-1 border-b-1">
+      <div className="grid grid-cols-6 p-2 sm:p-4 sm:gap-4 sm:border sm:rounded-lg sm:shadow">
+        <div className="col-span-6 flex justify-between items-center h-8 order-1 sm:border-b sm:pb-4">
           <Timer />
           <Mistakes />
           <GameSettings />
         </div>
-        <div className="rounded space-y-3 sm:col-span-1 col-span-1 sm:order-2 order-4 hidden sm:grid sm:max-h-[504px] h-full">
-          <ListUsers />
+        <div className="col-span-1 order-4 sm:col-span-1 sm:order-2 rounded space-y-3 hidden sm:grid h-full p-3 border">
+          <SidePanel />
         </div>
         <NotesProvider>
           <TableCellProvider>
-            <div className="sm:col-span-3 col-span-6 sm:order-3 order-2 w-full h-full flex place-items-center p-1 sm:p-0">
-              <div className="w-full h-full flex place-items-center">
+            <div className="col-span-6 order-2 sm:col-span-3 sm:order-3 sm:p-0 size-full flex place-items-center">
+              <div className="size-full flex place-items-center">
                 <Table />
               </div>
             </div>
@@ -37,7 +37,7 @@ export default async function Room({
                 <Numpad />
               </div>
             </div>
-            <div className="sm:col-span-2 col-span-5 flex-col gap-1 sm:max-h-[504px] sm:order-4 order-5 w-full h-full hidden sm:grid">
+            <div className="sm:col-span-2 sm:order-4 col-span-6 order-5 flex-col gap-1 size-full sm:grid max-h-max min-h-80 sm:max-h-max p-2 mt-2 sm:p-0 sm:m-0">
               <Chat />
               <div className="sm:grid grid-cols-5 gap-2 max-h-full h-full hidden">
                 <Numpad />
