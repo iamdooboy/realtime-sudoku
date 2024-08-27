@@ -7,14 +7,17 @@ import {
   useSelf,
   useMutation,
   useStorage,
-  useUpdateMyPresence
+  useUpdateMyPresence,
+  useOthers,
+  useOthersMapped
 } from "@liveblocks/react/suspense"
-import { LiveObject } from "@liveblocks/client"
+import { LiveObject, shallow } from "@liveblocks/client"
 import { ArrowUpCircle } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "./shadcn/avatar"
 import { Label } from "./shadcn/label"
 import { cn } from "@/lib/utils"
 import clsx from "clsx"
+import { AnimatePresence, motion } from "framer-motion"
 
 export const Chat = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null)
@@ -36,6 +39,38 @@ export const Chat = () => {
     }
   }, [messages])
 
+  function SomeoneIsTyping() {
+    const typingUsers = useOthers(
+      (others) => others.filter((other) => other.presence.isTyping),
+      shallow
+    )
+
+    return (
+      <div className="absolute -top-3 right-0 text-muted-foreground text-xs mr-3">
+        <AnimatePresence>
+          {typingUsers.length > 0 && (
+            <motion.div
+              className="flex gap-1"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.2 }}
+            >
+              {typingUsers.length > 1
+                ? "Several people are "
+                : typingUsers[0].info.name}
+              {" is "}
+              typing
+              <div className="animate-bounce [animation-delay:-0.3s]">.</div>
+              <div className="animate-bounce [animation-delay:-0.13s]">.</div>
+              <div className="animate-bounce">.</div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    )
+  }
+
   const addMessage = useMutation(({ storage }, input: string) => {
     if (!input) return
     const data = new LiveObject({
@@ -55,7 +90,7 @@ export const Chat = () => {
 
   return (
     <div className="h-full flex flex-col rounded border justify-between">
-      <ScrollArea ref={scrollAreaRef} className="flex-grow h-full sm:h-80 p-1">
+      <ScrollArea ref={scrollAreaRef} className="h-full sm:h-80 p-1">
         {messages?.map((message, index) => {
           const isConsecutive =
             index > 0 && messages[index - 1].user === message.user
@@ -78,18 +113,19 @@ export const Chat = () => {
                 {!isConsecutive && (
                   <Label className="font-bold">{message.user}</Label>
                 )}
-                <p className="text-sm">{message.text}</p>
+                <p className="text-sm break-all">{message.text}</p>
               </div>
             </div>
           )
         })}
       </ScrollArea>
       <div className="w-full p-2 flex items-center justify-center relative">
+        <SomeoneIsTyping />
         <Input
           id="name"
           type="text"
           ref={inputRef}
-          className="peer border rounded-lg shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-ring"
+          className="peer border rounded-lg shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-ring z-10"
           placeholder="Message"
           value={input}
           onChange={(e) => {

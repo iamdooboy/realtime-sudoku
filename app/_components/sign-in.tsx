@@ -74,6 +74,7 @@ export function SignInForm() {
             >
               {DIFFICULTIES.map((difficulty) => (
                 <ToggleGroupItem
+                  key={difficulty}
                   value={difficulty}
                   aria-label={`Toggle ${difficulty}`}
                   className="w-full"

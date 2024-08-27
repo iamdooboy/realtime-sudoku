@@ -14,7 +14,7 @@ export const randomId = (count: number) => {
 
 export const generateSudoku = (difficulty: string) => {
   let sudokuGame = getSudoku()
-  let str = sudokuGame.generate(80)
+  let str = sudokuGame.generate(difficulty)
   const solved: any = sudokuGame.solve(str)
 
   const sudokuGrid = new LiveList<Cell>([])
