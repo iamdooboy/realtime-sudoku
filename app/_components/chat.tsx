@@ -71,22 +71,28 @@ export const Chat = () => {
     )
   }
 
-  const addMessage = useMutation(({ storage }, input: string) => {
-    if (!input) return
-    const data = new LiveObject({
-      user: user?.info.name,
-      text: input
-    })
-    storage?.get("messages")?.push(data)
+  const addMessage = useMutation(
+    (
+      { storage },
+      input: string,
+      e?:
+        | React.MouseEvent<HTMLButtonElement, MouseEvent>
+        | React.KeyboardEvent<HTMLInputElement>
+    ) => {
+      e?.preventDefault()
+      if (!input) return
+      const data = new LiveObject({
+        user: user?.info.name,
+        text: input
+      })
+      storage?.get("messages")?.push(data)
 
-    inputRef.current?.focus()
-    setInput("")
-    updateMyPresence({ isTyping: false })
-  }, [])
-
-  const clear = useMutation(({ storage }) => {
-    storage?.get("messages").clear()
-  }, [])
+      inputRef.current?.focus()
+      setInput("")
+      updateMyPresence({ isTyping: false })
+    },
+    []
+  )
 
   return (
     <div className="w-full h-full flex flex-col rounded border justify-between">
@@ -132,16 +138,15 @@ export const Chat = () => {
             setInput(e.target.value)
             updateMyPresence({ isTyping: true })
           }}
-          onKeyDown={(e) => e.key === "Enter" && addMessage(input)}
+          onKeyDown={(e) => e.key === "Enter" && addMessage(input, e)}
           onBlur={() => updateMyPresence({ isTyping: false })}
         />
         <button
-          onMouseDown={() => addMessage(input)}
+          onMouseDown={(e) => addMessage(input, e)}
           className="peer-placeholder-shown:opacity-0 transition-opacity duration-200 ease-in-out z-20"
         >
           <ArrowUpCircle className="fill-blue-500 stroke-white absolute right-4 top-4 h-6 w-6" />
         </button>
-        {/* <button onClick={clear}>clear</button> */}
       </div>
     </div>
   )

@@ -2,12 +2,13 @@ import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { getSudoku } from "./sudoku"
 import { LiveList, LiveObject } from "@liveblocks/client"
+import { env } from 'process'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 export const randomId = (count: number) => {
-  return "x".repeat(23).replace(/[x]/g, () => {
+  return "x".repeat(count).replace(/[x]/g, () => {
     return ((Math.random() * 16) | 0).toString(16)
   })
 }
@@ -30,4 +31,8 @@ export const generateSudoku = (difficulty: string) => {
   })
 
   return sudokuGrid
+}
+
+export function absoluteUrl(path: string) {
+  return `${env.NEXT_PUBLIC_APP_URL}${path}`
 }
