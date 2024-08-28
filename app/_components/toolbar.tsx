@@ -191,7 +191,7 @@ export const Toolbar = () => {
       ))}
       <Button
         disabled={!isRunning}
-        className="size-14 rounded-full sm:hidden block"
+        className="size-14 rounded-lg sm:hidden block"
         variant="outline"
       >
         <Eraser />

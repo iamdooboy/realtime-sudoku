@@ -8,6 +8,7 @@ import {
 } from "@liveblocks/react/suspense"
 import { LiveList } from "@liveblocks/client"
 import { NameDialog } from "./name-dialog"
+import { CircleDashed } from "lucide-react"
 
 type RoomProps = {
   roomId: string
@@ -56,6 +57,15 @@ export function LiveblocksRoom({ children, roomId }: RoomProps) {
     )
   }
 
+  const loading = (
+    <div className="flex justify-center items-center gap-1 h-full">
+      Joining game
+      <div className="animate-bounce [animation-delay:-0.3s]">.</div>
+      <div className="animate-bounce [animation-delay:-0.13s]">.</div>
+      <div className="animate-bounce">.</div>
+    </div>
+  )
+
   return (
     <LiveblocksProvider
       authEndpoint={async (room) => {
@@ -71,9 +81,7 @@ export function LiveblocksRoom({ children, roomId }: RoomProps) {
         id={roomId}
         initialStorage={initialStorage}
       >
-        <ClientSideSuspense fallback={<div>Loading…</div>}>
-          {children}
-        </ClientSideSuspense>
+        <ClientSideSuspense fallback={loading}>{children}</ClientSideSuspense>
       </RoomProvider>
     </LiveblocksProvider>
   )

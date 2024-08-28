@@ -9,10 +9,13 @@ import { randomId } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { ToggleGroup, ToggleGroupItem } from "@/shadcn/toggle-group"
 import { DIFFICULTIES } from "@/utils/constants"
+import { CircleDashed } from "lucide-react"
+import { AnimatePresence, motion } from "framer-motion"
 
 export function SignInForm() {
   const [difficulty, setDifficulty] = useState("")
   const [input, setInput] = useState("")
+  const [loadingText, setLoadingText] = useState("Start game")
 
   const router = useRouter()
 
@@ -20,10 +23,10 @@ export function SignInForm() {
     if (!input || !difficulty) {
       return
     }
-
+    setLoadingText("Creating game...")
     localStorage.setItem("name", input)
-    const id = randomId(23)
 
+    const id = randomId(23)
     try {
       //create room and initialize storage
       const response = await fetch("/api/rooms/", {
@@ -35,6 +38,7 @@ export function SignInForm() {
       })
 
       if (response.ok) {
+        setLoadingText("Joining game...")
         router.push(`/room/${id}`)
       }
     } catch (error) {
@@ -84,8 +88,31 @@ export function SignInForm() {
               ))}
             </ToggleGroup>
           </div>
-          <Button type="submit" className="w-full" onClick={onSubmitHandler}>
-            Start game
+          <Button
+            disabled={loadingText === "Creating game..."}
+            type="submit"
+            className="w-full"
+            onClick={onSubmitHandler}
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={loadingText === "Creating game..." ? "loading" : "start"}
+                initial={{ opacity: 0, y: -15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 15 }}
+                transition={{ duration: 0.1 }}
+                className="flex items-center justify-center gap-1"
+              >
+                {loadingText === "Creating game..." ? (
+                  <>
+                    <CircleDashed className="h-4 w-4 animate-spin" />
+                    {loadingText}
+                  </>
+                ) : (
+                  <>{loadingText}</>
+                )}
+              </motion.span>
+            </AnimatePresence>
           </Button>
         </div>
       </CardContent>

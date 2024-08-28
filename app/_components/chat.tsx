@@ -59,8 +59,7 @@ export const Chat = () => {
               {typingUsers.length > 1
                 ? "Several people are "
                 : typingUsers[0].info.name}
-              {" is "}
-              typing
+              &nbsp;{"is"}&nbsp; typing
               <div className="animate-bounce [animation-delay:-0.3s]">.</div>
               <div className="animate-bounce [animation-delay:-0.13s]">.</div>
               <div className="animate-bounce">.</div>

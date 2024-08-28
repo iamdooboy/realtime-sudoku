@@ -53,7 +53,7 @@ export const Td: React.FC<TdProps> = ({
           }
         )}
       >
-        {value}
+        <p className="text-2xl">{value}</p>
       </div>
     )
   }
@@ -101,13 +101,17 @@ export const Td: React.FC<TdProps> = ({
               {showNotes ? (
                 <Notes notes={value} />
               ) : (
-                value !== 0 && <p>{value}</p>
+                value !== 0 && <p className="text-2xl">{value}</p>
               )}
             </div>
           )
         }
       })}
-      {showNotes ? <Notes notes={value} /> : value !== 0 && <p>{value}</p>}
+      {showNotes ? (
+        <Notes notes={value} />
+      ) : (
+        value !== 0 && <p className="text-2xl">{value}</p>
+      )}
     </div>
   )
 }
