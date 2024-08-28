@@ -16,6 +16,7 @@ import { NotesContext } from "../_context/notes-context"
 import { useMutation, useStorage } from "@liveblocks/react/suspense"
 import { LiveObject } from "@liveblocks/client"
 import { ConfettiButton } from "./confetti"
+import { DeleteButton } from './delete-button'
 
 type ToolProps = {
   disabled: boolean
@@ -117,8 +118,6 @@ export const Toolbar = () => {
     undoHistory.delete(undoHistory.length - 1)
   }, [])
 
-  const erase = useMutation(({ storage }, index: number) => {}, [])
-
   const { notesMode, toggleNotesMode } = useContext(NotesContext)
 
   if (isSolved) {
@@ -189,13 +188,13 @@ export const Toolbar = () => {
           <TooltipContent>{tool.type}</TooltipContent>
         </Tooltip>
       ))}
-      <Button
+      <DeleteButton
         disabled={!isRunning}
         className="size-14 rounded-lg sm:hidden block"
         variant="outline"
       >
         <Eraser />
-      </Button>
+      </DeleteButton>
     </TooltipProvider>
   )
 }

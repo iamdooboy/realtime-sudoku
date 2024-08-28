@@ -1,7 +1,7 @@
 "use client"
 
 import { useContext } from "react"
-import { Button } from "./shadcn/button"
+import { Button } from "@/shadcn/button"
 import { useMutation, useStorage } from "@liveblocks/react/suspense"
 import { TableCellContext } from "../_context/table-cell-context"
 import { LiveList, LiveObject } from "@liveblocks/client"
@@ -9,6 +9,7 @@ import { NotesContext } from "../_context/notes-context"
 import { cn } from "@/lib/utils"
 import { Delete } from "lucide-react"
 import confetti from "canvas-confetti"
+import { DeleteButton } from "./delete-button"
 
 type SelectNumProps = {
   numPad: number | null
@@ -34,7 +35,7 @@ export const Numpad = () => {
     if (currentValue === undefined) return
 
     if (typeof currentValue === "object" && currentValue !== null) {
-      currentValue = new LiveList([...currentValue.toImmutable()])
+      currentValue = currentValue.clone()
     }
 
     const history = new LiveObject<HistoryStack>({
@@ -116,7 +117,7 @@ export const Numpad = () => {
       }
 
       if (typeof currentValue === "object") {
-        currentValue = new LiveList([...currentValue.toImmutable()])
+        currentValue = currentValue.clone()
       }
 
       const history = new LiveObject<HistoryStack>({
@@ -206,13 +207,13 @@ export const Numpad = () => {
           </p>
         </Button>
       ))}
-      <Button
+      <DeleteButton
         disabled={!isRunning || isSolved}
         variant="secondary"
         className="rounded p-2 text-center aspect-square size-full hidden sm:flex"
       >
         <Delete onClick={() => erase(tableCell.index!)} />
-      </Button>
+      </DeleteButton>
     </>
   )
 }
