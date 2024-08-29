@@ -58,9 +58,8 @@ export const Chat = () => {
               transition={{ duration: 0.2 }}
             >
               {typingUsers.length > 1
-                ? "Several people are "
-                : typingUsers[0].info.name}
-              &nbsp;{"is"}&nbsp; typing
+                ? "Several people are typing"
+                : typingUsers[0].info.name + " is typing"}
               <div className="animate-bounce [animation-delay:-0.3s]">.</div>
               <div className="animate-bounce [animation-delay:-0.13s]">.</div>
               <div className="animate-bounce">.</div>
@@ -99,7 +98,7 @@ export const Chat = () => {
       <div className="w-full p-2 border-b">
         <AvatarStack />
       </div>
-      <ScrollArea ref={scrollAreaRef} className="h-[263px] p-1">
+      <ScrollArea ref={scrollAreaRef} className="h-[256px] p-1">
         {messages?.map((message, index) => {
           const isConsecutive =
             index > 0 && messages[index - 1].user === message.user

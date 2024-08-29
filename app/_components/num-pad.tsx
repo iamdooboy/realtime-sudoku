@@ -87,33 +87,6 @@ export const Numpad = () => {
 
       if (isGameSolved) {
         storage.update({ isSolved: true, isRunning: false })
-        const end = Date.now() + 3 * 1000 // 3 seconds
-        const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"]
-
-        const frame = () => {
-          if (Date.now() > end) return
-
-          confetti({
-            particleCount: 2,
-            angle: 60,
-            spread: 55,
-            startVelocity: 60,
-            origin: { x: 0, y: 0.5 },
-            colors: colors
-          })
-          confetti({
-            particleCount: 2,
-            angle: 120,
-            spread: 55,
-            startVelocity: 60,
-            origin: { x: 1, y: 0.5 },
-            colors: colors
-          })
-
-          requestAnimationFrame(frame)
-        }
-
-        frame()
       }
 
       if (typeof currentValue === "object") {
@@ -182,6 +155,35 @@ export const Numpad = () => {
     []
   )
 
+  if (isSolved) {
+    const end = Date.now() + 3 * 1000 // 3 seconds
+    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"]
+
+    const frame = () => {
+      if (Date.now() > end) return
+
+      confetti({
+        particleCount: 2,
+        angle: 60,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 0, y: 0.5 },
+        colors: colors
+      })
+      confetti({
+        particleCount: 2,
+        angle: 120,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 1, y: 0.5 },
+        colors: colors
+      })
+
+      requestAnimationFrame(frame)
+    }
+    frame()
+  }
+
   return (
     <>
       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((numPad, index) => (
@@ -189,7 +191,7 @@ export const Numpad = () => {
           disabled={!isRunning || isSolved}
           variant="secondary"
           key={index}
-          className="p-2 rounded md:text-lg sm:font-medium text-center aspect-square size-full"
+          className="p-2 rounded md:text-lg sm:font-medium text-center aspect-square size-full md:size-14"
           onClick={() => {
             if (notesMode) {
               addNotes({ numPad, index: tableCell.index! })
@@ -210,7 +212,7 @@ export const Numpad = () => {
       <DeleteButton
         disabled={!isRunning || isSolved}
         variant="secondary"
-        className="rounded p-2 text-center aspect-square size-full hidden sm:flex"
+        className="rounded p-2 text-center aspect-square size-14 hidden sm:flex"
       >
         <Delete onClick={() => erase(tableCell.index!)} />
       </DeleteButton>

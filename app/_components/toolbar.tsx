@@ -121,30 +121,18 @@ export const Toolbar = () => {
   const { notesMode, toggleNotesMode } = useContext(NotesContext)
 
   if (isSolved) {
-    const degrees = [-90, -45, 0]
     return (
-      <>
-        {degrees.map((degree) => (
-          <ConfettiButton
-            key={degree}
-            className="size-14"
-            variant="outline"
-            options={{
-              get angle() {
-                return degree * -1 + 45
-              }
-            }}
-          >
-            <span
-              style={{
-                transform: `rotate(${degree}deg)`
-              }}
-            >
-              🎉
-            </span>
-          </ConfettiButton>
-        ))}
-      </>
+      <ConfettiButton
+        variant="secondary"
+        className="w-full h-14"
+        options={{
+          get angle() {
+            return Math.random() * 360
+          }
+        }}
+      >
+        🎉
+      </ConfettiButton>
     )
   }
 
