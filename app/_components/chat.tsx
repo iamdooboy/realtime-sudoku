@@ -18,6 +18,7 @@ import { Label } from "./shadcn/label"
 import { cn } from "@/lib/utils"
 import clsx from "clsx"
 import { AnimatePresence, motion } from "framer-motion"
+import { AvatarStack } from "./avatar-stack"
 
 export const Chat = () => {
   const scrollAreaRef = useRef<HTMLDivElement>(null)
@@ -95,7 +96,10 @@ export const Chat = () => {
 
   return (
     <div className="w-full h-full flex flex-col rounded border justify-between">
-      <ScrollArea ref={scrollAreaRef} className="h-full sm:h-80 p-1">
+      <div className="w-full p-2 border-b">
+        <AvatarStack />
+      </div>
+      <ScrollArea ref={scrollAreaRef} className="h-[263px] p-1">
         {messages?.map((message, index) => {
           const isConsecutive =
             index > 0 && messages[index - 1].user === message.user

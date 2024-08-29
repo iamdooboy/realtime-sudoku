@@ -9,6 +9,7 @@ import { Toolbar } from "@/_components/toolbar"
 import { TableCellProvider } from "@/app/_context/table-cell-context"
 import { NotesProvider } from "@/app/_context/notes-context"
 import { Chat } from "@/_components/chat"
+import { ModeToggle } from "@/_components/mode-toggle"
 export default async function Room({
   params
 }: {
@@ -16,11 +17,14 @@ export default async function Room({
 }) {
   return (
     <LiveblocksRoom roomId={params.id}>
-      <div className="grid grid-cols-6 p-2 sm:p-4 sm:gap-4 sm:border sm:rounded-lg sm:shadow">
+      <div className="grid grid-cols-6 p-2 gap-2 sm:p-6 sm:gap-4 sm:border sm:rounded-xl sm:shadow bg-card">
         <div className="col-span-6 flex justify-between items-center h-8 order-1 sm:border-b sm:pb-4">
           <Timer />
           <Mistakes />
-          <GameSettings />
+          <div className="flex gap-1">
+            <ModeToggle />
+            <GameSettings />
+          </div>
         </div>
         <div className="col-span-1 order-4 sm:col-span-1 sm:order-2 rounded space-y-3 hidden sm:grid h-full p-3 border">
           <SidePanel />
@@ -37,7 +41,7 @@ export default async function Room({
                 <Numpad />
               </div>
             </div>
-            <div className="sm:col-span-2 sm:order-4 col-span-6 order-5 flex-col gap-1 size-full sm:grid max-h-max min-h-80 sm:max-h-max p-2 mt-2 sm:p-0 sm:m-0">
+            <div className="sm:col-span-2 sm:order-4 col-span-6 order-5 flex flex-col gap-1 sm:grid size-full p-2 mt-2 sm:p-0 sm:m-0">
               <Chat />
               <div className="sm:grid grid-cols-5 gap-2 max-h-full h-full hidden">
                 <Numpad />

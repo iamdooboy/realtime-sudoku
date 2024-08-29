@@ -189,7 +189,7 @@ export const Numpad = () => {
           disabled={!isRunning || isSolved}
           variant="secondary"
           key={index}
-          className="p-2 rounded md:text-lg  sm:font-medium text-center aspect-square size-full"
+          className="p-2 rounded md:text-lg sm:font-medium text-center aspect-square size-full"
           onClick={() => {
             if (notesMode) {
               addNotes({ numPad, index: tableCell.index! })

@@ -176,7 +176,7 @@ export const Toolbar = () => {
           <TooltipTrigger asChild>
             <Button
               disabled={tool.disabled || !isRunning}
-              className={cn("size-14 rounded-lg relative", {
+              className={cn("size-14 rounded-xl relative", {
                 "bg-accent": notesMode && tool.type === TOOL_TYPES.ERASE
               })}
               variant="outline"

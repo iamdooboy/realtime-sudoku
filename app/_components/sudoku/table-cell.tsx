@@ -47,7 +47,7 @@ export const Td: React.FC<TdProps> = ({
           })
         }
         className={cn(
-          "bg-secondary text-center aspect-square align-middle w-full h-full flex items-center justify-center relative",
+          "bg-accent dark:bg-accent/25 aspect-square align-middle w-full h-full flex items-center justify-center relative",
           {
             "bg-tertiary": value === tableCell.value || sameInstance
           }
@@ -59,10 +59,10 @@ export const Td: React.FC<TdProps> = ({
   }
 
   const cellClassName = cn(
-    "text-center aspect-square align-middle w-full h-full flex items-center justify-center relative",
+    "aspect-square align-middle w-full h-full flex items-center justify-center relative",
     {
-      "text-blue-500": valid && validateMode,
-      "text-red-500": !valid && validateMode,
+      "text-correct": valid && validateMode,
+      "text-incorrect": !valid && validateMode,
       "bg-tertiary":
         (value === tableCell.value && typeof value === "number" && value > 0) ||
         sameInstance,
@@ -71,7 +71,7 @@ export const Td: React.FC<TdProps> = ({
         validateMode &&
         typeof value === "number" &&
         value > 0,
-      "bg-blue-100": selectedCell
+      "bg-correct/20": selectedCell
     },
     className
   )
@@ -92,10 +92,7 @@ export const Td: React.FC<TdProps> = ({
             <div
               key={connectionId}
               className={cn(
-                "absolute inset-0 bg-red-100 text-center justify-center items-center flex z-0",
-                {
-                  "mix-blend-multiply": focusIndex === tableCell.index
-                }
+                "absolute inset-0 bg-incorrect/20 text-center justify-center items-center flex z-0"
               )}
             >
               {showNotes ? (

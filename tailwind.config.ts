@@ -18,7 +18,10 @@ const config: Config = {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
+        border: {
+          DEFAULT: "hsl(var(--border))",
+          thick: "hsl(var(--border-thick))"
+        },
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
@@ -61,7 +64,9 @@ const config: Config = {
         playerTwo: {
           DEFAULT: "hsl(var(--player-two))",
           foreground: "hsl(var(--player-two-foreground))"
-        }
+        },
+        correct: "hsl(var(--correct))",
+        incorrect: "hsl(var(--incorrect))"
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -77,16 +82,22 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" }
         },
-        "background-position-spin": {
-          "0%": { backgroundPosition: "top center" },
-          "100%": { backgroundPosition: "bottom center" }
+        jiggle: {
+          "0%": {
+            transform: "rotate(-3deg)"
+          },
+          "50%": {
+            transform: "rotate(3deg)"
+          },
+          "100%": {
+            transform: "rotate(-3deg)"
+          }
         }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        backgroundPositionSpin:
-          "background-position-spin 3000ms infinite alternate"
+        jiggle: "jiggle 0.5s ease-in-out"
       }
     }
   },

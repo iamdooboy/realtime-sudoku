@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/shadcn/sonner"
+import { ThemeProvider } from "@/_components/theme-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
@@ -25,11 +26,18 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "flex items-center justify-center h-screen",
+          "flex items-center justify-center h-screen bg-primary/10 dark:bg-background/50",
           inter.className
         )}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>

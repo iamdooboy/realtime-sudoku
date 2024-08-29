@@ -73,10 +73,10 @@ export const Table = () => {
             className={cn(
               "flex items-center justify-center border border-b-0 border-r-0",
               {
-                "border-t-2 border-t-slate-400": rowIndex % 3 === 0,
-                "border-l-2 border-l-slate-400": colIndex % 3 === 0,
-                "border-r-2 border-r-slate-400": colIndex === 8,
-                "border-b-2 border-b-slate-400": rowIndex === 8
+                "border-t-2 border-t-border-thick": rowIndex % 3 === 0,
+                "border-l-2 border-l-border-thick": colIndex % 3 === 0,
+                "border-r-2 border-r-border-thick": colIndex === 8,
+                "border-b-2 border-b-border-thick": rowIndex === 8
               }
             )}
           >

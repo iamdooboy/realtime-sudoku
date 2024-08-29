@@ -16,6 +16,13 @@ export function SidePanel() {
 
   const pathname = usePathname()
 
+  const animationProps = {
+    initial: { scale: 0.5, opacity: 0 },
+    animate: { scale: 1, opacity: 1 },
+    exit: { scale: 0.5, opacity: 0 },
+    transition: { duration: 0.1 }
+  }
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       setFullUrl(window.location.origin + pathname)
@@ -60,7 +67,7 @@ export function SidePanel() {
 
       <Button
         variant="outline"
-        className="w-full"
+        className="w-full rounded"
         onClick={copyToClipboard}
         disabled={copied}
       >
@@ -68,11 +75,8 @@ export function SidePanel() {
           {copied ? (
             <motion.div
               key="check"
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.5, opacity: 0 }}
-              transition={{ duration: 0.1 }}
               className="flex place-items-center gap-1"
+              {...animationProps}
             >
               <Check className="size-4 mr-1" />
               Copied!
@@ -80,11 +84,8 @@ export function SidePanel() {
           ) : (
             <motion.div
               key="copy"
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.5, opacity: 0 }}
-              transition={{ duration: 0.1 }}
               className="flex place-items-center gap-1"
+              {...animationProps}
             >
               <Link className="size-4 mr-1" />
               Copy link

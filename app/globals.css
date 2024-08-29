@@ -4,6 +4,7 @@
 
 
 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -22,8 +23,9 @@
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 212.7 26.8% 75%;
-    --input: 212.7 26.8% 75%;
+    --border: 214.3 31.8% 84.4%;
+    --border-thick: 214.3 31.8% 80.4%;
+    --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
     --chart-1: 12 76% 61%;
@@ -31,7 +33,9 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --tertiary: 210 40% 88.1%;
+    --correct: 221.2 83.2% 53.3%;
+    --incorrect: 0 72.2% 50.6%;
+
   }
 
   .dark {
@@ -52,6 +56,7 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
+    --border-thick: 217.2 32.6% 26.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9;
     --chart-1: 220 70% 50%;
@@ -59,8 +64,11 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --correct: 217.2 91.2% 59.8%;
+    --incorrect: 0 72.2% 50.6%;
   }
 }
+
 
 
 
