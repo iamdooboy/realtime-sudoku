@@ -1,8 +1,8 @@
 "use client"
 
+import { useMutation, useStorage } from "@liveblocks/react/suspense"
 import { PauseCircle, PlayCircle } from "lucide-react"
 import { useEffect } from "react"
-import { useMutation, useStorage } from "@liveblocks/react/suspense"
 
 export function Timer() {
   const time = useStorage((root) => root.time)

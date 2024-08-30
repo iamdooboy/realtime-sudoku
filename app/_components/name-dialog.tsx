@@ -1,9 +1,9 @@
 "use client"
 
 import { Label } from "@radix-ui/react-label"
-import { Button } from "./shadcn/button"
-import { Card, CardHeader, CardTitle, CardContent } from "./shadcn/card"
-import { Input } from "./shadcn/input"
+import { Button } from "@/shadcn/button"
+import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/card"
+import { Input } from "@/shadcn/input"
 
 type NameDialogProps = {
   input: string

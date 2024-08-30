@@ -39,6 +39,7 @@ declare global {
       undoHistory: LiveList<LiveObject<HistoryStack>>
       redoHistory: LiveList<LiveObject<HistoryStack>>
       messages: LiveList<LiveObject<Message>>
+      confettiOptions: LiveObject<{ x: number | null; y: number | null }>
     }
 
     // Custom user info set when authenticating with a secret key

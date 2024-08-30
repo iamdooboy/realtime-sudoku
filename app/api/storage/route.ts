@@ -1,3 +1,4 @@
+import { generateSudoku } from "@/lib/utils"
 import { liveblocks } from "@/liveblocks.server.config"
 import {
   LiveList,
@@ -5,7 +6,6 @@ import {
   PlainLsonObject,
   toPlainLson
 } from "@liveblocks/client"
-import { generateSudoku } from "@/lib/utils"
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -20,9 +20,10 @@ export async function POST(req: Request) {
     isSolved: false,
     sudoku: generateSudoku(difficulty),
     mistakeCount: 0,
-    validateMode: false,
+    validateMode: true,
     undoHistory: new LiveList<LiveObject<HistoryStack>>([]),
-    redoHistory: new LiveList<LiveObject<HistoryStack>>([])
+    redoHistory: new LiveList<LiveObject<HistoryStack>>([]),
+    confettiOptions: new LiveObject({ x: null, y: null })
   })
 
   const root = toPlainLson(game) as PlainLsonObject

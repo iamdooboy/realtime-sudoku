@@ -1,3 +1,9 @@
+import confetti from "canvas-confetti"
+import type {
+  GlobalOptions as ConfettiGlobalOptions,
+  CreateTypes as ConfettiInstance,
+  Options as ConfettiOptions
+} from "canvas-confetti"
 import type { ReactNode } from "react"
 import React, {
   createContext,
@@ -8,12 +14,6 @@ import React, {
   useMemo,
   useRef
 } from "react"
-import confetti from "canvas-confetti"
-import type {
-  GlobalOptions as ConfettiGlobalOptions,
-  CreateTypes as ConfettiInstance,
-  Options as ConfettiOptions
-} from "canvas-confetti"
 
 import { Button, ButtonProps } from "@/shadcn/button"
 

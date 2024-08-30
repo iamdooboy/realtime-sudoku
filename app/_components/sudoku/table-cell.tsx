@@ -1,13 +1,14 @@
-type TableCellProps = {
-  value: number | null | readonly number[]
-  index: number | null
-}
 
 import React from "react"
 
 import { cn } from "@/lib/utils"
 import { useOthersMapped, useStorage } from "@liveblocks/react/suspense"
 import { Notes } from "./notes"
+
+type TableCellProps = {
+  value: number | null | readonly number[]
+  index: number | null
+}
 
 interface TdProps extends React.ComponentPropsWithoutRef<"td"> {
   sudokuIndex: number

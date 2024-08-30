@@ -10,13 +10,14 @@ import { Undo2, Redo2, Edit3, Eraser } from "lucide-react"
 import { Button } from "@/shadcn/button"
 import { TOOL_TYPES } from "@/utils/constants"
 import { cn } from "@/lib/utils"
-import { Badge } from "./shadcn/badge"
+import { Badge } from "@/shadcn/badge"
 import { useContext } from "react"
 import { NotesContext } from "../_context/notes-context"
 import { useMutation, useStorage } from "@liveblocks/react/suspense"
 import { LiveObject } from "@liveblocks/client"
 import { ConfettiButton } from "./confetti"
-import { DeleteButton } from './delete-button'
+import { DeleteButton } from "./delete-button"
+import confetti from "canvas-confetti"
 
 type ToolProps = {
   disabled: boolean
@@ -43,6 +44,7 @@ export const Toolbar = () => {
   const canRedo = useStorage((root) => root.redoHistory.length > 0)
   const isRunning = useStorage((root) => root.isRunning)
   const isSolved = useStorage((root) => root.isSolved)
+  const confettiOptions = useStorage((root) => root.confettiOptions)
 
   const redo = useMutation(({ storage }) => {
     const undoHistory = storage?.get("undoHistory")
@@ -118,21 +120,45 @@ export const Toolbar = () => {
     undoHistory.delete(undoHistory.length - 1)
   }, [])
 
+  const setOrigin = useMutation(
+    ({ storage }, e: React.MouseEvent<HTMLButtonElement>) => {
+      const rect = e.currentTarget.getBoundingClientRect()
+      const x = rect.left + rect.width / 2
+      const y = rect.top + rect.height / 2
+      storage.set(
+        "confettiOptions",
+        new LiveObject({
+          x,
+          y
+        })
+      )
+    },
+    []
+  )
+
   const { notesMode, toggleNotesMode } = useContext(NotesContext)
 
   if (isSolved) {
+    if (confettiOptions.x && confettiOptions.y) {
+      confetti({
+        get angle() {
+          return Math.random() * 360
+        },
+        origin: {
+          x: confettiOptions.x / window.innerWidth,
+          y: confettiOptions.y / window.innerHeight
+        }
+      })
+    }
+
     return (
-      <ConfettiButton
+      <Button
+        onClick={(e) => setOrigin(e)}
         variant="secondary"
         className="w-full h-14"
-        options={{
-          get angle() {
-            return Math.random() * 360
-          }
-        }}
       >
         🎉
-      </ConfettiButton>
+      </Button>
     )
   }
 

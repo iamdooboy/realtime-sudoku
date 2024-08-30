@@ -1,8 +1,8 @@
+import { LiveList, LiveObject } from "@liveblocks/client"
 import { type ClassValue, clsx } from "clsx"
+import { env } from 'process'
 import { twMerge } from "tailwind-merge"
 import { getSudoku } from "./sudoku"
-import { LiveList, LiveObject } from "@liveblocks/client"
-import { env } from 'process'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

@@ -1,14 +1,13 @@
 "use client"
 
-import { ReactNode, useEffect, useState } from "react"
+import { LiveList, LiveObject } from "@liveblocks/client"
 import {
+  ClientSideSuspense,
   LiveblocksProvider,
-  RoomProvider,
-  ClientSideSuspense
+  RoomProvider
 } from "@liveblocks/react/suspense"
-import { LiveList } from "@liveblocks/client"
+import { ReactNode, useEffect, useState } from "react"
 import { NameDialog } from "./name-dialog"
-import { CircleDashed } from "lucide-react"
 
 type RoomProps = {
   roomId: string
@@ -24,7 +23,8 @@ const initialStorage = {
   validateMode: false,
   undoHistory: new LiveList([]),
   redoHistory: new LiveList([]),
-  messages: new LiveList([])
+  messages: new LiveList([]),
+  confettiOptions: new LiveObject({ x: null, y: null })
 }
 
 export function LiveblocksRoom({ children, roomId }: RoomProps) {

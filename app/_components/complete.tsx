@@ -1,5 +1,5 @@
 import { DIFFICULTIES } from "@/utils/constants"
-import { Button } from "./shadcn/button"
+import { Button } from "@/shadcn/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +8,7 @@ import {
 } from "@/shadcn/dropdown-menu"
 import SparklesText from "./sparkles-text"
 import { useMutation } from "@liveblocks/react/suspense"
-import { LiveList } from "@liveblocks/client"
+import { LiveList, LiveObject } from "@liveblocks/client"
 import { generateSudoku } from "@/lib/utils"
 import { motion } from "framer-motion"
 
@@ -21,9 +21,13 @@ export function Complete() {
       isSolved: false,
       sudoku: sudoku,
       mistakeCount: 0,
-      validateMode: false,
+      validateMode: storage.get("validateMode"),
       undoHistory: new LiveList([]),
-      redoHistory: new LiveList([])
+      redoHistory: new LiveList([]),
+      confettiOptions: new LiveObject({
+        x: null,
+        y: null
+      })
     })
   }, [])
 

@@ -15,11 +15,7 @@
     "rules": {
       "recommended": false,
       "correctness": {
-        "useJsxKeyInIterable": "off",
-        "noUnusedVariables": {
-          "level": "error",
-          "fix": "none"
-        }
+        "useJsxKeyInIterable": "off"
       }
     }
   },

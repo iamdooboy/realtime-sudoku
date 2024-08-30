@@ -1,4 +1,3 @@
-import { randomId } from "@/lib/utils"
 import { liveblocks } from "@/liveblocks.server.config"
 
 export async function POST(request: Request) {

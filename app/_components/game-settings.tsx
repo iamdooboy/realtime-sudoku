@@ -2,11 +2,11 @@
 
 import { CardDescription, CardTitle } from "@/shadcn/card"
 import { Label } from "@/shadcn/label"
-import { Switch } from "@/shadcn/switch"
-import { Settings } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/popover"
+import { Switch } from "@/shadcn/switch"
 import { useStorage } from "@liveblocks/react/suspense"
 import { useMutation } from "@liveblocks/react/suspense"
+import { Settings } from "lucide-react"
 
 export function GameSettings() {
   const validateMode = useStorage((root) => root.validateMode)

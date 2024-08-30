@@ -3,7 +3,7 @@
 import { useOthersListener } from "@liveblocks/react"
 import { toast } from "sonner"
 import { Check, Link } from "lucide-react"
-import { Button } from "./shadcn/button"
+import { Button } from "@/shadcn/button"
 import QRCode from "react-qr-code"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"

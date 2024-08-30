@@ -1,16 +1,16 @@
 "use client"
 
+import { randomId } from "@/lib/utils"
 import { Button } from "@/shadcn/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/shadcn/card"
 import { Input } from "@/shadcn/input"
 import { Label } from "@/shadcn/label"
-import { useState } from "react"
-import { randomId } from "@/lib/utils"
-import { useRouter } from "next/navigation"
 import { ToggleGroup, ToggleGroupItem } from "@/shadcn/toggle-group"
 import { DIFFICULTIES } from "@/utils/constants"
-import { CircleDashed } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
+import { CircleDashed } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 export function SignInForm() {
   const [difficulty, setDifficulty] = useState("")

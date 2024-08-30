@@ -14,12 +14,6 @@ export function AvatarStack() {
   const others = useOthersMapped((other) => other.info)
   const currentUser = useSelf()
 
-  const animationProps = {
-    initial: { width: 0, transformOrigin: "left" },
-    animate: { width: "auto", height: "auto" },
-    exit: { width: 0 }
-  }
-
   return (
     <TooltipProvider delayDuration={0}>
       <div className="flex pl-3 justify-end">
@@ -28,37 +22,52 @@ export function AvatarStack() {
             .slice(0, 3)
             .reverse()
             .map(([key, info]) => (
-              <motion.div key={key} {...animationProps}>
-                <Tooltip key={key}>
-                  <TooltipTrigger>
-                    <Avatar className="outline-2 outline outline-white dark:outline-slate-900 size-7">
-                      <AvatarImage src={info.avatar} />
-                      <AvatarFallback>{info.name}</AvatarFallback>
-                    </Avatar>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{info.name}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </motion.div>
+              <AvatarTooltip
+                key={key}
+                avatar={info.avatar}
+                name={info.name}
+                motionKey={key}
+              />
             ))}
           {currentUser ? (
-            <motion.div key="you" {...animationProps}>
-              <Tooltip>
-                <TooltipTrigger>
-                  <Avatar className="outline-2 outline outline-white dark:outline-slate-900 size-7">
-                    <AvatarImage src={currentUser.info.avatar} />
-                    <AvatarFallback>{currentUser.info.name}</AvatarFallback>
-                  </Avatar>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>You</p>
-                </TooltipContent>
-              </Tooltip>
-            </motion.div>
+            <AvatarTooltip
+              avatar={currentUser.info.avatar}
+              name={currentUser.info.name}
+            />
           ) : null}
         </AnimatePresence>
       </div>
     </TooltipProvider>
+  )
+}
+
+const AvatarTooltip = ({
+  avatar,
+  name,
+  motionKey = "you"
+}: { avatar: string; name: string; motionKey?: string | number }) => {
+  const animationProps = {
+    initial: { width: 0, transformOrigin: "left" },
+    animate: { width: "auto", height: "auto" },
+    exit: { width: 0 }
+  }
+  return (
+    <motion.div
+      key={motionKey}
+      {...animationProps}
+      className="flex justify-center"
+    >
+      <Tooltip>
+        <TooltipTrigger>
+          <Avatar className="outline-2 outline outline-background size-7">
+            <AvatarImage src={avatar} />
+            <AvatarFallback>{name}</AvatarFallback>
+          </Avatar>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>You</p>
+        </TooltipContent>
+      </Tooltip>
+    </motion.div>
   )
 }

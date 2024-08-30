@@ -1,10 +1,10 @@
 "use client"
 
+import { Button, ButtonProps } from "@/shadcn/button"
+import { LiveObject } from "@liveblocks/client"
 import { useMutation } from "@liveblocks/react/suspense"
-import { Button, ButtonProps } from "./shadcn/button"
 import { ReactNode, useContext } from "react"
 import { TableCellContext } from "../_context/table-cell-context"
-import { LiveObject } from "@liveblocks/client"
 
 interface DeleteButtonProps extends ButtonProps {
   children: ReactNode

@@ -1,22 +1,20 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from "react"
-import { ScrollArea } from "./shadcn/scroll-area"
-import { Input } from "./shadcn/input"
+import { ScrollArea } from "@/shadcn/scroll-area"
+import { Input } from "@/shadcn/input"
 import {
   useSelf,
   useMutation,
   useStorage,
   useUpdateMyPresence,
-  useOthers,
-  useOthersMapped
+  useOthers
 } from "@liveblocks/react/suspense"
 import { LiveObject, shallow } from "@liveblocks/client"
 import { ArrowUpCircle } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "./shadcn/avatar"
-import { Label } from "./shadcn/label"
+import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/avatar"
+import { Label } from "@/shadcn/label"
 import { cn } from "@/lib/utils"
-import clsx from "clsx"
 import { AnimatePresence, motion } from "framer-motion"
 import { AvatarStack } from "./avatar-stack"
 
@@ -39,36 +37,6 @@ export const Chat = () => {
       }
     }
   }, [messages])
-
-  function SomeoneIsTyping() {
-    const typingUsers = useOthers(
-      (others) => others.filter((other) => other.presence.isTyping),
-      shallow
-    )
-
-    return (
-      <div className="absolute -top-3 right-0 text-muted-foreground text-xs mr-3">
-        <AnimatePresence>
-          {typingUsers.length > 0 && (
-            <motion.div
-              className="flex gap-1"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.2 }}
-            >
-              {typingUsers.length > 1
-                ? "Several people are typing"
-                : typingUsers[0].info.name + " is typing"}
-              <div className="animate-bounce [animation-delay:-0.3s]">.</div>
-              <div className="animate-bounce [animation-delay:-0.13s]">.</div>
-              <div className="animate-bounce">.</div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    )
-  }
 
   const addMessage = useMutation(
     (
@@ -95,15 +63,15 @@ export const Chat = () => {
 
   return (
     <div className="w-full h-full flex flex-col rounded border justify-between">
-      <div className="w-full p-2 border-b">
+      <div className="w-full p-2 border-b shadow-sm">
         <AvatarStack />
       </div>
-      <ScrollArea ref={scrollAreaRef} className="h-[256px] p-1">
+      <ScrollArea ref={scrollAreaRef} className="h-[256px] p-1 relative">
         {messages?.map((message, index) => {
           const isConsecutive =
             index > 0 && messages[index - 1].user === message.user
           return (
-            <div key={index} className="flex p-1 items-center">
+            <div key={index} className="flex p-1 items-center z-0">
               {!isConsecutive && (
                 <Avatar className="w-8 h-8 mt-1">
                   <AvatarImage
@@ -128,7 +96,7 @@ export const Chat = () => {
         })}
       </ScrollArea>
       <div className="w-full p-2 flex items-center justify-center relative">
-        <SomeoneIsTyping />
+        <WhoIsTyping />
         <Input
           id="name"
           type="text"
@@ -150,6 +118,36 @@ export const Chat = () => {
           <ArrowUpCircle className="fill-blue-500 stroke-white absolute right-4 top-4 h-6 w-6" />
         </button>
       </div>
+    </div>
+  )
+}
+
+function WhoIsTyping() {
+  const typingUsers = useOthers(
+    (others) => others.filter((other) => other.presence.isTyping),
+    shallow
+  )
+
+  return (
+    <div className="absolute -top-3 right-0 text-muted-foreground text-xs mr-3">
+      {typingUsers.length > 0 && (
+        <AnimatePresence>
+          <motion.div
+            className="flex gap-1"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.2 }}
+          >
+            {typingUsers.length > 1
+              ? "Several people are typing"
+              : typingUsers[0].info.name + " is typing"}
+            <div className="animate-bounce [animation-delay:-0.3s]">.</div>
+            <div className="animate-bounce [animation-delay:-0.13s]">.</div>
+            <div className="animate-bounce">.</div>
+          </motion.div>
+        </AnimatePresence>
+      )}
     </div>
   )
 }
