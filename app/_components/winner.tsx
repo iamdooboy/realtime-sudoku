@@ -32,7 +32,7 @@ export function Winner() {
   }, [])
 
   return (
-    <div className="size-full border shadow flex flex-col justify-center items-center gap-4 bg-muted">
+    <div className="size-full border shadow flex flex-col justify-center items-center gap-4 bg-muted aspect-square">
       <motion.div
         variants={{
           hidden: { filter: "blur(10px)", opacity: 0 },

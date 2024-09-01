@@ -45,7 +45,7 @@ export const GameOver = () => {
 
   return (
     <motion.div
-      className="size-full border shadow flex flex-col justify-center items-center gap-1 bg-muted"
+      className="size-full border shadow flex flex-col justify-center items-center gap-1 bg-muted aspect-square"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}

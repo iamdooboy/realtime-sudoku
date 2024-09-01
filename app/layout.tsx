@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={cn(
-          "flex items-center justify-center h-screen bg-primary/10 dark:bg-background/50",
+          "flex items-center justify-center min-h-svh",
           inter.className
         )}
       >
