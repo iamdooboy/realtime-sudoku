@@ -4,8 +4,7 @@ import { CardDescription, CardTitle } from "@/shadcn/card"
 import { Label } from "@/shadcn/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn/popover"
 import { Switch } from "@/shadcn/switch"
-import { useStorage } from "@liveblocks/react/suspense"
-import { useMutation } from "@liveblocks/react/suspense"
+import { useMutation, useStorage } from "@liveblocks/react/suspense"
 import { Settings } from "lucide-react"
 
 export function GameSettings() {

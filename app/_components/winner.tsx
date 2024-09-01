@@ -1,4 +1,4 @@
-import { DIFFICULTIES } from "@/utils/constants"
+import { generateSudoku } from "@/lib/utils"
 import { Button } from "@/shadcn/button"
 import {
   DropdownMenu,
@@ -6,13 +6,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/shadcn/dropdown-menu"
-import SparklesText from "./sparkles-text"
-import { useMutation } from "@liveblocks/react/suspense"
+import { DIFFICULTIES } from "@/utils/constants"
 import { LiveList, LiveObject } from "@liveblocks/client"
-import { generateSudoku } from "@/lib/utils"
+import { useMutation } from "@liveblocks/react/suspense"
 import { motion } from "framer-motion"
+import SparklesText from "./sparkles-text"
 
-export function Complete() {
+export function Winner() {
   const startNewGame = useMutation(({ storage }, difficulty: string) => {
     const sudoku = generateSudoku(difficulty)
     storage.update({
@@ -32,7 +32,7 @@ export function Complete() {
   }, [])
 
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-5 w-full h-full justify-center bg-background border shadow aspect-square">
+    <div className="size-full border shadow flex flex-col justify-center items-center gap-4 bg-muted">
       <motion.div
         variants={{
           hidden: { filter: "blur(10px)", opacity: 0 },

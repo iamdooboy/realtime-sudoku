@@ -1,13 +1,13 @@
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/avatar"
-import { useOthersMapped, useSelf } from "@liveblocks/react/suspense"
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
 } from "@/shadcn/tooltip"
+import { useOthersMapped, useSelf } from "@liveblocks/react/suspense"
 import { AnimatePresence, motion } from "framer-motion"
 
 export function AvatarStack() {

@@ -1,21 +1,21 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
-import { ScrollArea } from "@/shadcn/scroll-area"
-import { Input } from "@/shadcn/input"
-import {
-  useSelf,
-  useMutation,
-  useStorage,
-  useUpdateMyPresence,
-  useOthers
-} from "@liveblocks/react/suspense"
-import { LiveObject, shallow } from "@liveblocks/client"
-import { ArrowUpCircle } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/avatar"
-import { Label } from "@/shadcn/label"
 import { cn } from "@/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/avatar"
+import { Input } from "@/shadcn/input"
+import { Label } from "@/shadcn/label"
+import { ScrollArea } from "@/shadcn/scroll-area"
+import { LiveObject, shallow } from "@liveblocks/client"
+import {
+  useMutation,
+  useOthers,
+  useSelf,
+  useStorage,
+  useUpdateMyPresence
+} from "@liveblocks/react/suspense"
 import { AnimatePresence, motion } from "framer-motion"
+import { ArrowUpCircle } from "lucide-react"
+import React, { useEffect, useRef, useState } from "react"
 import { AvatarStack } from "./avatar-stack"
 
 export const Chat = () => {

@@ -3,17 +3,30 @@
 import { TableCellContext } from "@/app/_context/table-cell-context"
 import { cn } from "@/lib/utils"
 import { GRID_SIZE } from "@/utils/constants"
-import { useStorage } from "@liveblocks/react"
+import { useMutation, useStorage } from "@liveblocks/react/suspense"
 import { motion } from "framer-motion"
 import { useContext } from "react"
-import { Complete } from "../complete"
+import { GameOver } from "../game-over"
 import { PlayButton } from "../play-button"
+import { Winner } from "../winner"
 import { Td } from "./table-cell"
 
 export const Table = () => {
   const { tableCell, onClickTableCell } = useContext(TableCellContext)
   const isRunning = useStorage((root) => root.isRunning)
   const isSolved = useStorage((root) => root.isSolved)
+  const mistakeCount = useStorage((root) => root.mistakeCount)
+
+  const pauseGame = useMutation(({ storage }) => {
+    storage.set("isRunning", false)
+  }, [])
+
+  if (mistakeCount === 3) {
+    pauseGame()
+    return <GameOver />
+  }
+
+  if (isSolved) return <Winner />
 
   return (
     <motion.div
@@ -49,7 +62,6 @@ export const Table = () => {
         ))
       )}
       {!isRunning && !isSolved && <PlayButton />}
-      {isSolved && <Complete />}
     </motion.div>
   )
 }

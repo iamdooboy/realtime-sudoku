@@ -8,6 +8,9 @@ export function Timer() {
   const time = useStorage((root) => root.time)
   const isRunning = useStorage((root) => root.isRunning)
   const isSolved = useStorage((root) => root.isSolved)
+  const mistakeCount = useStorage((root) => root.mistakeCount)
+
+  const isDisabled = isSolved || mistakeCount === 3
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -41,8 +44,8 @@ export function Timer() {
   const buttonWrapper = (component: JSX.Element, func: () => void) => {
     return (
       <button
-        disabled={isSolved}
-        className="text-muted-foreground hover:text-muted-foreground/70"
+        disabled={isDisabled}
+        className="text-muted-foreground not:disabled:hover:text-muted-foreground/70 disabled:opacity-50"
         onClick={func}
       >
         {component}

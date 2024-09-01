@@ -1,13 +1,13 @@
 "use client"
 
-import { useOthersListener } from "@liveblocks/react"
-import { toast } from "sonner"
-import { Check, Link } from "lucide-react"
 import { Button } from "@/shadcn/button"
-import QRCode from "react-qr-code"
+import { useOthersListener } from "@liveblocks/react/suspense"
+import { AnimatePresence, motion } from "framer-motion"
+import { Check, Link } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
+import QRCode from "react-qr-code"
+import { toast } from "sonner"
 
 export function SidePanel() {
   const [copied, setCopied] = useState(false)
