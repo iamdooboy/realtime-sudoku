@@ -1,4 +1,3 @@
-
 import React from "react"
 
 import { cn } from "@/lib/utils"
@@ -48,31 +47,36 @@ export const Td: React.FC<TdProps> = ({
           })
         }
         className={cn(
-          "bg-accent dark:bg-accent/25 aspect-square align-middle w-full h-full flex items-center justify-center relative",
+          "aspect-square size-full flex items-center justify-center relative bg-primary-foreground",
           {
-            "bg-tertiary": value === tableCell.value || sameInstance
+            "bg-primary/15": value === tableCell.value || sameInstance
           }
         )}
       >
         <p className="text-2xl">{value}</p>
+        {others.map(([connectionId, { focusIndex }]) => {
+          if (focusIndex === sudokuIndex) {
+            return (
+              <div
+                key={connectionId}
+                className="absolute inset-0 bg-incorrect/20 text-center justify-center items-center flex z-0"
+              />
+            )
+          }
+        })}
       </div>
     )
   }
 
   const cellClassName = cn(
-    "aspect-square align-middle w-full h-full flex items-center justify-center relative",
+    "aspect-square size-full flex items-center justify-center relative",
     {
       "text-correct": valid && validateMode,
       "text-incorrect": !valid && validateMode,
-      "bg-tertiary":
+      "bg-primary/15":
         (value === tableCell.value && typeof value === "number" && value > 0) ||
         sameInstance,
-      "bg-muted":
-        value === tableCell.value &&
-        validateMode &&
-        typeof value === "number" &&
-        value > 0,
-      "bg-correct/20": selectedCell
+      "bg-correct/15": selectedCell
     },
     className
   )
@@ -92,16 +96,8 @@ export const Td: React.FC<TdProps> = ({
           return (
             <div
               key={connectionId}
-              className={cn(
-                "absolute inset-0 bg-incorrect/20 text-center justify-center items-center flex z-0"
-              )}
-            >
-              {showNotes ? (
-                <Notes notes={value} />
-              ) : (
-                value !== 0 && <p className="text-2xl">{value}</p>
-              )}
-            </div>
+              className="absolute inset-0 bg-incorrect/15justify-center items-center flex z-0"
+            />
           )
         }
       })}

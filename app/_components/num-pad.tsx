@@ -17,7 +17,7 @@ type SelectNumProps = {
 }
 
 export const Numpad = () => {
-  const { tableCell } = useContext(TableCellContext)
+  const { tableCell, onClickTableCell } = useContext(TableCellContext)
   const { notesMode } = useContext(NotesContext)
 
   const isRunning = useStorage((root) => root.isRunning)
@@ -55,6 +55,8 @@ export const Numpad = () => {
   const selectNum = useMutation(
     ({ storage }, { numPad, index }: SelectNumProps) => {
       if (index === null || numPad === null) return
+
+      onClickTableCell({ value: numPad, index })
 
       const sudoku = storage?.get("sudoku")
       let currentValue = sudoku?.get(index)?.get("value")
