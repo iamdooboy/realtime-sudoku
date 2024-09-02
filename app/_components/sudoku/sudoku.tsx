@@ -9,9 +9,9 @@ import { useContext } from "react"
 import { GameOver } from "../game-over"
 import { PlayButton } from "../play-button"
 import { Winner } from "../winner"
-import { Td } from "./table-cell"
+import { SudokuCell } from "./sudoku-cell"
 
-export const Table = () => {
+export const Sudoku = () => {
   const { tableCell, onClickTableCell } = useContext(TableCellContext)
   const isRunning = useStorage((root) => root.isRunning)
   const isSolved = useStorage((root) => root.isSolved)
@@ -52,7 +52,7 @@ export const Table = () => {
             {!isRunning && !isSolved ? (
               <div className="size-full aspect-square"></div>
             ) : (
-              <Td
+              <SudokuCell
                 sudokuIndex={row * 9 + col}
                 tableCell={tableCell}
                 setTableCell={onClickTableCell}

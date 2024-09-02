@@ -55,10 +55,13 @@ export const Numpad = () => {
   const selectNum = useMutation(
     ({ storage }, { numPad, index }: SelectNumProps) => {
       if (index === null || numPad === null) return
+      const sudoku = storage?.get("sudoku")
 
+      if (sudoku.get(index)?.get("immutable") === true) {
+        return
+      }
       onClickTableCell({ value: numPad, index })
 
-      const sudoku = storage?.get("sudoku")
       let currentValue = sudoku?.get(index)?.get("value")
 
       if (currentValue === undefined || currentValue === null) return
@@ -112,6 +115,10 @@ export const Numpad = () => {
       if (index === null) return
 
       const sudoku = storage.get("sudoku")
+      if (sudoku.get(index)?.get("immutable") === true) {
+        return
+      }
+
       const undoHistory = storage.get("undoHistory")
 
       const cell = sudoku.get(index)

@@ -14,8 +14,21 @@ import { motion } from "framer-motion"
 import HyperText from "./hyper-text"
 import PulsatingButton from "./pulsating-button"
 import { Button } from "./shadcn/button"
+import { useEffect, useState } from "react"
 
 export const GameOver = () => {
+  const [isDisabled, setIsDisabled] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsDisabled(false)
+    }, 1000)
+
+    return () => {
+      clearInterval(timer)
+    }
+  }, [])
+
   const startNewGame = useMutation(({ storage }, difficulty: string) => {
     const sudoku = generateSudoku(difficulty)
     storage.update({
@@ -36,10 +49,10 @@ export const GameOver = () => {
 
   const secondChance = useMutation(({ storage }) => {
     storage.update({
+      isRunning: true,
       mistakeCount: storage.get("mistakeCount") - 1,
       undoHistory: new LiveList([]),
-      redoHistory: new LiveList([]),
-      isRunning: true
+      redoHistory: new LiveList([])
     })
   }, [])
 
@@ -52,7 +65,11 @@ export const GameOver = () => {
     >
       <div className="flex flex-col gap-2">
         <HyperText className="text-4xl font-bold" text="Game Over" />
-        <PulsatingButton onClick={secondChance} className="border bg-primary">
+        <PulsatingButton
+          disabled={isDisabled}
+          onClick={secondChance}
+          className="border bg-primary"
+        >
           Second chance
         </PulsatingButton>
         <DropdownMenu>

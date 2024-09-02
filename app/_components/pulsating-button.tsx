@@ -20,7 +20,7 @@ export default function PulsatingButton({
   return (
     <button
       className={cn(
-        "relative text-center cursor-pointer flex justify-center items-center rounded-lg text-primary-foreground px-4 py-2",
+        "relative text-center cursor-pointer flex justify-center items-center rounded-lg text-primary-foreground px-4 py-2 disabled:pointer-events-none disabled:opacity-50 transition-opacity duration-300 ease-in-out",
         className
       )}
       style={

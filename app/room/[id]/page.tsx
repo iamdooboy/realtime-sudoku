@@ -5,7 +5,7 @@ import { Mistakes } from "@/_components/mistakes"
 import { ModeToggle } from "@/_components/mode-toggle"
 import { Numpad } from "@/_components/num-pad"
 import { SidePanel } from "@/_components/side-panel"
-import { Table } from "@/_components/sudoku/table"
+import { Sudoku } from "@/_components/sudoku/sudoku"
 import { Timer } from "@/_components/timer"
 import { Toolbar } from "@/_components/toolbar"
 import { NotesProvider } from "@/app/_context/notes-context"
@@ -34,7 +34,7 @@ export default async function Room({
           <TableCellProvider>
             <div className="col-span-6 order-2 sm:col-span-3 sm:order-3 sm:p-0 size-full flex place-items-center">
               <div className="size-full flex place-items-center">
-                <Table />
+                <Sudoku />
               </div>
             </div>
             <div className="sm:hidden col-span-6 order-3 px-1 my-4">

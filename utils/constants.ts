@@ -9,3 +9,24 @@ export const TOOL_TYPES = {
   REDO: "REDO",
   ERASE: "ERASE"
 }
+
+
+export const COLORS = [
+  'outline-red-500',
+  'outline-orange-500',
+  'outline-amber-500',
+  'outline-yellow-500',
+  'outline-lime-500',
+  'outline-green-500',
+  'outline-emerald-500',
+  'outline-teal-500',
+  'outline-cyan-500',
+  'outline-sky-500',
+  'outline-blue-500',
+  'outline-indigo-500',
+  'outline-violet-500',
+  'outline-purple-500',
+  'outline-fuchsia-500',
+  'outline-pink-500',
+  'outline-rose-500'
+]
