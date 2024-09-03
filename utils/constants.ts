@@ -10,23 +10,47 @@ export const TOOL_TYPES = {
   ERASE: "ERASE"
 }
 
+export const COLOR_HEX = [
+  "#64748b",
+  "#6b7280",
+  "#ef4444",
+  "#f97316",
+  "#f59e0b",
+  "#eab308",
+  "#84cc16",
+  "#22c55e",
+  "#10b981",
+  "#06b6d4",
+  "#0ea5e9",
+  "#6366f1",
+  "#8b5cf6",
+  "#a855f7",
+  "#d946ef",
+  "#ec4899",
+  "#f43f5e"
+]
 
-export const COLORS = [
-  'outline-red-500',
-  'outline-orange-500',
-  'outline-amber-500',
-  'outline-yellow-500',
-  'outline-lime-500',
-  'outline-green-500',
-  'outline-emerald-500',
-  'outline-teal-500',
-  'outline-cyan-500',
-  'outline-sky-500',
-  'outline-blue-500',
-  'outline-indigo-500',
-  'outline-violet-500',
-  'outline-purple-500',
-  'outline-fuchsia-500',
-  'outline-pink-500',
-  'outline-rose-500'
+export const AVATAR_COLORS = [
+  "e2e8f0",
+  "e5e7eb",
+  "e4e4e7",
+  "e5e5e5",
+  "e7e5e4",
+  "fecaca",
+  "fed7aa",
+  "fde68a",
+  "fef08a",
+  "d9f99d",
+  "bbf7d0",
+  "a7f3d0",
+  "99f6e4",
+  "a5f3fc",
+  "bae6fd",
+  "bfdbfe",
+  "c7d2fe",
+  "ddd6fe",
+  "e9d5ff",
+  "f5d0fe",
+  "fbcfe8",
+  "fecdd3"
 ]

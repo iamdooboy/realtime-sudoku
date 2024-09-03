@@ -1,4 +1,5 @@
 import { liveblocks } from "@/liveblocks.server.config"
+import { AVATAR_COLORS } from '@/utils/constants'
 
 export async function POST(request: Request) {
   const res = await request.json()
@@ -8,7 +9,7 @@ export async function POST(request: Request) {
     id: "1",
     info: {
       name: res.name,
-      avatar: `https://api.dicebear.com/9.x/thumbs/svg?seed=${res.name}`
+      avatar: `https://api.dicebear.com/9.x/thumbs/svg?seed=${res.name}&scale=80&backgroundColor=0a5b83&backgroundRotation[]&shapeColor=${shapeColor()}`
     }
   }
 
@@ -21,4 +22,9 @@ export async function POST(request: Request) {
   // Authorize the user and return the result
   const { status, body } = await session.authorize()
   return new Response(body, { status })
+}
+
+function shapeColor() {
+  const randomIndex = Math.floor(Math.random() * AVATAR_COLORS.length)
+  return AVATAR_COLORS[randomIndex]
 }

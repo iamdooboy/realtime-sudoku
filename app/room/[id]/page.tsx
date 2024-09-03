@@ -18,7 +18,7 @@ export default async function Room({
 }) {
   return (
     <LiveblocksRoom roomId={params.id}>
-      <div className="grid grid-cols-6 p-2 gap-2 sm:p-6 sm:gap-4 sm:border sm:rounded-xl sm:shadow bg-card">
+      <div className="grid grid-cols-6 px-2 pb-4 pt-2 gap-2 sm:p-6 sm:gap-4 sm:border sm:rounded-xl sm:shadow">
         <div className="col-span-6 flex justify-between items-center h-8 order-1 sm:border-b sm:pb-4">
           <Timer />
           <Mistakes />

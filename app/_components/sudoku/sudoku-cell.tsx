@@ -1,9 +1,9 @@
-import { useColor } from "@/app/hooks/useColor"
+
+import { useOthersInfo } from "@/app/hooks/use-other-info"
 import { cn } from "@/lib/utils"
-import { useOthersMapped, useStorage } from "@liveblocks/react/suspense"
+import { useStorage } from "@liveblocks/react/suspense"
 import { ImmutableCell } from "./sudoku-cell/immutable-cell"
 import { MutableCell } from "./sudoku-cell/mutable-cell"
-import { table } from 'console'
 type TableCellProps = {
   value: number | null | readonly number[]
   index: number | null
@@ -20,13 +20,7 @@ export const SudokuCell: React.FC<SudokuCellProps> = ({
   tableCell,
   setTableCell
 }) => {
-  const others = useOthersMapped((other) => ({
-    focusIndex: other.presence.focusIndex,
-    name: other.info.name,
-    id: other.connectionId
-  }))
-
-  const userColors = useColor(others)
+  const others = useOthersInfo()
 
   const sudoku = useStorage((root) => root.sudoku)
   const validateMode = useStorage((root) => root.validateMode)
@@ -39,7 +33,7 @@ export const SudokuCell: React.FC<SudokuCellProps> = ({
 
   const handleClick = () => {
     //deselect cell if already selected
-    if(tableCell.index !== null) {
+    if (tableCell.index !== null && tableCell.index === sudokuIndex) {
       setTableCell({
         value: null,
         index: null
@@ -69,7 +63,6 @@ export const SudokuCell: React.FC<SudokuCellProps> = ({
         others={others}
         value={value}
         sudokuIndex={sudokuIndex}
-        userColors={userColors}
         className={immutableStyles}
       />
     )
@@ -88,7 +81,6 @@ export const SudokuCell: React.FC<SudokuCellProps> = ({
       value={value}
       sudokuIndex={sudokuIndex}
       others={others}
-      userColors={userColors}
       className={cellClassName}
     />
   )

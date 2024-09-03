@@ -8,6 +8,7 @@ declare global {
 
   type Message = {
     user: string
+    avatar: string
     text: string
   }
 

@@ -50,6 +50,7 @@ export const Chat = () => {
       if (!input) return
       const data = new LiveObject({
         user: user?.info.name,
+        avatar: user?.info.avatar,
         text: input
       })
       storage?.get("messages")?.push(data)
@@ -75,7 +76,7 @@ export const Chat = () => {
               {!isConsecutive && (
                 <Avatar className="w-8 h-8 mt-1">
                   <AvatarImage
-                    src={`https://api.dicebear.com/9.x/thumbs/svg?seed=${message.user}`}
+                    src={message.avatar}
                   />
                   <AvatarFallback>{message.user}</AvatarFallback>
                 </Avatar>
@@ -127,7 +128,6 @@ function WhoIsTyping() {
     (others) => others.filter((other) => other.presence.isTyping),
     shallow
   )
-
   return (
     <div className="absolute -top-3 right-0 text-muted-foreground text-xs mr-3">
       {typingUsers.length > 0 && (

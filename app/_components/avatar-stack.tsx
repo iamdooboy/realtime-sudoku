@@ -1,23 +1,39 @@
 "use client"
 
+import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/avatar"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/shadcn/dialog"
+import {
+  Popover,
+  PopoverArrow,
+  PopoverContent,
+  PopoverTrigger
+} from "@/shadcn/popover"
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
 } from "@/shadcn/tooltip"
-import { useOthersMapped, useSelf } from "@liveblocks/react/suspense"
+import { useSelf } from "@liveblocks/react/suspense"
 import { AnimatePresence, motion } from "framer-motion"
-import { useColor } from "../hooks/useColor"
-import { cn } from "@/lib/utils"
+import { Check, Link } from "lucide-react"
+import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
+import QRCode from "react-qr-code"
+import { useOthersInfo } from "../hooks/use-other-info"
+import { Button } from "./shadcn/button"
 
 export function AvatarStack() {
-  const others = useOthersMapped((other) => ({
-    name: other.info.name,
-    id: other.connectionId,
-    avatar: other.info.avatar
-  }))
+  const others = useOthersInfo()
 
   const animationProps = {
     initial: { width: 0, transformOrigin: "left" },
@@ -25,109 +41,191 @@ export function AvatarStack() {
     exit: { width: 0 }
   }
 
-  const userColors = useColor(others)
   const currentUser = useSelf()
 
   return (
     <TooltipProvider delayDuration={0}>
-      <div className="flex pl-3 justify-end">
-        <AnimatePresence>
-          {others
-            .slice(0, 3)
-            .reverse()
-            .map(([key, { name, avatar, id }]) => (
+      <Popover>
+        <div className="flex sm:justify-end items-center">
+          <InviteDialog />
+          <AnimatePresence>
+            {others
+              .slice(0, others.length)
+              .reverse()
+              .map(([key, { name, avatar, color }]) => (
+                <motion.div
+                  key={key}
+                  {...animationProps}
+                  className="flex justify-center"
+                >
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <PopoverTrigger asChild>
+                        <Avatar
+                          style={{
+                            outlineColor: color
+                          }}
+                          className={cn(
+                            "outline-3 outline size-7 border-2 border-primary-foreground"
+                          )}
+                        >
+                          <AvatarImage src={avatar} />
+                          <AvatarFallback>{name}</AvatarFallback>
+                        </Avatar>
+                      </PopoverTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{name}</p>
+                    </TooltipContent>
+                    <PopoverContent className="px-3 py-1.5 text-sm w-auto">
+                      <PopoverArrow className="fill-border" />
+                      <p>{name}</p>
+                    </PopoverContent>
+                  </Tooltip>
+                </motion.div>
+              ))}
+            {currentUser ? (
               <motion.div
-                key={key}
+                key="you"
                 {...animationProps}
                 className="flex justify-center"
               >
                 <Tooltip>
                   <TooltipTrigger>
-                    <Avatar
-                      className={cn(
-                        "outline-3 outline size-7 outline-correct",
-                        userColors.get(id)
-                      )}
-                    >
-                      <AvatarImage src={avatar} />
-                      <AvatarFallback>{name}</AvatarFallback>
+                    <Avatar className="outline-3 outline size-7 outline-blue-500 border-2 border-primary-foreground">
+                      <AvatarImage src={currentUser.info.avatar} />
+                      <AvatarFallback>{currentUser.info.name}</AvatarFallback>
                     </Avatar>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{name}</p>
+                    <p>You</p>
                   </TooltipContent>
                 </Tooltip>
               </motion.div>
-            ))}
-          {currentUser ? (
-            <motion.div
-              key="you"
-              {...animationProps}
-              className="flex justify-center"
-            >
-              <Tooltip>
-                <TooltipTrigger>
-                  <Avatar
-                    className={cn(
-                      "outline-3 outline size-7 outline-correct",
-                      userColors.get(currentUser.connectionId)
-                    )}
-                  >
-                    <AvatarImage src={currentUser.info.avatar} />
-                    <AvatarFallback>{currentUser.info.name}</AvatarFallback>
-                  </Avatar>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>You</p>
-                </TooltipContent>
-              </Tooltip>
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
-      </div>
+            ) : null}
+          </AnimatePresence>
+        </div>
+      </Popover>
     </TooltipProvider>
   )
 }
 
-const AvatarTooltip = ({
-  avatar,
-  name,
-  motionKey = "you",
-  id
-}: {
-  avatar: string
-  name: string
-  motionKey?: string | number
-  id: number
-}) => {
+const InviteDialog = () => {
+  const [copied, setCopied] = useState(false)
+  const [fullUrl, setFullUrl] = useState("")
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null)
+
+  const pathname = usePathname()
+
   const animationProps = {
-    initial: { width: 0, transformOrigin: "left" },
-    animate: { width: "auto", height: "auto" },
-    exit: { width: 0 }
+    initial: { scale: 0.5, opacity: 0 },
+    animate: { scale: 1, opacity: 1 },
+    exit: { scale: 0.5, opacity: 0 },
+    transition: { duration: 0.1 }
+  }
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setFullUrl(window.location.origin + pathname)
+    }
+  }, [pathname])
+  const copyToClipboard = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard
+        .writeText(fullUrl)
+        .then(() => {
+          setCopied(true)
+          if (timeoutId) {
+            clearTimeout(timeoutId)
+          }
+          const id = setTimeout(() => {
+            setCopied(false)
+          }, 2000)
+          setTimeoutId(id)
+        })
+        .catch((err) => {
+          console.error("Failed to copy: ", err)
+        })
+    } else {
+      // Fallback for unsupported browsers
+      const textArea = document.createElement("textarea")
+      textArea.value = fullUrl
+      document.body.appendChild(textArea)
+      textArea.select()
+      try {
+        document.execCommand("copy")
+        setCopied(true)
+        if (timeoutId) {
+          clearTimeout(timeoutId)
+        }
+        const id = setTimeout(() => {
+          setCopied(false)
+        }, 2000)
+        setTimeoutId(id)
+      } catch (err) {
+        console.error("Failed to copy: ", err)
+      }
+      document.body.removeChild(textArea)
+    }
   }
   return (
-    <motion.div
-      key={motionKey}
-      {...animationProps}
-      className="flex justify-center"
-    >
-      <Tooltip>
-        <TooltipTrigger>
-          <Avatar
-            //className="outline-3 outline size-7 outline-correct"
-            className={cn(
-              "outline-3 outline size-7 outline-correct",
-              userColors.get(id)
-            )}
-          >
-            <AvatarImage src={avatar} />
-            <AvatarFallback>{name}</AvatarFallback>
-          </Avatar>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{name}</p>
-        </TooltipContent>
-      </Tooltip>
-    </motion.div>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="secondary" className="first:mr-auto sm:hidden h-auto">Invite</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Share with friends</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="flex flex-col items-center gap-4">
+            <Button
+              variant="outline"
+              className="w-full rounded"
+              onClick={copyToClipboard}
+              disabled={copied}
+            >
+              <AnimatePresence mode="wait">
+                {copied ? (
+                  <motion.div
+                    key="check"
+                    className="flex place-items-center gap-1"
+                    {...animationProps}
+                  >
+                    <Check className="size-4 mr-1" />
+                    Copied!
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="copy"
+                    className="flex place-items-center gap-1"
+                    {...animationProps}
+                  >
+                    <Link className="size-4 mr-1" />
+                    Copy link
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Button>
+            <p className="text-muted-foreground text-xs">
+              Share link to play together
+            </p>
+          </div>
+          <div className="flex flex-col justify-center items-center gap-4">
+            <div className="w-1/2">
+              <QRCode value={fullUrl} className="size-full" />
+            </div>
+            <p className="text-muted-foreground text-xs">
+              Scan code to join game
+            </p>
+          </div>
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button type="submit">Close</Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
