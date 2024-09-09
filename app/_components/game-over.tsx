@@ -11,10 +11,10 @@ import { DIFFICULTIES } from "@/utils/constants"
 import { LiveList, LiveObject } from "@liveblocks/client"
 import { useMutation } from "@liveblocks/react/suspense"
 import { motion } from "framer-motion"
+import { useEffect, useState } from "react"
 import HyperText from "./hyper-text"
 import PulsatingButton from "./pulsating-button"
 import { Button } from "./shadcn/button"
-import { useEffect, useState } from "react"
 
 export const GameOver = () => {
   const [isDisabled, setIsDisabled] = useState(true)
@@ -58,13 +58,13 @@ export const GameOver = () => {
 
   return (
     <motion.div
-      className="size-full border shadow flex flex-col justify-center items-center gap-1 bg-muted aspect-square"
+      className="flex aspect-square size-full flex-col items-center justify-center gap-1 border bg-muted shadow"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
       <div className="flex flex-col gap-2">
-        <HyperText className="text-4xl font-bold" text="Game Over" />
+        <HyperText className="font-bold text-4xl" text="Game Over" />
         <PulsatingButton
           disabled={isDisabled}
           onClick={secondChance}

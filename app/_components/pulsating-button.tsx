@@ -20,7 +20,7 @@ export default function PulsatingButton({
   return (
     <button
       className={cn(
-        "relative text-center cursor-pointer flex justify-center items-center rounded-lg text-primary-foreground px-4 py-2 disabled:pointer-events-none disabled:opacity-50 transition-opacity duration-300 ease-in-out",
+        "relative flex cursor-pointer items-center justify-center rounded-lg px-4 py-2 text-center text-primary-foreground transition-opacity duration-300 ease-in-out disabled:pointer-events-none disabled:opacity-50",
         className
       )}
       style={
@@ -32,7 +32,7 @@ export default function PulsatingButton({
       {...props}
     >
       <div className="relative z-10">{children}</div>
-      <div className="absolute top-1/2 left-1/2 size-full rounded-lg bg-inherit animate-pulse -translate-x-1/2 -translate-y-1/2" />
+      <div className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 size-full animate-pulse rounded-lg bg-inherit" />
     </button>
   )
 }

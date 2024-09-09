@@ -14,7 +14,6 @@ export const DeleteButton: React.FC<DeleteButtonProps> = ({
   children,
   ...props
 }) => {
-
   const { tableCell } = useContext(TableCellContext)
 
   const erase = useMutation(({ storage }, index: number) => {

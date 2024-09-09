@@ -1,5 +1,5 @@
-import { OtherPresence } from "./other-presence"
 import { OthersType } from "@/app/hooks/use-other-info"
+import { OtherPresence } from "./other-presence"
 
 type ImmutableCellProps = {
   value: number | readonly number[] | undefined

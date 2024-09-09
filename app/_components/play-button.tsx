@@ -8,11 +8,11 @@ export function PlayButton() {
     storage.set("isRunning", true)
   }, [])
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+    <div className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2">
       <PlayCircle
         onClick={() => start()}
         size={100}
-        className="text-muted-foreground hover:text-muted-foreground/70 cursor-pointer"
+        className="cursor-pointer text-muted-foreground hover:text-muted-foreground/70"
       />
     </div>
   )

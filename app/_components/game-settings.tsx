@@ -17,17 +17,17 @@ export function GameSettings() {
   return (
     <Popover>
       <PopoverTrigger>
-        <Settings className="w-6 h-6" />
+        <Settings className="h-6 w-6" />
       </PopoverTrigger>
       <PopoverContent>
         <CardTitle className="text-lg">Game Settings</CardTitle>
         <CardDescription>
           These settings affect all players in the game
         </CardDescription>
-        <div className="flex items-center justify-between space-x-2 mt-4">
+        <div className="mt-4 flex items-center justify-between space-x-2">
           <Label htmlFor="necessary" className="flex flex-col space-y-1">
             <span>Check entries </span>
-            <span className="font-normal leading-snug text-muted-foreground">
+            <span className="font-normal text-muted-foreground leading-snug">
               Marks numbers in red (incorrect) or blue (correct).
             </span>
           </Label>

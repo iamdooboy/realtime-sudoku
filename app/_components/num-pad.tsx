@@ -200,7 +200,7 @@ export const Numpad = () => {
           disabled={!isRunning || isSolved}
           variant="secondary"
           key={index}
-          className="p-2 rounded md:text-lg sm:font-medium text-center aspect-square size-full md:size-14"
+          className="aspect-square size-full rounded p-2 text-center sm:font-medium md:size-14 md:text-lg"
           onClick={() => {
             if (notesMode) {
               addNotes({ numPad, index: tableCell.index! })
@@ -221,7 +221,7 @@ export const Numpad = () => {
       <DeleteButton
         disabled={!isRunning || isSolved}
         variant="secondary"
-        className="rounded p-2 text-center aspect-square size-14 hidden sm:flex"
+        className="hidden aspect-square size-14 rounded p-2 text-center sm:flex"
       >
         <Delete onClick={() => erase(tableCell.index!)} />
       </DeleteButton>

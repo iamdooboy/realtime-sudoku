@@ -19,8 +19,8 @@ export function ModeToggle() {
   return (
     <Button
       variant="ghost"
-      className={cn("rounded-md size-8 px-0 text-black dark:text-white", {
-        "animate-jiggle": effect
+      className={cn("size-8 rounded-md px-0 text-black dark:text-white", {
+        "animate-wiggle": effect
       })}
       onAnimationEnd={() => setEffect(false)}
     >

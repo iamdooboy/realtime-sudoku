@@ -1,7 +1,6 @@
-import { Json, useOthersMapped } from "@liveblocks/react/suspense"
+import { OthersType } from "@/app/hooks/use-other-info"
 import { Notes } from "./notes"
 import { OtherPresence } from "./other-presence"
-import { OthersType } from "@/app/hooks/use-other-info"
 
 type MutableCellProps = {
   value: number | readonly number[] | undefined

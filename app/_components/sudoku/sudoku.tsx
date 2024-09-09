@@ -30,7 +30,7 @@ export const Sudoku = () => {
 
   return (
     <motion.div
-      className="grid grid-cols-9 w-full h-full relative"
+      className="relative grid h-full w-full grid-cols-9"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -40,7 +40,7 @@ export const Sudoku = () => {
           <div
             key={`${rowIndex}-${colIndex}`}
             className={cn(
-              "flex items-center justify-center border border-b-0 border-r-0",
+              "flex items-center justify-center border border-r-0 border-b-0",
               {
                 "border-t-2 border-t-border-thick": rowIndex % 3 === 0,
                 "border-l-2 border-l-border-thick": colIndex % 3 === 0,
@@ -50,7 +50,7 @@ export const Sudoku = () => {
             )}
           >
             {!isRunning && !isSolved ? (
-              <div className="size-full aspect-square"></div>
+              <div className="aspect-square size-full"></div>
             ) : (
               <SudokuCell
                 sudokuIndex={row * 9 + col}

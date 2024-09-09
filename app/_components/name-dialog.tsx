@@ -30,10 +30,10 @@ export function NameDialog({ input, setInput, handleSubmit }: NameDialogProps) {
                 type="text"
                 required
                 value={input}
-                className="[&:user-invalid:not(:focus)]:border-red-500 peer"
+                className="peer [&:user-invalid:not(:focus)]:border-red-500"
                 onChange={(e) => setInput(e.target.value)}
               />
-              <p className="text-red-500 hidden text-sm peer-[&:user-invalid:not(:focus)]:block">
+              <p className="hidden text-red-500 text-sm peer-[&:user-invalid:not(:focus)]:block">
                 This field is required
               </p>
             </div>

@@ -58,7 +58,7 @@ export function LiveblocksRoom({ children, roomId }: RoomProps) {
   }
 
   const loading = (
-    <div className="flex justify-center items-center gap-1 h-full">
+    <div className="flex h-full items-center justify-center gap-1">
       Joining game
       <div className="animate-bounce [animation-delay:-0.3s]">.</div>
       <div className="animate-bounce [animation-delay:-0.13s]">.</div>

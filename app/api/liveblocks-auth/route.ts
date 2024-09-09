@@ -1,5 +1,5 @@
 import { liveblocks } from "@/liveblocks.server.config"
-import { AVATAR_COLORS } from '@/utils/constants'
+import { AVATAR_COLORS } from "@/utils/constants"
 
 export async function POST(request: Request) {
   const res = await request.json()

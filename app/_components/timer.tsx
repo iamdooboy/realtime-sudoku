@@ -45,7 +45,7 @@ export function Timer() {
     return (
       <button
         disabled={isDisabled}
-        className="text-muted-foreground not:disabled:hover:text-muted-foreground/70 disabled:opacity-50"
+        className="text-muted-foreground disabled:opacity-50 not:disabled:hover:text-muted-foreground/70"
         onClick={func}
       >
         {component}
@@ -54,7 +54,7 @@ export function Timer() {
   }
 
   return (
-    <div className="flex gap-2 justify-end">
+    <div className="flex justify-end gap-2">
       {isRunning
         ? buttonWrapper(<PauseCircle />, pause)
         : buttonWrapper(<PlayCircle />, start)}

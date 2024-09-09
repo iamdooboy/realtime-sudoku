@@ -1,23 +1,23 @@
 "use client"
 
+import { cn } from "@/lib/utils"
+import { Badge } from "@/shadcn/badge"
+import { Button } from "@/shadcn/button"
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger
 } from "@/shadcn/tooltip"
-import { Undo2, Redo2, Edit3, Eraser } from "lucide-react"
-import { Button } from "@/shadcn/button"
 import { TOOL_TYPES } from "@/utils/constants"
-import { cn } from "@/lib/utils"
-import { Badge } from "@/shadcn/badge"
+import { LiveObject } from "@liveblocks/client"
+import { useMutation, useStorage } from "@liveblocks/react/suspense"
+import confetti from "canvas-confetti"
+import { Edit3, Eraser, Redo2, Undo2 } from "lucide-react"
 import { useContext } from "react"
 import { NotesContext } from "../_context/notes-context"
-import { useMutation, useStorage } from "@liveblocks/react/suspense"
-import { LiveObject } from "@liveblocks/client"
 import { ConfettiButton } from "./confetti"
 import { DeleteButton } from "./delete-button"
-import confetti from "canvas-confetti"
 
 type ToolProps = {
   disabled: boolean
@@ -29,7 +29,7 @@ type ToolProps = {
 const NotesButton = ({ notesMode }: { notesMode: boolean }) => {
   return (
     <div>
-      <div className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2">
+      <div className="-translate-y-1/2 absolute top-0 right-0 translate-x-1/2">
         <Badge variant={notesMode ? "default" : "secondary"}>
           {notesMode ? "On" : "Off"}
         </Badge>
@@ -155,7 +155,7 @@ export const Toolbar = () => {
       <Button
         onClick={(e) => setOrigin(e)}
         variant="secondary"
-        className="w-full h-14"
+        className="h-14 w-full"
       >
         🎉
       </Button>
@@ -190,7 +190,7 @@ export const Toolbar = () => {
           <TooltipTrigger asChild>
             <Button
               disabled={tool.disabled || !isRunning}
-              className={cn("size-14 rounded-xl relative", {
+              className={cn("relative size-14 rounded-xl", {
                 "bg-accent": notesMode && tool.type === TOOL_TYPES.ERASE
               })}
               variant="outline"
@@ -204,7 +204,7 @@ export const Toolbar = () => {
       ))}
       <DeleteButton
         disabled={!isRunning}
-        className="size-14 rounded-lg sm:hidden block"
+        className="block size-14 rounded-lg sm:hidden"
         variant="outline"
       >
         <Eraser />

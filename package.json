@@ -1,14 +1,14 @@
 {
-  "name": "draw",
+  "name": "realtime-sudoku",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
-    "biome": "pnpm biome format --write ./app"
+    "format": "pnpm biome format --write .",
+    "lint": "pnpm biome lint --write .",
+    "check": "pnpm biome check --write ."
   },
   "dependencies": {
     "@liveblocks/client": "^2.6.0",

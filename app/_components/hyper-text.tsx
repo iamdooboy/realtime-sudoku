@@ -1,7 +1,7 @@
 "use client"
 
+import { AnimatePresence, Variants, motion } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
-import { AnimatePresence, motion, Variants } from "framer-motion"
 
 import { cn } from "@/lib/utils"
 
@@ -64,12 +64,12 @@ export default function HyperText({
   }, [text, duration, trigger, animateOnLoad])
 
   return (
-    <div className="overflow-hidden py-2 flex cursor-default scale-100">
+    <div className="flex scale-100 cursor-default overflow-hidden py-2">
       <AnimatePresence mode="wait">
         {displayText.map((letter, i) => (
           <motion.h1
             key={i}
-            className={cn("font-mono", letter === " " ? "w-3" : "", className)}
+            className={cn("font-mono", letter === "" ? "w-3" : "", className)}
             {...framerProps}
           >
             {letter.toUpperCase()}

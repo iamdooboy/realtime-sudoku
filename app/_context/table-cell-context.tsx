@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { useUpdateMyPresence } from "@liveblocks/react/suspense"
 import { PropsWithChildren, createContext, useState } from "react"

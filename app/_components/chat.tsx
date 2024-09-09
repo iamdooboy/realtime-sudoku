@@ -63,21 +63,19 @@ export const Chat = () => {
   )
 
   return (
-    <div className="w-full h-full flex flex-col rounded border justify-between">
-      <div className="w-full p-2 border-b shadow-sm">
+    <div className="flex h-full w-full flex-col justify-between rounded border">
+      <div className="w-full border-b p-2 shadow-sm">
         <AvatarStack />
       </div>
-      <ScrollArea ref={scrollAreaRef} className="h-[256px] p-1 relative">
+      <ScrollArea ref={scrollAreaRef} className="relative h-[256px] p-1">
         {messages?.map((message, index) => {
           const isConsecutive =
             index > 0 && messages[index - 1].user === message.user
           return (
-            <div key={index} className="flex p-1 items-center z-0">
+            <div key={index} className="z-0 flex items-center p-1">
               {!isConsecutive && (
-                <Avatar className="w-8 h-8 mt-1">
-                  <AvatarImage
-                    src={message.avatar}
-                  />
+                <Avatar className="mt-1 h-8 w-8">
+                  <AvatarImage src={message.avatar} />
                   <AvatarFallback>{message.user}</AvatarFallback>
                 </Avatar>
               )}
@@ -90,19 +88,19 @@ export const Chat = () => {
                 {!isConsecutive && (
                   <Label className="font-bold">{message.user}</Label>
                 )}
-                <p className="text-sm break-all">{message.text}</p>
+                <p className="break-all text-sm">{message.text}</p>
               </div>
             </div>
           )
         })}
       </ScrollArea>
-      <div className="w-full p-2 flex items-center justify-center relative">
+      <div className="relative flex w-full items-center justify-center p-2">
         <WhoIsTyping />
         <Input
           id="name"
           type="text"
           ref={inputRef}
-          className="peer border rounded-lg shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-ring z-10"
+          className="peer z-10 rounded-lg border shadow-sm focus:border-ring focus-visible:ring-0 focus-visible:ring-offset-0"
           placeholder="Message"
           value={input}
           onChange={(e) => {
@@ -114,9 +112,9 @@ export const Chat = () => {
         />
         <button
           onMouseDown={(e) => addMessage(input, e)}
-          className="peer-placeholder-shown:opacity-0 transition-opacity duration-200 ease-in-out z-20"
+          className="z-20 transition-opacity duration-200 ease-in-out peer-placeholder-shown:opacity-0"
         >
-          <ArrowUpCircle className="fill-blue-500 stroke-white absolute right-4 top-4 h-6 w-6" />
+          <ArrowUpCircle className="absolute top-4 right-4 h-6 w-6 fill-blue-500 stroke-white" />
         </button>
       </div>
     </div>
@@ -129,7 +127,7 @@ function WhoIsTyping() {
     shallow
   )
   return (
-    <div className="absolute -top-3 right-0 text-muted-foreground text-xs mr-3">
+    <div className="-top-3 absolute right-0 mr-3 text-muted-foreground text-xs">
       {typingUsers.length > 0 && (
         <AnimatePresence>
           <motion.div

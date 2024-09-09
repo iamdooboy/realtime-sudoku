@@ -51,8 +51,8 @@ export function StartGameForm() {
     <div className="mx-auto grid w-[350px] gap-6">
       <div className="grid gap-2 text-center">
         <div className="w-full">
-          <h1 className="text-xl w-full tracking-widest">Realtime</h1>
-          <h1 className="text-3xl font-bold w-full tracking-tighter">Sudoku</h1>
+          <h1 className="w-full text-xl tracking-widest">Realtime</h1>
+          <h1 className="w-full font-bold text-3xl tracking-tighter">Sudoku</h1>
         </div>
       </div>
       <div className="grid gap-4">
@@ -65,10 +65,10 @@ export function StartGameForm() {
             type="text"
             required
             value={input}
-            className="[&:user-invalid:not(:focus)]:border-red-500 peer"
+            className="peer [&:user-invalid:not(:focus)]:border-red-500"
             onChange={(e) => setInput(e.target.value)}
           />
-          <p className="text-red-500 hidden text-sm peer-[&:user-invalid:not(:focus)]:block">
+          <p className="hidden text-red-500 text-sm peer-[&:user-invalid:not(:focus)]:block">
             This field is required
           </p>
         </div>
@@ -78,7 +78,7 @@ export function StartGameForm() {
           </div>
           <ToggleGroup
             type="single"
-            className="flex-col w-full items-start"
+            className="w-full flex-col items-start"
             onValueChange={(type) => setDifficulty(type)}
           >
             {DIFFICULTIES.map((difficulty) => (

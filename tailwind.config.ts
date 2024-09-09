@@ -82,7 +82,7 @@ const config: Config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" }
         },
-        jiggle: {
+        wiggle: {
           "0%": {
             transform: "rotate(-3deg)"
           },
@@ -101,7 +101,7 @@ const config: Config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        jiggle: "jiggle 0.5s ease-in-out",
+        wiggle: "wiggle 0.5s ease-in-out",
         pulse: "pulse var(--duration) ease-out infinite"
       }
     }

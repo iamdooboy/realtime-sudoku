@@ -46,7 +46,7 @@ export function AvatarStack() {
   return (
     <TooltipProvider delayDuration={0}>
       <Popover>
-        <div className="flex sm:justify-end items-center">
+        <div className="flex items-center sm:justify-end">
           <InviteDialog />
           <AnimatePresence>
             {others
@@ -66,7 +66,7 @@ export function AvatarStack() {
                             outlineColor: color
                           }}
                           className={cn(
-                            "outline-3 outline size-7 border-2 border-primary-foreground"
+                            "size-7 border-2 border-primary-foreground outline outline-3"
                           )}
                         >
                           <AvatarImage src={avatar} />
@@ -77,7 +77,7 @@ export function AvatarStack() {
                     <TooltipContent>
                       <p>{name}</p>
                     </TooltipContent>
-                    <PopoverContent className="px-3 py-1.5 text-sm w-auto">
+                    <PopoverContent className="w-auto px-3 py-1.5 text-sm">
                       <PopoverArrow className="fill-border" />
                       <p>{name}</p>
                     </PopoverContent>
@@ -92,7 +92,7 @@ export function AvatarStack() {
               >
                 <Tooltip>
                   <TooltipTrigger>
-                    <Avatar className="outline-3 outline size-7 outline-blue-500 border-2 border-primary-foreground">
+                    <Avatar className="size-7 border-2 border-primary-foreground outline outline-3 outline-blue-500">
                       <AvatarImage src={currentUser.info.avatar} />
                       <AvatarFallback>{currentUser.info.name}</AvatarFallback>
                     </Avatar>
@@ -171,7 +171,9 @@ const InviteDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="secondary" className="first:mr-auto sm:hidden h-auto">Invite</Button>
+        <Button variant="secondary" className="h-auto first:mr-auto sm:hidden">
+          Invite
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -192,7 +194,7 @@ const InviteDialog = () => {
                     className="flex place-items-center gap-1"
                     {...animationProps}
                   >
-                    <Check className="size-4 mr-1" />
+                    <Check className="mr-1 size-4" />
                     Copied!
                   </motion.div>
                 ) : (
@@ -201,7 +203,7 @@ const InviteDialog = () => {
                     className="flex place-items-center gap-1"
                     {...animationProps}
                   >
-                    <Link className="size-4 mr-1" />
+                    <Link className="mr-1 size-4" />
                     Copy link
                   </motion.div>
                 )}
@@ -211,7 +213,7 @@ const InviteDialog = () => {
               Share link to play together
             </p>
           </div>
-          <div className="flex flex-col justify-center items-center gap-4">
+          <div className="flex flex-col items-center justify-center gap-4">
             <div className="w-1/2">
               <QRCode value={fullUrl} className="size-full" />
             </div>

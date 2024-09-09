@@ -1,6 +1,6 @@
 import { LiveList, LiveObject } from "@liveblocks/client"
 import { type ClassValue, clsx } from "clsx"
-import { env } from 'process'
+import { env } from "process"
 import { twMerge } from "tailwind-merge"
 import { getSudoku } from "./sudoku"
 

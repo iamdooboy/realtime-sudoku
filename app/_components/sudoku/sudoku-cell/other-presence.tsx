@@ -12,7 +12,7 @@ export const OtherPresence: React.FC<{
             <div
               key={connectionId}
               style={{ outlineColor: color }}
-              className="absolute inset-0 -outline-offset-[2px] outline outline-[3px] flex z-10"
+              className="-outline-offset-[2px] absolute inset-0 z-10 flex outline outline-[3px]"
             />
           )
         }

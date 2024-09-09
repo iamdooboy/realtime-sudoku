@@ -62,7 +62,7 @@ export function SidePanel() {
   }
 
   return (
-    <div className="space-y-4 hidden sm:block">
+    <div className="hidden space-y-4 sm:block">
       <p className="text-muted-foreground text-sm">Share with friends</p>
 
       <Button
@@ -78,7 +78,7 @@ export function SidePanel() {
               className="flex place-items-center gap-1"
               {...animationProps}
             >
-              <Check className="size-4 mr-1" />
+              <Check className="mr-1 size-4" />
               Copied!
             </motion.div>
           ) : (
@@ -87,7 +87,7 @@ export function SidePanel() {
               className="flex place-items-center gap-1"
               {...animationProps}
             >
-              <Link className="size-4 mr-1" />
+              <Link className="mr-1 size-4" />
               Copy link
             </motion.div>
           )}
