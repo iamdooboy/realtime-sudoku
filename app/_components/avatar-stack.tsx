@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/avatar"
+import { Button } from "@/shadcn/button"
 import {
   Dialog,
   DialogClose,
@@ -30,7 +31,6 @@ import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import QRCode from "react-qr-code"
 import { useOthersInfo } from "../hooks/use-other-info"
-import { Button } from "./shadcn/button"
 
 export function AvatarStack() {
   const others = useOthersInfo()

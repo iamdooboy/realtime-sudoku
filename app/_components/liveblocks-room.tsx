@@ -7,7 +7,7 @@ import {
   RoomProvider
 } from "@liveblocks/react/suspense"
 import { ReactNode, useEffect, useState } from "react"
-import { NameDialog } from "./name-dialog"
+import { JoinGameDialog } from "./join-game-dialog"
 
 type RoomProps = {
   roomId: string
@@ -53,7 +53,11 @@ export function LiveblocksRoom({ children, roomId }: RoomProps) {
 
   if (showDialog) {
     return (
-      <NameDialog input={name} setInput={setName} handleSubmit={handleSubmit} />
+      <JoinGameDialog
+        input={name}
+        setInput={setName}
+        handleSubmit={handleSubmit}
+      />
     )
   }
 

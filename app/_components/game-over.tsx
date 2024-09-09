@@ -1,6 +1,7 @@
 "use client"
 
 import { generateSudoku } from "@/lib/utils"
+import { Button } from "@/shadcn/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +15,6 @@ import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import HyperText from "./hyper-text"
 import PulsatingButton from "./pulsating-button"
-import { Button } from "./shadcn/button"
 
 export const GameOver = () => {
   const [isDisabled, setIsDisabled] = useState(true)
