@@ -1,7 +1,7 @@
-import React, { ReactNode } from "react"
+import React, { FormEvent, ReactNode } from "react"
 type GameDialogProps = {
   children: ReactNode
-  onSubmit?: () => void
+  onSubmit?: (event: FormEvent<HTMLFormElement>) => void
 }
 
 export const GameDialog = ({ children, onSubmit }: GameDialogProps) => {

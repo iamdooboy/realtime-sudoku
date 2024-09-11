@@ -6,7 +6,7 @@ import { Label } from "@/shadcn/label"
 import { ToggleGroup, ToggleGroupItem } from "@/shadcn/toggle-group"
 import { DIFFICULTIES } from "@/utils/constants"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { FormEvent, useState } from "react"
 import { GameDialog } from "./game-dialog"
 import { SubmitButton } from "./submit-button"
 
@@ -17,7 +17,8 @@ export function StartGameDialog() {
 
   const router = useRouter()
 
-  const onSubmitHandler = async () => {
+  const onSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     if (!input || !difficulty) {
       return
     }
